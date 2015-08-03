@@ -1,0 +1,54 @@
+\chapter(Motivation)
+
+
+\section(Security Aspects)
+
+* shared resources --> covert channels --> information leakage
+
+
+\subsection(Covert / Side Channel Attacks -- Cache)
+
+* Issue: Information leakage through cache accesses - hit/miss behavior
+* Attack vectors:
+  * Data-Cache / Instruction-Cache
+  * Shared functional units
+  * Branch predictors
+* Attack types:
+  * Time driven 
+    * Cache Collision attacks
+    * D.J. Bernstein attack (2005)
+  * Access driven
+
+
+\subsubsection(OpenSSL cache collision attacks)
+
+* CLFLUSH instruction flushes the whole cache hierachy; local and remote
+  caches. MOESI propagates cache flush.
+  ==> FLUSH+RELOAD attacks still possible, even if attack process runs on
+  different CORE with no shared HW-CACHE.
+  (s. Intel ArchSoftDev Manual Vol. 2A 3-111)
+==> lock whole system to execute encryption/signing operations (similar to
+    Flicker (see  Trusted Computing Lesson))
+
+
+\subsection(Mitigation)
+
+* Grouping, security levels
+
+
+\section(Performance inprovements)
+
+* Stable throughput
+  * memory intensive \& menory non-intensive workload on cores with shared
+    cache; HyperThreads
+* Performance per watt
+  * TurboBoost vs. sleep-state
+* Gang scheduling
+
+
+\section(Miscellaneous)
+
+* no changes to HW or applications
+* user-space program; minimal kernel changes
+* Real-Time?
+ 
