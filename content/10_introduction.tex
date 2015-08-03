@@ -18,6 +18,22 @@
 
 \todo{write introduction}
 
+
+[A Practical Approach to Dynamic Load Balancing, Jerrell Watts, Stephen Taylor,
+1998]
+
+\begin{itemize}
+  \item Given a collection of tasks comprising a computation and a set of
+computers on which these may be executed, find a mapping of tasks to computers
+that results in each computer having an approximately equal amount of work. 
+  \item first determine that a load imbalance exists
+  \item if the cost of the imbalance exceeds the cost of load balancing then 
+    load balancing should be initiated
+  \item work transfer vector calculation
+  \item task selection, constrained by locality and task size
+  \item task migration, state \& communication integrity must be maintained
+\end{itemize}
+
 \section{A Section}
 
 Referencing other chapters: \ref{sec:state} \ref{sec:design}
