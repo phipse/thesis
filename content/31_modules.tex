@@ -1,0 +1,30 @@
+\section{Modules}
+\label{design:modules}
+
+\subsection{Hardware performance monitoring}
+
+\subsection{Analyse}
+  \paragraph{Hardware}
+    * Use dedicated hardware --> hardware analysis future work
+    * Haswell: per core: L1 \& L2 cache; shared L3 cache between all cores
+
+  \paragraph{Measurement}
+    * Measure the load on each core during a time interval \textbf{TI};
+
+
+\subsection{Predict}
+
+  * Predict load on each core for the next time intervall;
+    * IF thread {A, B, \ldots} is migrated to core {1,2,3,4};
+
+
+\subsection{Decide}
+
+  * Decide on a thread distribution to cores, based on predicitons;
+
+
+\subsection{Enforce}
+
+  * Enforce the thread-to-core assignment
+
+
