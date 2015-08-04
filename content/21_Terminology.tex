@@ -1,22 +1,84 @@
 \section{Terminology}
 \label{state:term}
 
-\newacronym{ht}{HT}{Hyper-threadding}
-\newacronym{cmp}{CMP}{Chip multiprocessor}
-\newacronym{smp}{SMP}{Symmetric multiprocessor}
-\newacronym{intel}{INTEL\textregistered}{INTEL\textregistered{}}
+% list of glossary entries
+%\newacronym{intel}{}{INTEL\textregistered{}}
+\newglossaryentry{intel}{name=INTEL\textregistered{},
+description={INTEL\textregistered{} Inc.} }
+
+% list of acronyms
+\newacronym{ht}{HT}{hyper-thread}
+\newacronym{cmp}{CMP}{chip multiprocessor}
+\newacronym{smp}{SMP}{symmetric multiprocessor}
+\newacronym{utcb}{UTCB}{user thread control block}
+\newacronym{sc}{SC}{scheduling context}
+\newacronym{fifo}{FIFO}{First-in-First-out}
+\newacronym{lru}{LRU}{least-recently-used}
+\newacronym{llc}{LLC}{last-level-cache}
+\newacronym{ipc}{IPC}{inter-process communication}
+
+\todo{Item sorting}
 
 \begin{description}
-  \item[Thread]
-  \item[Task]
-  \item[Cache]
-  \item[Migration]
-  \item[\gls{ht}] \gls{ht} is a technique used by \gls{intel}, which provides
-    two logical hardware threads on one physical core.
+  \item[\Gls{utcb}] A \gls{utcb} is user-level memory containing information
+    about a thread and communication registers and buffers.
+    \todo{UTCB description}
+
+  \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
+    of a priority level, execution time, remaining execution time.
+    \todo{What other items are in a scheduling context}
+
+  \item[Thread] A thread is a unit of execution, consisting of a \gls{utcb}
+    and a \gls{sc}.
+
+  \item[Task] A task consists of a one or more threads and provides memory and
+    memory management for its threads.
+
+  \item[\Gls{ipc}] \Gls{ipc} is the only way for threads in L4Re/Fiasco.OC
+    to communicate with one another.
+    It is synchronous communication with the following modes of operation:
+    send, open wait, closed wait, reply \& open wait, call.
+    A thread initiating an open wait, waits for an arbitrary thread to contact
+    him, whereas a closed wait, expects a specific thread.
+    A call is normally used for communication with a service, where a reply is
+    awaited, hence it is a
+    \todo{atomic?}
+    combination of a send with a closed wait.
+    To initiate an \gls{ipc} in L4Re/Fiasco.OC the sending thread needs to hold
+    a capability on the receiving thread.
+
+
+  \item[Core] To a physical CPU core is referred to as core.
+
+  \item[Cache] Generally, a cache is used to store frequently accessed data.
+    Depending on the type of cache different evocation policies can be applied,
+    like \gls{fifo} or \gls{lru}.
+    The hardware cache present on a CPU uses \gls{lru}.
+    A cache can have several levels, creating a cache hierarchy.
+    If data is evicted in a lower hierarchy level, it moves to a higher level.
+    If there is no higher level, the data is written back to memory.
+    \todo{Write-through and write-back cache?}
+
+  \item[Migration] The process of moving on thread from one core
+    to another core is called migration.
+    The cores do not necessarily need to be on the same chip, nor do they need
+    to be in the same machine.
+
+  \item[\Gls{ht}] Hyper-threading a technique used by \gls{intel}, which provides
+    two hardware threads on one physical core.
     The idea behind this technique is to improve the utilization of the
     hardware resources, by multiplexing two threads.
-    However, the performance improvements are around 10\% compared to disabled
-    \gls{ht}.
-  \item[\gls{cmp}] \gls{cmp}
-  \item[\gls{smp}] \gls{smp}
+    \todo{However, the performance improvements are around 10\% compared to disabled
+      hyper-threading.}
+    To a \Gls{ht} is referred to as a logical core.
+
+  \item[\Gls{cmp}] \gls{cmp} is a category of processor architectures, where
+    the CPU consists of two equal CPU chips soldered together on one die.
+    As a result the \gls{llc} is not shared among all cores.
+    Consider a quad-core CPU build out of two dual-core CPUs.
+    Hence, cores 0 \& 1 share their \gls{llc} and cores 2 \& 3, respectively.
+
+  \item[\Gls{smp}] \gls{smp} is a category of processor architectures, where
+    all cores are equal and the \gls{llc} is shared among all of them.
+
 \end{description}
