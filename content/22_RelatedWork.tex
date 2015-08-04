@@ -1,0 +1,62 @@
+\section{Related Work}
+\label{state:related}
+
+\begin{comment}
+  Structure for the description of related work:
+    * Assumptions
+    * Concept
+    * Relevant contribution
+    * Result
+    * Deficits
+\end{comment}
+
+\paragraph{ \cite{sarma_smartbalance_2015} } \citeauthor{sarma_smartbalance_2015}
+write about their approach to balance work in a heterogeneous system.
+They assume a system with a single ISA and several CPUs with different performance
+characteristics and different hardware features.
+They introduce categories for each performance level and measure the
+performance differences between each level.
+This results in a matrix displaying the performance gain or degradation, when
+a work package (e.g. thread) is migrated.
+Their load balancing algorithm has three phases: sense, predict, balance.
+During the sense phase the algorithm observes the CPU utilization for an epoch.
+An epoch consists of configurable many clock ticks.
+The sense-result is then used by the prediction phase to compute a load
+expectation for the different performance levels.
+Based on this forecast a balancing decision is made and enforced in the third
+phase.
+Their model can also select the best CPU size for a optimal performance per
+joule ratio.
+
+
+They make use of gem5\footnote{gem5 url}, a cycle accurate hardware simulator,
+as besides the ARM big.LITTLE\footnote{ARM big.LITTLE} architecture no
+hardware is available, which features more than two CPU sizes.
+
+
+\paragraph{ \cite{hofmeyr_load_2010} }
+
+\paragraph{ \cite{cruz_dynamic_2014} }
+
+\paragraph{ \cite{zhuravlev_survey_2012} } \citeauthor{zhuravlev_survey_2012}
+provide a survey over scheduling techniques, aiming at better usage of shared
+resources in multicore processors.
+They focus on chip multicore processors (CMPs), which share caches between at
+least two cores, but not between all cores.
+Techniques like hyper-threading are also taken into account.
+Simultaneous multiprocessors (SMPs) are not in the focus of their survey.
+\gls{intel} newer architectures, e.g. Haswell, is a SMP architecture, where each
+physical core has dedicated L1 \& L2 caches, but the L3 cache is shared between
+all cores.
+Their algorithmic focus lies on contention-aware schedulers, which consists of
+four building blocks: objective, prediction, decision \& enforcement.
+
+
+
+\paragraph{ \cite{knauerhase_using_2008} }
+\paragraph{ \cite{yarom_recovering_2014} }
+\paragraph{ \cite{bernstein_cache-timing_2005} }
+\paragraph{ \cite{eyerman_probabilistic_2010} }
+\paragraph{ \cite{fedorova_managing_2010} }
+\paragraph{ \cite{zhuravlev_addressing_2010} }
+\paragraph{ \cite{liu_last-level_2015} }
