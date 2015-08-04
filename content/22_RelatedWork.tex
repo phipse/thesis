@@ -10,8 +10,11 @@
     * Deficits
 \end{comment}
 
-\paragraph{ \cite{sarma_smartbalance_2015} } \citeauthor{sarma_smartbalance_2015}
-write about their approach to balance work in a heterogeneous system.
+\todo{Sort related work by topic, then by author}
+
+\paragraph{ \cite{sarma_smartbalance_2015} }
+\citeauthor{sarma_smartbalance_2015} write about their approach to balance work
+in a heterogeneous system.
 They assume a system with a single ISA and several CPUs with different performance
 characteristics and different hardware features.
 They introduce categories for each performance level and measure the
@@ -38,9 +41,9 @@ hardware is available, which features more than two CPU sizes.
 
 \paragraph{ \cite{cruz_dynamic_2014} }
 
-\paragraph{ \cite{zhuravlev_survey_2012} } \citeauthor{zhuravlev_survey_2012}
-provide a survey over scheduling techniques, aiming at better usage of shared
-resources in multicore processors.
+\paragraph{ \cite{zhuravlev_survey_2012} }
+\citeauthor{zhuravlev_survey_2012} provide a survey over scheduling techniques,
+aiming at better usage of shared resources in multicore processors.
 They focus on chip multicore processors (CMPs), which share caches between at
 least two cores, but not between all cores.
 Techniques like hyper-threading are also taken into account.
@@ -49,16 +52,55 @@ Simultaneous multiprocessors (SMPs) are not in the focus of their survey.
 physical core has dedicated L1 \& L2 caches, but the L3 cache is shared between
 all cores.
 Their algorithmic focus lies on contention-aware schedulers, which consists of
-four building blocks: objective, prediction, decision \& enforcement.
-
+four building blocks: objective, prediction, decision, and enforcement.
 
 
 \paragraph{ \cite{knauerhase_using_2008} }
+In \citetitle{knauerhase_using_2008} \citeauthor{knauerhase_using_2008} present
+a mechanism to observe \gls{llc} misses and references, retried instructions,
+core cycles, and reference cycles.
+These information describe the behaviour of the threads in the system.
+They assume a \gls{cmp} system and address three issues: cache interference,
+migrating threads across caches and fairness between threads.
+
+To reduce interference between cache heavy and light threads, they use the
+following heuristics: cache miss per cycle, behaviour in the last time quantum,
+and sum of the cache weights.
+The goal is to run cache heavy threads on different \gls{llc}-groups, meaning
+cores that share the same \gls{llc}.
+The cache miss per cycle has shown to be a good heuristic, as it also displays
+the memory access and hence the load on the memory bus.
+Also, behavioural history longer than the last time quantum has proven
+unnecessary, as the thread behaviour changes over time and longer history
+clouds the prediction.
+Finally, the cache weight is the sum of the weight of each thread running on
+the same \gls{llc}-group.
+A threads cache weight is the number of cache entries it uses. \todo{check
+that}
+
+To decide when and which threads to migrate to another \gls{llc}-group, the
+thread weight and the cache load per \gls{llc}-group is computed.
+New threads are assign tho the \gls{llc}-group with the smallest cache load.
+To achieve better fairness between the \gls{llc}-groups, overweight threads are
+migrated between groups periodically.
+In general, migrations between \gls{llc}-groups are prevented, as the migrated
+thread has to repopulate the cache on the new core.
+
+To increase the fairness between cache light and cache heavy threads,
+\citeauthor{knauerhase_using_2008} propose to increase the execution time of
+cache light threads, as they suffer from running besides cache heavy threads.
+\todo{Where exactly do they suffer?}
+
+The authors wrote a cachebuster and spinloop thread to simulate cache heave and
+cache light threads. Additionally, application from the SPEC CPU 2000 benchmark
+suite were used to provide further experimental prove to their claims.
+
+
 \paragraph{ \cite{yarom_recovering_2014} }
 \paragraph{ \cite{bernstein_cache-timing_2005} }
 \paragraph{ \cite{eyerman_probabilistic_2010} }
 \paragraph{ \cite{fedorova_managing_2010} }
 \paragraph{ \cite{zhuravlev_addressing_2010} }
 \paragraph{ \cite{liu_last-level_2015} }
-\paragraph{ \cite{ousterhout_john_k._scheduling_1982} }
+\paragraph{ \cite{ousterhout_scheduling_1982} }
 \paragraph{ \cite{watts_practical_1998} }
