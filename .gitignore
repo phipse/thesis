@@ -27,6 +27,9 @@ auto
 *.run.xml
 *.synctex.gz
 
+*.glsdefs
+*.tdo
+
 # vim tmp files
 *.swp
 *.swo
