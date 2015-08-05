@@ -53,6 +53,9 @@ sched\_yield and sleep difference: run queue;
 
 \textbf{not} NUMA, MPI, OpenMP;
 
+\textbf{ shortcommings } Tigerton: No \gls{ht}, no turbo-boost, no l3 cache,
+and a dual-die CMP architecture.
+
 
 \paragraph{ \cite{cruz_dynamic_2014} }
 
@@ -112,12 +115,14 @@ The authors wrote a cachebuster and spinloop thread to simulate cache heave and
 cache light threads. Additionally, application from the SPEC CPU 2000 benchmark
 suite were used to provide further experimental prove to their claims.
 
+\textbf{ shortcommings } CMP system
+
 
 \paragraph{ \cite{yarom_recovering_2014} }
+\textbf{motivation} FLUSH+RELOAD cache side channel attack;
 
 \paragraph{ \cite{bernstein_cache-timing_2005} }
-
-\textbf{motivation} timing side channel attack against cache,
+\textbf{motivation} timing side channel attack against cache;
 
 
 
@@ -128,3 +133,18 @@ suite were used to provide further experimental prove to their claims.
 \paragraph{ \cite{liu_last-level_2015} }
 \paragraph{ \cite{ousterhout_scheduling_1982} }
 \paragraph{ \cite{watts_practical_1998} }
+
+\paragraph{ \cite{banikazemi_pam_2008} }
+\textbf{relevant} Cpusets to describe hardware architecture hierarchies;
+\gls{llc}-sharing, \gls{llc}-separate, power/energy-aware cpusets;
+only high-level task-to-cpuset mapping -- scheduler does the rest;
+multi-level optimizations;
+IDEA: security cpuset;
+
+\textbf{keep in mind} Model for $n$-CPU system;
+number of sched. choices;
+measure occupancy and miss ratio and CPI;
+estimate performance of scheduling choices;
+benchmarking process;
+
+\textbf{ shortcommings } CMP system
