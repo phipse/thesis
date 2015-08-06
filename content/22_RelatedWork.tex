@@ -133,6 +133,27 @@ suite were used to provide further experimental prove to their claims.
 \paragraph{ \cite{liu_last-level_2015} }
 \paragraph{ \cite{ousterhout_scheduling_1982} }
 \paragraph{ \cite{watts_practical_1998} }
+\textbf{constrains} discusses load balancing in a distributed network of
+machines, e.g. cluster;
+
+\textbf{relevant} definition of static and dynamic load balancing;
+five phases for dynamic load balancing: load evaluation, profitability
+determination, work transfer vector calculation, task selection ,task migration
+
+
+\begin{itemize}
+  \item Given a collection of tasks comprising a computation and a set of
+computers on which these may be executed, find a mapping of tasks to computers
+that results in each computer having an approximately equal amount of work.
+  \item first determine that a load imbalance exists
+  \item if the cost of the imbalance exceeds the cost of load balancing then
+    load balancing should be initiated
+  \item work transfer vector calculation, how much work shall be transfered
+  \item task selection, constrained by locality and task size, cost function to
+    take this into account;
+  \item task migration, state \& communication integrity must be maintained
+\end{itemize}
+
 
 \paragraph{ \cite{banikazemi_pam_2008} }
 \textbf{relevant} Cpusets to describe hardware architecture hierarchies;
