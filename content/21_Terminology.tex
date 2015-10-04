@@ -1,11 +1,9 @@
 \section{Terminology}
 \label{state:term}
 
-The following description contains no forward references and is inteded to
-explain the terminology to readers new to the field and also as reference for
-ambiguous terms.
-It also defines all terms introduced in this work.
-
+The following makes the reader familiar with the terminology of the field.
+Advanced readers may skip this section and use it as reference, if a term
+used in later sections is ambiguous unknown.
 
 % list of glossary entries
 %\newacronym{intel}{}{INTEL\textregistered{}}
@@ -27,56 +25,61 @@ description={INTEL\textregistered{} Inc.} }
 \todo{Item sorting}
 
 \begin{description}
-  \item[\Gls{utcb}] A \gls{utcb} is user-level memory containing information
-    about a thread and communication registers and buffers.
+  \item[\Gls{utcb}] A \gls{utcb} is user-level memory section containing
+    information about a thread and the thread's communication registers and
+    buffers.
     \todo{UTCB description}
 
   \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
-    of a priority level, execution time, remaining execution time.
+    of a priority level, execution time, and remaining execution time.
     \todo{What other items are in a scheduling context}
 
   \item[Thread] A thread is a unit of execution, consisting of a \gls{utcb}
     and a \gls{sc}.
 
   \item[Task] A task consists of a one or more threads and provides memory and
-    memory management for its threads.
+    memory management for it's threads.
 
   \item[\Gls{ipc}] \Gls{ipc} is the only way for threads in L4Re/Fiasco.OC
     to communicate with one another.
     It is synchronous communication with the following modes of operation:
     send, open wait, closed wait, reply \& open wait, call.
     A thread initiating an open wait, waits for an arbitrary thread to contact
-    him, whereas a closed wait, expects a specific thread.
+    him, whereas a closed wait, expects a communication intend of a specific
+    thread.
     A call is normally used for communication with a service, where a reply is
-    awaited, hence it is a
+    awaited, hence it combines a send and a closed wait operation.
     \todo{atomic?}
-    combination of a send with a closed wait.
     To initiate an \gls{ipc} in L4Re/Fiasco.OC the sending thread needs to hold
     a capability on the receiving thread.
     \todo{IPC -> instructions per cycle}
 
+  \todo{Make context specific description lists?}
 
-  \item[Core] To a physical CPU core is referred to as core.
+  \item[Core] A physical CPU core is referred to as core.
 
   \item[Cache] Generally, a cache is used to store frequently accessed data.
-    Depending on the type of cache different evocation policies can be applied,
-    like \gls{fifo} or \gls{lru}.
+    As a cache has size restriction, depending on the type of cache different
+    evocation policies can be applied, e.g. \gls{fifo} or \gls{lru}.
     The hardware cache present on a CPU uses \gls{lru}.
-    A cache in general can have one to three levels, creating a cache hierarchy.
+    A cache in general can have an arbitrary count of levels, creating a cache
+    hierarchy.
+    In current CPUs three cache levels are common.
     If data is evicted in a lower hierarchy level, it moves to a higher level.
     If there is no higher level, the data is written back to memory.
     \todo{Write-through and write-back cache?}
 
-  \item[Migration] The process of moving on thread from one core
-    to another core is called migration.
+  \item[Migration] The process of moving a thread from one core to another core
+    is called migration.
     The cores do not necessarily need to be on the same chip, nor do they need
     to be in the same machine.
 
-  \item[\Gls{ht}] Hyper-threading a technique used by \gls{intel}, which provides
-    two hardware threads on one physical core.
+  \item[\Gls{ht}] Hyper-threading is a technique used by \gls{intel}, which
+    provides two hardware threads on one physical core.
     The idea behind this technique is to improve the utilization of the
     hardware resources, by multiplexing two threads.
     To a \Gls{ht} is referred to as a logical core.
+    \todo{Elaborate, less detailed}
 
   \item[\Gls{smt}] \gls{smt} is the general term for techniques making use of
     several hardware threads on one physical core.
@@ -88,9 +91,10 @@ description={INTEL\textregistered{} Inc.} }
     Hence, cores 0 \& 1 share their \gls{llc} and cores 2 \& 3, respectively.
 
   \item[\Gls{smp}] \gls{smp} is a category of processor architectures, where
-    all cores are equal and the \gls{llc} is shared among all of them.
+    all cores are equal and the \gls{llc} is either shared among all of them or
+    each core has it's own \gls{llc}.
 
-  \item[Epoch] Describes a pre-defined number of clock ticks.
+  \item[Intervall] Describes a pre-defined number of clock ticks.
 
   \item[Hardware Performance Counters] \todo{newacronym?} granularity: (per
     cpu, per core, per logical core);
