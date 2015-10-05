@@ -16,9 +16,29 @@ e.g. observation of cache coherency traffic proposed in
     * Relevant contribution
     * Result
     * Deficits
+
+  Alternative: Aspects of the thesis in related work;
 \end{comment}
 
-\todo{Sort related work by topic, then by author}
+\begin{itemize}
+  \item Assumptions: Single ISA, no heterogeneous cores, SMP, one specific CPU
+    architecture
+  \item Goals: Load Balancer providing isolation, stable execution times of the
+    same workload, low congestion on shared ressources, two balancing
+    strategies: Performance and low energy usage;
+  \item introduce different approaches: speed balancing, symbiotic scheduling,
+    congestion aware scheduling
+
+    \begin{itemize}
+      \item focus introduction on relevant techniques
+    \end{itemize}
+
+  \item what is relevant and will be used, where improves this work the
+    previous (contribution)
+  \item cache side channel attacks undermining security of OpenSSL; how thread
+    placement minimizes side channel surface;
+  \item
+  \end{itemize}
 
 \paragraph{ \cite{sarma_smartbalance_2015} }
 \citeauthor{sarma_smartbalance_2015} write about their approach to balance work
@@ -31,8 +51,8 @@ performance differences between each level.
 This results in a matrix displaying the performance gain or degradation, when
 a work package (e.g. thread) is migrated.
 Their load balancing algorithm has three phases: sense, predict, balance.
-During the sense phase the algorithm observes the CPU utilization for an epoch.
-An epoch consists of configurable many clock ticks.
+During the sense phase the algorithm observes the CPU utilization for an intervall.
+An intervall consists of configurable many clock ticks.
 The sense-result is then used by the prediction phase to compute a load
 expectation for the different performance levels.
 Based on this forecast a balancing decision is made and enforced in the third
@@ -41,7 +61,7 @@ Their model can also select the best CPU size for a optimal performance per
 joule ratio.
 
 \textbf{relevant} load balancing algorithm: sense, prediciton, balance,
-epoch;
+intervall;
 
 \textbf{not} heterogeneous processors, gem5, big.LITTLE, performance
 matrix;
@@ -140,7 +160,67 @@ calculation of optimal throughput of a processor;
 
 
 \paragraph{ \cite{fedorova_managing_2010} }
+\textbf{assumptions:} no interaction between threads: no shared data, no
+communication;
+
+\begin{itemize}
+  \item LLC miss rate of threads \textit{vs.} memory-reuse pattern
+  \item more arguments for mem-reuse pattern
+  \item cache sensitivit and intensity of threads --> Pain metric (offline)
+  \item cache-miss and cache-access rate
+  \item online metric to approximate pain metric -> approx-pain
+  \item approx-pain uses perfcounters to measure LLC-miss-rate, as this showed
+    to be the best predictor for sensitivity and intensity
+  \item LLC-miss-rate predicts contention in other shared hardware
+  \item LLC-miss-rate perf counter measures prefetching miss
+  \item FURTHER: Distributed Intensity Online, Power Distributed Intensity
+\end{itemize}
+
+\textbf{Drawbacks}
+\begin{itemize}
+  \item no interactions between threads
+  \item contention focus, cooperation ignored
+  \item CMP processors used; SMP architecture fundamentally different;
+\end{itemize}
+
+\textbf{Gains}
+\begin{itemize}
+  \item overall completion time as scheduler performance metric
+\end{itemize}
+
 \paragraph{ \cite{zhuravlev_addressing_2010} }
+\begin{itemize}
+  \item cache aware scheduler needs: classification scheme \& scheduling policy
+  \item classification: cache light/heavy; compute light/heavy;
+  \item scheduling: assignment of threads to cores based on their classification
+  \item miss rate is good estimator of contention for shared ressources, as it
+    counts the LLC-misses for CPU accesses and prefetching accesses. Hence, it
+    measures load on FSB, DRAM ctr. and prefetching HW besides the cache
+    contention.
+  \item centralized sort by LLC-miss-rate per million instructions
+  \item used 8core, dual socket opteron, with a cache layout similar to Haswell
+  \item thread count <= core count
+  \item running average miss rate for scheduling decisions
+\end{itemize}
+
+\textbf{Gains}
+\begin{itemize}
+  \item better average performance
+  \item high performance improvement for individual applications
+  \item low performance variance (best/worst case) between different runs -->
+    stable performance
+  \item factors for performance degradations: memory controller, FSB,
+    prefetching HW
+  \item classification scheme evaluation
+  \item 8core opteron machine is cache-layout comparable to Haswell
+\end{itemize}
+
+\textbf{Drawbacks}
+\begin{itemize}
+  \item no cooperation between threads assumed (shared mem, communication)
+  \item no overload situation, at much as many threads as cores in the system
+\end{itemize}
+
 
 \paragraph{ \cite{liu_last-level_2015} }
 \textbf{questions} the ability of reducing the surface for cache
@@ -199,15 +279,17 @@ accesses);
 \section{Assumptions}
 The mentioned research leads to the following assumptions for this work:
 
+
 \begin{description}
   \item[Hardware]
   \item[Job types]
   \item[Job type distribution]
   \item[knowledge of execution time]
+  \item[Energy efficency] In case of overload equal to performance algorithm
 
 \end{description}
 
-keywords: 
+keywords:
 online
 load balancing
 thread-to-core-mapping
@@ -215,9 +297,21 @@ meta-scheduler
 user-land
 on a $µ$-kernel
 
-\subsection{Tradeoff Table}
-thread bahaviour history over several epochs
+\paragraph{Tradeoff Table}
+thread bahaviour history over several intervalls
 \textbf{vs.}
-thread behaviour only in last epoch
+thread behaviour only in last intervall
 
 
+\paragraph{Contributions}
+\begin{itemize}
+  \item Current processor architectures don't use CMP processors any more, therefore
+    the cache layout is different. My work evaluates the research results on the
+    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
+  \item User level scheduling on a $µ$-kernel. But user level scheduling was
+    done before.
+  \item More scheduling parameters \textit{or} less assumptions about threads.
+  \item No offline measurements, only online information gathering.
+  \item Thread interaction possible (communication partner, security flag)
+  \item Designated cores for security critical applications.
+\end{itemize}
