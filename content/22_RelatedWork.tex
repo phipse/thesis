@@ -3,8 +3,8 @@
 
 This section presents prior work and puts emphasis on the parts pertinent to
 this work.
-One restriction applies to this review: mechanism proposing changes to existing
-hardware are not in the focus of this work.
+One restriction applies to this review: mechanism proposing hardware changes
+are not in the focus of this work.
 This restriction excludes interesting ideas to gather behavioural information,
 e.g. observation of cache coherency traffic proposed in
 \cite{cruz_dynamic_2014}.
@@ -23,21 +23,86 @@ e.g. observation of cache coherency traffic proposed in
 \begin{itemize}
   \item Assumptions: Single ISA, no heterogeneous cores, SMP, one specific CPU
     architecture
-  \item Goals: Load Balancer providing isolation, stable execution times of the
-    same workload, low congestion on shared ressources, two balancing
+  \item Goals: Load Balancer providing isolation, stable execution times for the
+    same workload, reduced congestion on shared ressources, two balancing
     strategies: Performance and low energy usage;
   \item introduce different approaches: speed balancing, symbiotic scheduling,
     congestion aware scheduling
 
     \begin{itemize}
-      \item focus introduction on relevant techniques
+      \item concicely introduce the work
+      \item highlight the key aspects, goals, achievements
+      \item relevant achievements I will use
+      \item drawbacks of the work
+    \end{itemize}
+  \item symbiotic scheduling:
+    \begin{itemize}
+      \item technique for SMT to improve performance of threads scheduled on
+	two hardware sharing SMT cores
+      \item term coined by \citeauthor{snavely_symbiotic_2002} in 2000 using a
+	simulator
+      \item also used for CMP systems, but less shared HW (later)
+      \item runs threads on two corresponding SMT cores and measures their
+	performance;
+      \item explain performance, throughput; how measured?
+      \item sampling phase needs time, but can be done, while a default
+	scheduler runs
+      \item restriction on changes in workload to ease sampling phase
+      \item summarize all restrictions/assumptions
+      \item select thread pairs/co-schedules for smt-core-pairs with most throughput for
+	all threads
+      \item try to combine workloads that use different cpu hardware
+	units, e.g. fp workload and integer workload; heavy cache usage, little
+	cache usage
+      \item Meausrements in their \citeyear{snavely_symbiotic_2000} paper use perf counters not present in
+	real HW, e.g. conflics inside FP units, FPqueue full.
+      \item  \citeauthor{snavely_symbiotic_2002}: Simulator, no real hardware, but priority
+	sensitive (2002)
+      \item priority is perceived as ``guarantee a fraction of machine
+	proportional to priority'' or `` guarantee a fraction of
+	single-threaded performance proportional to priority''
+      \item \citetitle{banikazemi_pam_2008}: Use real CMP system: 8 core two socket IBM Blade
+      \item relies on Linux scheduler as default
+      \item only when better performing thread-to-core mapping is predicted, the
+	default scheduler is overruled for a defined count of scheduling-cycles
+      \item uses hardware performance counter evaluate and support decisions
+      \item goodness metric to rate the thread-core-mapping
+      \item mathematical model for the algorithm
+      \item \citetitle{eyerman_revisiting_2015}: Symbiotic scheduling does only provide an average
+	throughput gain of around 3%.
+      \item reason: the most test case assumptions in literature are benifical
+	for symbiotic scheduling, but not close to reality.
+      \item First-come-first-served scheduler is close to the theoreticaly
+	optimal scheduler
+      \item theoretical optimal schedule knows the performance of all tasks in
+	all possible combinations with all other tasks.
+      \item use simulator to measure tasks on a 'reference core' and
+	compute throughput and IPC values for different schedules.
+      \item arrival time of tasks is critical for FCFS schedule throughput and
+	hence determines, how close FCFS comes to the optimal scheduler
+      \item processor utilization or empty time are better indicator of
+	throughput improvement than turnaround time
+      \item overload situations?
+    \end{itemize}
+
+  \item congestion aware scheduling
+    \begin{itemize}
+      \item goal: minimizing usage of shared hardware resources
+      \item focus on shared caches, but also prefetching hardware and memory
+	controller
+      \item options: cache line reuse vs. miss rate
+      \item miss rate expresses load on prefetching hardware and mem controller
+      \item
+    \end{itemize}
+
+  \item security relevance of shared ressources
+    \begin{itemize}
+  \item cache side channel attacks undermining security of OpenSSL; how thread
+    placement minimizes side channel surface;
     \end{itemize}
 
   \item what is relevant and will be used, where improves this work the
     previous (contribution)
-  \item cache side channel attacks undermining security of OpenSSL; how thread
-    placement minimizes side channel surface;
-  \item
   \end{itemize}
 
 \paragraph{ \cite{sarma_smartbalance_2015} }
