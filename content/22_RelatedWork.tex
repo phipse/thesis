@@ -99,6 +99,28 @@ utilization of the system.
 
 Other presented approaches in \cite{snavely_symbiotic_2002} require hardware
 changes and are therefore out of scope.
+\\
+
+\citeauthor{banikazemi_pam_2008} implemented an observing scheduler on top of
+the default Linux scheduler.
+In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
+meta-scheduler.
+While the default scheduler runs, PAM gathers information via performance
+counters on cache occupancy, cycles per instruction, and the miss ratio of L1
+and L2 caches for each thread.
+If PAM can predict a better thread-to-core mapping, based on this information,
+it overrules the default scheduler and enforces the better mapping.
+With a \textit{Goodness(t)} metric PAM rates the current mapping for the last
+time interval.
+Depending on the goodness value of the PAM mapping being better than the one of
+the default scheduler, PAM continues to enforce its mapping or falls back to
+default.
+Goodness can be performance, power or energy consumption.
+
+They ran their experiments on a dual socket, quad-core machine, where two cores
+share an L2 cache.
+The processors do not support \gls{smt}.
+
 
 
 
@@ -154,7 +176,7 @@ changes and are therefore out of scope.
 
       \item \citetitle{banikazemi_pam_2008}: use real CMP system: 8 core two
 	socket IBM Blade
-      \item use symbiotic approach on CMP systems, less shared HW
+      \item use symbiotic approach on CMP systems, less shared HW, no SMT
       \item relies on Linux scheduler as default
       \item only when better performing thread-to-core mapping is predicted, the
 	default scheduler is overruled for a defined count of scheduling-cycles
