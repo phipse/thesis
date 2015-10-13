@@ -3,9 +3,8 @@
 
 This section presents prior work and puts emphasis on the parts pertinent to
 this work.
-Several assumptions for this work are already in place, before related research
-is reviewed.
-The target architecture is a single ISA, partly symmetric homogeneous
+One assumption for this work is already in place:
+the target architecture is a single ISA, partly symmetric homogeneous
 multicore.
 This means the target architecture supports \gls{smt}, but besides this, it is
 a \gls{smp} architecture.
@@ -27,7 +26,7 @@ not part of this work.
     * Result
     * Deficits
 
-  Alternative: Aspects of the thesis in related work;
+  Alternative: aspects of the thesis in related work;
 \end{comment}
 
 In literature different approaches to load balancing on a multicore have been
@@ -81,7 +80,7 @@ SOLOFRAC is the fraction of the CPU time, a job needs to be scheduled alone
 and CS is the fraction of the CPU time, where no job is solo scheduled.
 
 The \textit{Naive} priority mechanism schedules a job alone for its SOLOFRAC
-share and co-scheduled for CS cycles. Behind this stand two assumptions: First,
+share and co-scheduled for CS cycles. Behind this stand two assumptions: first,
 during co-scheduling each job are assigned an equal share of the cycles,
 depending on the amount of parallel jobs. And second, the number of jobs does
 not exceed the number of \gls{smt}-cores.
@@ -97,11 +96,11 @@ utilization of the system.
 
 
 \begin{itemize}
-  \item Assumptions: Single ISA, no heterogeneous cores, SMP, one specific CPU
+  \item Assumptions: single ISA, no heterogeneous cores, SMP, one specific CPU
     architecture \checkmark
-  \item Goals: Load Balancer providing isolation, stable execution times for the
+  \item Goals: load balancer providing isolation, stable execution times for the
     same workload, reduced congestion on shared resources, two balancing
-    strategies: Performance and low energy usage;
+    strategies: performance and low energy usage;
   \item introduce different approaches: speed balancing, symbiotic scheduling,
     congestion aware scheduling
 
@@ -134,7 +133,7 @@ utilization of the system.
 	perf counters not present in real HW, e.g. conflicts inside FP units,
 	FPqueue full.
 
-      \item  \citeauthor{snavely_symbiotic_2002}: Simulator, no real hardware,
+      \item  \citeauthor{snavely_symbiotic_2002}: simulator, no real hardware,
 	but priority sensitive (2002) \checkmark
       \item priority is perceived as ``guarantee a fraction of machine
 	proportional to priority'' or `` guarantee a fraction of
@@ -146,7 +145,7 @@ utilization of the system.
 	I can just guarantee, that the plan based on the prediction cares for
 	priorities.
 
-      \item \citetitle{banikazemi_pam_2008}: Use real CMP system: 8 core two
+      \item \citetitle{banikazemi_pam_2008}: use real CMP system: 8 core two
 	socket IBM Blade
       \item use symbiotic approach on CMP systems, less shared HW
       \item relies on Linux scheduler as default
@@ -161,7 +160,7 @@ utilization of the system.
 	instruction, L1	and L2 miss ratio
       \item compute performance estimation for selected plan
 
-      \item \citetitle{eyerman_revisiting_2015}: Symbiotic scheduling does only
+      \item \citetitle{eyerman_revisiting_2015}: symbiotic scheduling does only
 	provide an average throughput gain of around 3%.
       \item reason: the most test case assumptions in literature are beneficial
 	for symbiotic scheduling, but not close to reality.
@@ -279,7 +278,7 @@ sched\_yield and sleep difference: run queue;
 
 \textbf{not} NUMA, MPI, OpenMP;
 
-\textbf{shortcommings} Tigerton: No \gls{ht}, no turbo-boost, no l3 cache,
+\textbf{shortcommings} Tigerton: no \gls{ht}, no turbo-boost, no l3 cache,
 and a dual-die CMP architecture.
 
 
@@ -312,7 +311,7 @@ and sum of the cache weights.
 The goal is to run cache heavy threads on different \gls{llc}-groups, meaning
 cores that share the same \gls{llc}.
 The cache miss per cycle has shown to be a good heuristic, as it also displays
-the memory access and hence the load on the memory bus.
+the memory access and, hence, the load on the memory bus.
 Also, behavioural history longer than the last time quantum has proven
 unnecessary, as the thread behaviour changes over time and longer history
 clouds the prediction.
