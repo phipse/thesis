@@ -3,11 +3,21 @@
 
 This section presents prior work and puts emphasis on the parts pertinent to
 this work.
-One restriction applies to this review: mechanism proposing hardware changes
-are not in the focus of this work.
-This restriction excludes interesting ideas to gather behavioural information,
-e.g. observation of cache coherency traffic proposed in
-\cite{cruz_dynamic_2014}.
+Several assumptions for this work are already in place, before related research
+is reviewed.
+The target architecture is a single ISA, partly symmetric homogeneous
+multicore.
+This means the target architecture supports \gls{smt}, but besides this, it is
+a \gls{smp} architecture.
+Hence, research proposing hardware changes are out of scope.
+Also research focusing on heterogeneous architectures like ARM big.LITTLE are
+not part of this work.
+
+%One restriction applies to this review: mechanism proposing hardware changes
+%are not in the focus of this work.
+%This restriction excludes interesting ideas to gather behavioural information,
+%e.g. observation of cache coherency traffic proposed in
+%\cite{cruz_dynamic_2014}.
 
 \begin{comment}
   Structure for the description of related work:
@@ -19,6 +29,72 @@ e.g. observation of cache coherency traffic proposed in
 
   Alternative: Aspects of the thesis in related work;
 \end{comment}
+
+In literature different approaches to load balancing on a multicore have been
+explored.
+\citeauthor{snavely_symbiotic_2000} introduced the term \emph{symbiotic
+scheduling} in \cite{snavely_symbiotic_2000}, describing a scheduling technique
+for \gls{smt}-systems.
+They propose scheduling two jobs on the shared core, which provide the best
+utilization of said core.
+The combination of two jobs on two corresponding \gls{smt}-cores is called a
+co-schedule.
+The performance of a co-schedule is defined as the turnaround or response time,
+the time between the arrival of a job in the system and its completion.
+
+In their experiments they run independent jobs on a simulator modeling a Compaq
+Alpha 21264 out-of-order processor with hardware additions for multi-threading.
+This simulator model includes performance counters to ``capture dynamic execution
+information''(\autocite[236]{snavely_symbiotic_2000}).
+To determine a good schedule they compute the weighted speedup \textit{WS}.
+For each job the change in instructions per cycle (IPC) for a fixed time
+interval compared to single-threaded execution is measured.
+The sum of all these job-IPC-change-values is the weighted speedup of this
+schedule.
+$$ WS(t) = \sum_{i=1}^n (\text{realized IPC job}_i / \text{single-threaded IPC
+job}_i)$$
+Their developed scheduler consists of two phases: sampling and symbiosis.
+During the sampling phase different job combinations are measured.
+When enough samples are gathered, the scheduler moves to the symbiosis phase
+and uses schedules, which promise the highest weighted speedup.
+The scheduler will move back and forth between these phases, as the job-mix
+changes.
+
+The measurements of the performance counters are used to create several
+predictors for the behaviour of jobs in the future and hence the best schedule.
+The best predictor in their study made a majority vote of all other predictors
+to determine the best schedule.
+\citeauthor{snavely_symbiotic_2000} conclude, that good job symbiosis depends
+not only on high IPC, but on several behavioural factors.
+\\
+
+
+In \citeyear{snavely_symbiotic_2002} \citeauthor{snavely_symbiotic_2002}
+discussed the topic of priorities in symbiotic schedules.
+In their earlier work (\cite{snavely_symbiotic_2000}) they assumed same
+priority jobs.
+They present two meanings for priority: ``(A) guarantee a fraction of machine
+proportional to priority'' or ``(B) guarantee a fraction of single-threaded
+performance proportional to priority'' (\cite{snavely_symbiotic_2002}).
+The authors base their priority mechanism on two values: SOLOFRAC and CS.
+SOLOFRAC is the fraction of the CPU time, a job needs to be scheduled alone
+and CS is the fraction of the CPU time, where no job is solo scheduled.
+
+The \textit{Naive} priority mechanism schedules a job alone for its SOLOFRAC
+share and co-scheduled for CS cycles. Behind this stand two assumptions: First,
+during co-scheduling each job are assigned an equal share of the cycles,
+depending on the amount of parallel jobs. And second, the number of jobs does
+not exceed the number of \gls{smt}-cores.
+
+The proposed \textit{Symb} mechanism on the other hand, can handle more jobs
+than available \gls{smt}-cores and observes job behaviour. By running jobs
+solo, it determines the job's ``'natural' IPC''(\cite{snavely_symbiotic_2002})
+and can evaluate the job's performance during a phase of co-scheduling.
+Depending on this measurement, the SOLOFRAC is reduced such as the job get its
+rightful share of cycles. The increase in co-scheduling time leads to increased
+utilization of the system.
+
+
 
 \begin{itemize}
   \item Assumptions: Single ISA, no heterogeneous cores, SMP, one specific CPU
