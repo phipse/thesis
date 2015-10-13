@@ -98,31 +98,31 @@ utilization of the system.
 
 \begin{itemize}
   \item Assumptions: Single ISA, no heterogeneous cores, SMP, one specific CPU
-    architecture
+    architecture \checkmark
   \item Goals: Load Balancer providing isolation, stable execution times for the
-    same workload, reduced congestion on shared ressources, two balancing
+    same workload, reduced congestion on shared resources, two balancing
     strategies: Performance and low energy usage;
   \item introduce different approaches: speed balancing, symbiotic scheduling,
     congestion aware scheduling
 
     \begin{itemize}
-      \item concicely introduce the work
+      \item concisely introduce the work
       \item highlight the key aspects, goals, achievements
       \item relevant achievements I will use
       \item drawbacks of the work
     \end{itemize}
   \item symbiotic scheduling:
     \begin{itemize}
+      \item term coined by \citeauthor{snavely_symbiotic_2000} in
+	\citeyear{snavely_symbiotic_2000} \checkmark
       \item technique for SMT to improve performance of threads scheduled on
-	two hardware sharing SMT cores
-      \item term coined by \citeauthor{snavely_symbiotic_2002} in 2000 using a
-	simulator
-      \item also used for CMP systems, but less shared HW (later)
+	two hardware sharing SMT cores \checkmark
       \item runs threads on two corresponding SMT cores and measures their
-	performance;
-      \item explain performance, throughput; how measured?
+	performance in a simulator;
+      \item explain performance, turnaround/response time. How measured?
+	\checkmark
       \item sampling phase needs time, but can be done, while a default
-	scheduler runs
+	scheduler runs \checkmark
       \item restriction on changes in workload to ease sampling phase
       \item summarize all restrictions/assumptions
       \item select thread pairs/co-schedules for smt-core-pairs with most throughput for
@@ -130,48 +130,104 @@ utilization of the system.
       \item try to combine workloads that use different cpu hardware
 	units, e.g. fp workload and integer workload; heavy cache usage, little
 	cache usage
-      \item Meausrements in their \citeyear{snavely_symbiotic_2000} paper use perf counters not present in
-	real HW, e.g. conflics inside FP units, FPqueue full.
-      \item  \citeauthor{snavely_symbiotic_2002}: Simulator, no real hardware, but priority
-	sensitive (2002)
+      \item Measurements in their \citeyear{snavely_symbiotic_2000} paper use
+	perf counters not present in real HW, e.g. conflicts inside FP units,
+	FPqueue full.
+
+      \item  \citeauthor{snavely_symbiotic_2002}: Simulator, no real hardware,
+	but priority sensitive (2002) \checkmark
       \item priority is perceived as ``guarantee a fraction of machine
 	proportional to priority'' or `` guarantee a fraction of
-	single-threaded performance proportional to priority''
-      \item \citetitle{banikazemi_pam_2008}: Use real CMP system: 8 core two socket IBM Blade
+	single-threaded performance proportional to priority'' \checkmark
+      \item can it also be seen as a guarantee, that no lower priority thread is
+	scheduled unless I have been selected to run? Can I guarantee that in a
+	multicore setup, without knowledge of the execution times? -> No.
+	\todo{is an example beneficial here?}
+	I can just guarantee, that the plan based on the prediction cares for
+	priorities.
+
+      \item \citetitle{banikazemi_pam_2008}: Use real CMP system: 8 core two
+	socket IBM Blade
+      \item use symbiotic approach on CMP systems, less shared HW
       \item relies on Linux scheduler as default
       \item only when better performing thread-to-core mapping is predicted, the
 	default scheduler is overruled for a defined count of scheduling-cycles
       \item uses hardware performance counter evaluate and support decisions
-      \item goodness metric to rate the thread-core-mapping
+      \item goodness metric to rate the thread-core-mapping if not better than
+	last goodness rating of default scheduler, fall back to default
+	scheduler
       \item mathematical model for the algorithm
-      \item \citetitle{eyerman_revisiting_2015}: Symbiotic scheduling does only provide an average
-	throughput gain of around 3%.
-      \item reason: the most test case assumptions in literature are benifical
+      \item measured parameters are cache occupancy ratio, cycles per
+	instruction, L1	and L2 miss ratio
+      \item compute performance estimation for selected plan
+
+      \item \citetitle{eyerman_revisiting_2015}: Symbiotic scheduling does only
+	provide an average throughput gain of around 3%.
+      \item reason: the most test case assumptions in literature are beneficial
 	for symbiotic scheduling, but not close to reality.
-      \item First-come-first-served scheduler is close to the theoreticaly
-	optimal scheduler
+      \item gather all information for a optimal scheduler with total knowledge
       \item theoretical optimal schedule knows the performance of all tasks in
 	all possible combinations with all other tasks.
       \item use simulator to measure tasks on a 'reference core' and
 	compute throughput and IPC values for different schedules.
+      \item First-come-first-served scheduler is close to the theoretically
+	optimal scheduler
       \item arrival time of tasks is critical for FCFS schedule throughput and
 	hence determines, how close FCFS comes to the optimal scheduler
+      \item difference in experiments: turnaround time reduction in latency
+	experiment(\cite{snavely_symbiotic_2000}) vs. average throughput in a
+	maximum throughput experiment (\cite{eyerman_revisiting_2015}).
       \item processor utilization or empty time are better indicator of
-	throughput improvement than turnaround time
-      \item overload situations?
+	scheduler efficiency than only presenting turnaround time, best use all
+      \item compare scheduler by comparing these three indicators
+      \item overload situations := job arrival > max throughput
+      \item besides FCFS scheduler all other need an off-line phase to measure
+	the jobs, to be able to determine an optimal co-schedule.
     \end{itemize}
 
   \item congestion aware scheduling
     \begin{itemize}
       \item goal: minimizing usage of shared hardware resources
-      \item focus on shared caches, but also prefetching hardware and memory
-	controller
-      \item options: cache line reuse vs. miss rate
-      \item miss rate expresses load on prefetching hardware and mem controller
-      \item
+      \item shared hw resources are: shared caches, prefetching hardware, bus
+	and memory controller
+      \item options: cache line reuse / memory reuse pattern vs. miss rate
+      \item \citeauthor{fedorova_managing_2010} started out with cache line
+	reuse and came to the conclusion, that the off-line measurement of
+	memory reuse pattern and conclude, that this is not the best approach
+	to approximate congestion.
+      \item they develop a PAIN metric, combining sensitivity and intensity
+	concerning shared cache usage: sensitivity: how much do I suffer by
+	shared cache; intensity: how much do I hurt others;
+      \item off-line measurement possible, but what is a good on-line
+	approximation? Cache-miss rate and cache-access rate? (Intuitively
+	correlate with intensity and reuse frequency)
+      \item evaluation shows best on-line approximation for pain metric is LLC
+	miss rate: combines sensitivity and intensity
+      \item miss rate expresses load on FSB, prefetching hardware and
+	mem controller, which are the main cause for performance degradation,
+	not the cache. (what is PAMs cache occupancy ratio worth now?)
+      \item ``An application aggressively using prefetching hardware will also
+	typically have a high LLC miss rate, because prefetching requests for
+	data that is not in the cahce are counted as cache misses. Therefore, a
+	high miss rate is also an indicator of the heavy use of prefetching
+	hardware.'' (\cite{fedorova_managing_2010}).
+      \item \cite{Knauerhase_observing_2007} use LLC-misses as predictor
+	for cache interference and attempt to keep the sum of cache
+	weights/LLC-misses of all running processes close to a medium value
+      \item they also use task behaviour of the last time quantum as predictor
+	for the behaviour in the next; temporal locality predictor.
+      \item migration across cache borders: avoid migrating overweight/ high
+	cache impact tasks, try to balance cache groups by migrating small
+	tasks (assuming CMP architecture). How high is the impact, if LLC is
+	shared anyway?
+      \item periodically, migrate overweight task to find a possibly better
+	load distribution
+      \item fairness: give cache light tasks, that suffer a lot due to being
+	scheduled next to cache intensive tasks, bonus execution time.
+      \item assumed independent jobs
     \end{itemize}
 
-  \item security relevance of shared ressources
+  \item security relevance of shared resources
     \begin{itemize}
   \item cache side channel attacks undermining security of OpenSSL; how thread
     placement minimizes side channel surface;
@@ -215,6 +271,7 @@ core speed computation and coparison algorithm;
 distributed balancing thread with global synchronization;
 assumptions \& drawbacks of kernel level load balancing;
 in oversubscibed environments balance trumps locality;
+\textbf{assume interacting tasks}
 
 
 \textbf{be aware} turbo boost -> different core speeds on same CPU;
@@ -415,6 +472,8 @@ benchmarking process;
 \paragraph{ \cite{zhang_processor_2007} }
 \textbf{relevant} bottlenecks, metrics, sched policies (IPC \& memory bus
 accesses);
+
+% -----------------------------------------------------------------------------
 
 
 \section{Assumptions}
