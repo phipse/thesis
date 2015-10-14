@@ -133,7 +133,7 @@ Hence, using these two measures scheduler caused improvements can be compared.
 \citeauthor{eyerman_revisiting_2015} conclude that one should not expect large
 improvements through symbiotic scheduling, but particular workloads my benefit.
 Furthermore, previous studies on partially symmetric mutlicores showed
-substantial throughput gains by symbotically co-scheduling applications on
+substantial throughput gains by symbiotically co-scheduling applications on
 SMT-packages.
 \\
 
@@ -141,7 +141,7 @@ SMT-packages.
 \citeauthor{banikazemi_pam_2008} present a study concerning thread-to-core
 mappings on partially symmetric multicores.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
-meta-scheduler, working on top of the default linux scheduler.
+meta-scheduler, working on top of the default Linux scheduler.
 While the default scheduler runs, PAM gathers information via performance
 counters on cache occupancy, cycles per instruction, and the miss ratio of L1
 and L2 caches for each thread.
@@ -157,12 +157,17 @@ Goodness can be performance, power or energy consumption.
 The experiments ran on a dual socket, quad-core machine, where two cores
 share an L2 cache, making this a \gls{cmp} approach.
 The processor does not support \gls{smt}.
-Hence, the improvement gain stems not from symbiosis, but rather from
+Hence, the improvement gains stem not from symbiosis, but rather from
 congestion awareness.
 
+Besides \citeauthor{banikazemi_pam_2008} the topic of congestion in shared
+resources has been extensively researched in \cite{knauerhase_using_2008},
+\cite{fedorova_managing_2010}, and \cite{zhuravlev_survey_2012}.
 
 
 
+
+\begin{comment}
 \begin{itemize}
   \item Assumptions: single ISA, no heterogeneous cores, SMP, one specific CPU
     architecture \checkmark
@@ -541,6 +546,7 @@ benchmarking process;
 \textbf{relevant} bottlenecks, metrics, sched policies (IPC \& memory bus
 accesses);
 
+\end{comment}
 % -----------------------------------------------------------------------------
 
 
