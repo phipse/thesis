@@ -103,8 +103,9 @@ changes and are therefore out of scope.
 
 While \citeauthor{snavely_symbiotic_2000} claim in
 \cite{snavely_symbiotic_2000} a reduction in average turnaround time by up to
-17\%, \citeauthor{eyerman_revisiting_2015} state a mere 3\% increase in average
-throughput with an optimal symbiotic scheduler.
+17\%, \citeauthor{eyerman_revisiting_2015} state a mere 3\% to 6\% increase in
+average throughput with an optimal symbiotic scheduler compared to a
+first-come-first-serve scheduler.
 The notable difference explain the authors in \cite{eyerman_revisiting_2015} as
 different experimental views. \citeauthor{snavely_symbiotic_2000} study a fully
 loaded system with twice as much ready jobs as SMT-cores and observe the
@@ -128,6 +129,12 @@ number of executing cores) and empty periods.
 If throughput is improved, the processor utilization decreases and empty
 periods are enlarged, as the time to execute the current load is reduced.
 Hence, using these two measures scheduler caused improvements can be compared.
+
+\citeauthor{eyerman_revisiting_2015} conclude that one should not expect large
+improvements through symbiotic scheduling, but particular workloads my benefit.
+Furthermore, previous studies on partially symmetric mutlicores showed
+substantial throughput gains by symbotically co-scheduling applications on
+SMT-packages.
 \\
 
 
