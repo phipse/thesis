@@ -101,6 +101,34 @@ Other presented approaches in \cite{snavely_symbiotic_2002} require hardware
 changes and are therefore out of scope.
 \\
 
+While \citeauthor{snavely_symbiotic_2000} claim in
+\cite{snavely_symbiotic_2000} a reduction in average turnaround time by up to
+17\%, \citeauthor{eyerman_revisiting_2015} state a mere 3\% increase in average
+throughput with an optimal symbiotic scheduler.
+The notable difference explain the authors in \cite{eyerman_revisiting_2015} as
+different experimental views. \citeauthor{snavely_symbiotic_2000} study a fully
+loaded system with twice as much ready jobs as SMT-cores and observe the
+turnaround time.
+The turnaround time of a job is mainly influenced by the time it waits in the
+ready queue, when all cores are loaded.
+If the maximum throughput increases slightly, the waiting time is reduced,
+hence, a significant reduction in turnaround time is observed.
+Also a job reordering in a shortest remaining time first manner, can also
+reduce the average turnaround time.
+For these reasons \citeauthor{eyerman_revisiting_2015} make the case,
+that turnaround time alone can be a misleading measure.
+
+Furthermore, maximum throughput cannot be used, because systems are not
+designed to run at peak load all the time, as this leads to long queues and
+turnaround times.
+Average throughput equals average load, if the system is not fully loaded,
+therefore, it is a useless comparator.
+Instead, they advocate to evaluate processor utilization (understood as average
+number of executing cores) and empty periods.
+If throughput is improved, the processor utilization decreases and empty
+periods are enlarged, as the time to execute the current load is reduced.
+Hence, using these two measures scheduler caused improvements can be compared.
+\\
 
 
 \citeauthor{banikazemi_pam_2008} implemented an observing scheduler on top of
