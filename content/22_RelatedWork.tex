@@ -138,10 +138,10 @@ SMT-packages.
 \\
 
 
-\citeauthor{banikazemi_pam_2008} implemented an observing scheduler on top of
-the default Linux scheduler.
+\citeauthor{banikazemi_pam_2008} present a study concerning thread-to-core
+mappings on partially symmetric multicores.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
-meta-scheduler.
+meta-scheduler, working on top of the default linux scheduler.
 While the default scheduler runs, PAM gathers information via performance
 counters on cache occupancy, cycles per instruction, and the miss ratio of L1
 and L2 caches for each thread.
@@ -155,8 +155,10 @@ default.
 Goodness can be performance, power or energy consumption.
 
 The experiments ran on a dual socket, quad-core machine, where two cores
-share an L2 cache.
-The processors do not support \gls{smt}.
+share an L2 cache, making this a \gls{cmp} approach.
+The processor does not support \gls{smt}.
+Hence, the improvement gain stems not from symbiosis, but rather from
+congestion awareness.
 
 
 
