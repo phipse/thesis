@@ -101,6 +101,8 @@ Other presented approaches in \cite{snavely_symbiotic_2002} require hardware
 changes and are therefore out of scope.
 \\
 
+
+
 \citeauthor{banikazemi_pam_2008} implemented an observing scheduler on top of
 the default Linux scheduler.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
@@ -117,7 +119,7 @@ the default scheduler, PAM continues to enforce its mapping or falls back to
 default.
 Goodness can be performance, power or energy consumption.
 
-They ran their experiments on a dual socket, quad-core machine, where two cores
+The experiments ran on a dual socket, quad-core machine, where two cores
 share an L2 cache.
 The processors do not support \gls{smt}.
 
@@ -174,21 +176,6 @@ The processors do not support \gls{smt}.
 	I can just guarantee, that the plan based on the prediction cares for
 	priorities.
 
-      \item \citetitle{banikazemi_pam_2008}: use real CMP system: 8 core two
-	socket IBM Blade
-      \item use symbiotic approach on CMP systems, less shared HW, no SMT
-      \item relies on Linux scheduler as default
-      \item only when better performing thread-to-core mapping is predicted, the
-	default scheduler is overruled for a defined count of scheduling-cycles
-      \item uses hardware performance counter evaluate and support decisions
-      \item goodness metric to rate the thread-core-mapping if not better than
-	last goodness rating of default scheduler, fall back to default
-	scheduler
-      \item mathematical model for the algorithm
-      \item measured parameters are cache occupancy ratio, cycles per
-	instruction, L1	and L2 miss ratio
-      \item compute performance estimation for selected plan
-
       \item \citetitle{eyerman_revisiting_2015}: symbiotic scheduling does only
 	provide an average throughput gain of around 3%.
       \item reason: the most test case assumptions in literature are beneficial
@@ -239,6 +226,7 @@ The processors do not support \gls{smt}.
 	data that is not in the cahce are counted as cache misses. Therefore, a
 	high miss rate is also an indicator of the heavy use of prefetching
 	hardware.'' (\cite{fedorova_managing_2010}).
+
       \item \cite{knauerhase_using_2008} use LLC-misses as predictor
 	for cache interference and attempt to keep the sum of cache
 	weights/LLC-misses of all running processes close to a medium value
@@ -253,6 +241,21 @@ The processors do not support \gls{smt}.
       \item fairness: give cache light tasks, that suffer a lot due to being
 	scheduled next to cache intensive tasks, bonus execution time.
       \item assumed independent jobs
+
+      \item \citetitle{banikazemi_pam_2008}: use real CMP system: 8 core two
+	socket IBM Blade
+      \item use symbiotic approach on CMP systems, less shared HW, no SMT
+      \item relies on Linux scheduler as default
+      \item only when better performing thread-to-core mapping is predicted, the
+	default scheduler is overruled for a defined count of scheduling-cycles
+      \item uses hardware performance counter evaluate and support decisions
+      \item goodness metric to rate the thread-core-mapping if not better than
+	last goodness rating of default scheduler, fall back to default
+	scheduler
+      \item mathematical model for the algorithm
+      \item measured parameters are cache occupancy ratio, cycles per
+	instruction, L1	and L2 miss ratio
+      \item compute performance estimation for selected plan
     \end{itemize}
 
   \item security relevance of shared resources
