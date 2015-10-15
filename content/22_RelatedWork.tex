@@ -152,17 +152,78 @@ time interval.
 Depending on the goodness value of the PAM mapping being better than the one of
 the default scheduler, PAM continues to enforce its mapping or falls back to
 default.
-Goodness can be performance, power or energy consumption.
+Goodness can be describing performance, power or energy consumption.
 
 The experiments ran on a dual socket, quad-core machine, where two cores
 share an L2 cache, making this a \gls{cmp} approach.
 The processor does not support \gls{smt}.
 Hence, the improvement gains stem not from symbiosis, but rather from
 congestion awareness.
+\\
 
-Besides \citeauthor{banikazemi_pam_2008} the topic of congestion in shared
-resources has been extensively researched in \cite{knauerhase_using_2008},
-\cite{fedorova_managing_2010}, and \cite{zhuravlev_survey_2012}.
+Reducing cache congestion was the main point in \cite{knauerhase_using_2008}.
+Like \citeauthor{banikazemi_pam_2008}, they worked on a \gls{cmp}-machine with
+two separated cache groups sharing an L2 cache.
+Similarly, they tried to spread memory intensive tasks as much as possible,
+to reduce interference in the shared cache.
+They introduce the metric called cache weight, which terms the \gls{llc}-cache
+misses per cycle for the last time interval.
+Their research showed, that longer histories worsen the prediction, as thread
+behaviour changes over time.
+To achieve the best possible spread of all threads across cache groups,
+\citeauthor{knauerhase_using_2008} balance the threads in the \gls{llc}-group
+based on the aggregate cache weight.
+New threads are assigned to the cache group with the lowest weight and only
+cache light tasks are migrated across group boundaries.
+However, to care for workload changes, an overweight thread is periodically
+migrated to the lightest \gls{llc}-group.
+Cache light threads suffer next to cache intensive threads, as they most likely
+start with a cold cache, each time they are scheduled.
+To compensate this, \citeauthor{knauerhase_using_2008} propse to transfer CPU
+time from the cache heavy to the suffering threads.
+This fairness compensation reduced the performance degradation of the most
+suffering thread to less than 1\%.
+\\
+
+
+But \gls{cmp} and \gls{smp} systems share more resources than just the cache.
+In \cite{fedorova_managing_2010}, \cite{zhuravlev_addressing_2010}, and
+\cite{zhuravlev_survey_2012} \citeauthor{fedorova_managing_2010} and
+\citeauthor{zhuravlev_addressing_2010} further investigate congestion on shared
+resources.
+Although their assumption in \cite{fedorova_managing_2010} was, that memory
+reuse patterns are the indicator of
+choice to predict cache interference between threads, their research lead to
+the conclusion that \gls{llc}-misses are superior.
+Memory reuse patterns model the access frequency of a memory area and the miss
+frequency for a particular application.
+This analysis has to be done off-line and assumes, that applications with high
+reuse and low miss rates, do not affect other applications negatively, but
+applications with low reuse and high miss rates are likely to trash the cache
+of others.
+To do this on-line the authors derived a metric called \emph{Pain}, which
+consists of two parts: sensitivity and intensity.
+The former describes how much an application suffers from sharing caches with
+others, the latter how much an application will hurt others.
+The pain application A feels when scheduled with B is the product of A's
+suffering and B's intensity.
+Vice versa for B.
+The sum of both describes the expected performance degradation for these two
+applications, when being scheduled together on the same \gls{llc}.
+To approximate sensitivity and intensity online they assumed cache miss and
+access rates would be a good measure, but it turned out only the cache miss
+rate is relevant.
+The memory reuse patterns only focus on the cache as shared resource.
+The cache miss rate on the other hand also predicts the load on prefetching
+hardware, memory controller and front side bus.
+Load on these shared resources showed to be the main reason for performance
+degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
+\\
+
+However, they all assumed only independent, non-interacting threads.
+\citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
+balancing technique explicitly assuming interacting, parallel applications.
+
 
 
 
