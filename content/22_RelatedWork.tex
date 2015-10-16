@@ -252,6 +252,25 @@ point improves overall application performance.
 \label{state:env}
 \todo{Fiasco.OC \& L4Re}
 
+\textbf{Fiasco.OC}
+\begin{itemize}
+  \item Kernel scheduler does no balancing, assigns thread to the first
+    core specified in the affinity descriptor
+  \item affinity descriptor: core(s) a thread should run on
+  \item Syscall via run\_thread() to pass affinity descr to kernel scheduler
+  \item interface to query execution time for each thread \todo{difference
+      between execution time and cycles? Cycles project changes in core speed
+      due to turbo boost or other mechanism}
+  \item	todo: Performance counters
+  \item capability system
+\end{itemize}
+
+\textbf{L4Re}
+\begin{itemize}
+  \item provides scheduler proxy interface, including affinity descriptor,
+    scheduling parameters
+\end{itemize}
+
 
 % -----------------------------------------------------------------------------
 
