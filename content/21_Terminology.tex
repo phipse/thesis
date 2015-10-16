@@ -11,7 +11,7 @@ used in later sections is ambiguous unknown.
 description={INTEL\textregistered{} Inc.} }
 
 % list of acronyms
-\newacronym{ht}{HT}{hyper-thread}
+\newacronym{ht}{HT}{hyper-threading}
 \newacronym{smt}{SMT}{simultaneous multi-threading}
 \newacronym{cmp}{CMP}{chip multiprocessor}
 \newacronym{smp}{SMP}{symmetric multiprocessor}
@@ -74,15 +74,18 @@ description={INTEL\textregistered{} Inc.} }
     The cores do not necessarily need to be on the same chip, nor do they need
     to be in the same machine.
 
-  \item[\Gls{ht}] Hyper-threading is a technique used by \gls{intel}, which
-    provides two hardware threads on one physical core.
-    The idea behind this technique is to improve the utilization of the
-    hardware resources, by multiplexing two threads.
-    To a \Gls{ht} is referred to as a logical core.
-    \todo{Elaborate, less detailed}
+  \item[\Gls{smt}] \gls{smt} is a technique to multiplex several hardware
+    threads on the same physical core.
+    Thus, sharing all the cores resources (ALU, FP units, caches, prefetcher,
+    etc.) among the core's hardware threads.
+    The goal is to improve the utilization of the core, by increasing the
+    available instructions and, hence, the possibility that each computation
+    unit is utilized.
+    This transfers thread level parallelism to instruction level parallelism.
+    A \gls{smt}-thread is referenced as logical core or hardware thread.
 
-  \item[\Gls{smt}] \gls{smt} is the general term for techniques making use of
-    several hardware threads on one physical core.
+  \item[\Gls{ht}] \gls{ht} is the \gls{intel}-specific implementation of the
+    \gls{smt}-concept.
 
   \item[\Gls{cmp}] \gls{cmp} is a category of processor architectures, where
     the CPU consists of two equal CPU chips soldered together on one die.
