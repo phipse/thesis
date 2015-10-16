@@ -200,7 +200,7 @@ suffering and B's intensity.
 Vice versa for B.
 The sum of both describes the expected performance degradation for these two
 applications, when being scheduled together on the same \gls{llc}.
-To approximate sensitivity and intensity online they assumed cache miss and
+To approximate sensitivity and intensity on-line they assumed cache miss and
 access rates would be a good measure, but it turned out only the cache miss
 rate is relevant.
 The memory reuse patterns only focus on the cache as shared resource.
@@ -285,18 +285,11 @@ point improves overall application performance.
   \item User level scheduling on a $µ$-kernel. But user level scheduling was
     done before.
   \item More scheduling parameters \textit{or} less assumptions about threads.
-  \item No offline measurements, only online information gathering.
+  \item No off-line measurements, only on-line information gathering.
   \item Thread interaction possible (communication partner, security flag)
   \item Designated cores for security critical applications.
 \end{itemize}
 
-keywords:
-online
-load balancing
-thread-to-core-mapping
-meta-scheduler
-user-land
-on a $µ$-kernel
 
 
 % -----------------------------------------------------------------------------
@@ -573,9 +566,9 @@ communication;
 \begin{itemize}
   \item LLC miss rate of threads \textit{vs.} memory-reuse pattern
   \item more arguments for mem-reuse pattern
-  \item cache sensitivit and intensity of threads --> Pain metric (offline)
+  \item cache sensitivit and intensity of threads --> Pain metric (off-line)
   \item cache-miss and cache-access rate
-  \item online metric to approximate pain metric -> approx-pain
+  \item on-line metric to approximate pain metric -> approx-pain
   \item approx-pain uses perfcounters to measure LLC-miss-rate, as this showed
     to be the best predictor for sensitivity and intensity
   \item LLC-miss-rate predicts contention in other shared hardware
