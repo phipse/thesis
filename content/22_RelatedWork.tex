@@ -140,7 +140,7 @@ SMT-packages.
 
 \citeauthor{banikazemi_pam_2008} present a study concerning thread-to-core
 mappings on partially symmetric multicores.
-In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
+In \cite{banikazemi_pam_2008} they present \emph{PAM}: a performance/power-aware
 meta-scheduler, working on top of the default Linux scheduler.
 While the default scheduler runs, PAM gathers information via performance
 counters on cache occupancy, cycles per instruction, and the miss ratio of L1
@@ -223,7 +223,40 @@ degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 However, they all assumed only independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming interacting, parallel applications.
+They propose a technique called \emph{speed balancing} with a notion for fast
+and slow cores.
+They assume an oversubscribed environment, where the number of runable threads
+is greater than the number of cores.
+Fast and slow cores are determined by run queue length.
+Thread progress is slower on longer queues, hence, slow cores are cores with a
+longer run queue.
+The term speed is defined as the relation of execution time per elapsed wall
+clock time.
+The speed of each thread determins, if it is running on a fast or a slow core.
+The algorithm presented by \citeauthor{hofmeyr_load_2010} runs one thread per
+core producing a speed measure for each thread and the core respectivly.
+To compare core speeds, a global average core speed is computed.
+To provide equal progress oportunities, each thread needs to run on a fast
+core at least once.
+Hence, the balancing thread on a fast core searches for a suitable thread to
+migrate from a slow core and pull it to its local core.
+Thereby, the balancing thread tries to migrate the least migrated thread to
+avoid constant migration of the same thread.
 
+The parallel application model the authors assume consists of one application
+spawning several worker threads, where a computation interval is followed by a
+communication barrier.
+Their implementation takes this application as input, executes it and provide
+equal progress to each thread.
+They do neither model communication between unrelated tasks in a client-server
+notion, nor at arbitrary points in time.
+Hence, reducing the time the slowest thread needs to reach the synchronization
+point improves overall application performance.
+
+
+
+\todo{linux cfs scheduler}
+\todo{Fiasco.OC \& L4Re}
 
 
 
@@ -398,10 +431,12 @@ intervall;
 matrix;
 
 \paragraph{ \cite{hofmeyr_load_2010} }
+evenly distributed run\_queues are assumed, slow cores are cores with longer
+queues than others.
 
 \textbf{relevant} notion of speed of a processor: $speed = t_{exec}/t_{real}$;
 sched\_setaffinity to migrate threads; PIDs of all the threads of a task;
-core speed computation and coparison algorithm;
+core speed computation and comparison algorithm;
 distributed balancing thread with global synchronization;
 assumptions \& drawbacks of kernel level load balancing;
 in oversubscibed environments balance trumps locality;
@@ -611,7 +646,7 @@ accesses);
 % -----------------------------------------------------------------------------
 
 
-\section{Assumptions}
+\section{Assumptions \& Goals}
 \todo{This should be part of design!}
 The mentioned research leads to the following assumptions for this work:
 
