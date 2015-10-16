@@ -19,16 +19,6 @@ Also research focusing on heterogeneous or multi-ISA architectures, e.g.
 %e.g. observation of cache coherency traffic proposed in
 %\cite{cruz_dynamic_2014}.
 
-\begin{comment}
-  Structure for the description of related work:
-    * Assumptions
-    * Concept
-    * Relevant contribution
-    * Result
-    * Deficits
-
-  Alternative: aspects of the thesis in related work;
-\end{comment}
 
 In literature, different approaches to load balancing on a multicore have been
 explored.
@@ -220,7 +210,7 @@ Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \\
 
-However, they all assumed only independent, non-interacting threads.
+However, they all assumed independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming interacting, parallel applications.
 They propose a technique called \emph{speed balancing} with a notion for fast
@@ -253,13 +243,44 @@ notion, nor at arbitrary points in time.
 Hence, reducing the time the slowest thread needs to reach the synchronization
 point improves overall application performance.
 
-
-
 \todo{linux cfs scheduler}
+
+
+% -----------------------------------------------------------------------------
+
+\section{Fiasco.OC \& L4Re}
+\label{sec:env}
 \todo{Fiasco.OC \& L4Re}
 
 
+% -----------------------------------------------------------------------------
 
+\section{Contribution}
+\label{sec:contr}
+
+
+\begin{itemize}
+  \item Current processor architectures don't use CMP processors any more, therefore
+    the cache layout is different. My work evaluates the research results on the
+    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
+  \item User level scheduling on a $µ$-kernel. But user level scheduling was
+    done before.
+  \item More scheduling parameters \textit{or} less assumptions about threads.
+  \item No offline measurements, only online information gathering.
+  \item Thread interaction possible (communication partner, security flag)
+  \item Designated cores for security critical applications.
+\end{itemize}
+
+keywords:
+online
+load balancing
+thread-to-core-mapping
+meta-scheduler
+user-land
+on a $µ$-kernel
+
+
+% -----------------------------------------------------------------------------
 
 \begin{comment}
 \begin{itemize}
@@ -642,47 +663,7 @@ benchmarking process;
 \textbf{relevant} bottlenecks, metrics, sched policies (IPC \& memory bus
 accesses);
 
-\end{comment}
-% -----------------------------------------------------------------------------
-
-
-\section{Assumptions \& Goals}
-\todo{This should be part of design!}
-The mentioned research leads to the following assumptions for this work:
-
-
-\begin{description}
-  \item[Hardware]
-  \item[Job types]
-  \item[Job type distribution]
-  \item[knowledge of execution time]
-  \item[Energy efficency] In case of overload equal to performance algorithm
-
-\end{description}
-
-keywords:
-online
-load balancing
-thread-to-core-mapping
-meta-scheduler
-user-land
-on a $µ$-kernel
 
 \paragraph{Tradeoff Table}
-thread bahaviour history over several intervalls
-\textbf{vs.}
-thread behaviour only in last intervall
 
-
-\paragraph{Contributions}
-\begin{itemize}
-  \item Current processor architectures don't use CMP processors any more, therefore
-    the cache layout is different. My work evaluates the research results on the
-    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
-  \item User level scheduling on a $µ$-kernel. But user level scheduling was
-    done before.
-  \item More scheduling parameters \textit{or} less assumptions about threads.
-  \item No offline measurements, only online information gathering.
-  \item Thread interaction possible (communication partner, security flag)
-  \item Designated cores for security critical applications.
-\end{itemize}
+\end{comment}
