@@ -291,6 +291,36 @@ point improves overall application performance.
 \end{itemize}
 
 
+% -----------------------------------------------------------------------------
+
+\section{\gls{intel} Haswell Architecture}
+\label{state:haswell}
+
+\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
+
+\includegraphics[width=0.8\textwidth]{images/haswell_core_layout}
+
+
+\begin{itemize}
+  \item diagram of architecture: four cores with L1I/D \& L2 cache; two smt/ht
+    cores per physical core; L3 cache shared and sliced, ring buffer for
+    access; mem controler in uncore package;
+  \item 4 prefetcher per cache; 2 for L1D, 2 for L2 cache
+  \item L1D \& L2 cache data is present in L3 cache to be able to redirect
+    requests from other cores to the correct cache. --> Issue with security; no
+    cache side attack surface reduction
+  \item IF security: dual socket system with one core dedicated to security
+    tasks for an interval
+  \item L3 cache slices corespond to number of cores
+  \item logic portion and data array portion; access, coherency, memory
+    ordering, LLC misses, writeback to memory; cache lines
+  \item hash function uniformly distributes addresses
+  \item access times to L3 cache varies depending on travel distance on the
+    bi-directional ring buffer
+  \item system agent receives memory requests not serviced by cache and
+    redirects to IMC
+\end{itemize}
+
 
 % -----------------------------------------------------------------------------
 
