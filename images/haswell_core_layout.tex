@@ -1,6 +1,7 @@
 \documentclass{standalone}
 
 \usepackage{tikz}
+\usepackage{verbatim}
 
 \usetikzlibrary{arrows}
 \usetikzlibrary{calc}
@@ -13,9 +14,9 @@
 
   % Colors
   % Styles
-  \tikzstyle{package_style} = 
+  \tikzstyle{package_style} =
     [font=\normalsize, text top left, text width=2cm, draw=black, shape=rectangle, inner sep = 1pt]
-  \tikzstyle{thread_style} = 
+  \tikzstyle{thread_style} =
     [font=\normalsize, text centered, text width=2cm, draw=black,
     shape=rectangle, inner sep = 3pt, minimum width = 1cm, minimum height =.5cm]
 
@@ -30,6 +31,7 @@
   % Drawing
 
   % First core
+  \begin{scope}
     \node(l2)	[l2_cache_shape] {L2--Cache};
     \node(l1i)  [l1_cache_shape, above of=l2, anchor=south east] {L1I--Cache};
     \node(l1d)  [l1_cache_shape, above of=l2, anchor=south west] {L1D--Cache};
@@ -46,20 +48,89 @@
     (nwc.north west) -- cycle;
 
     \node(core0) [anchor=north west] at (nwc.south east) {Core 0};
-
-    \node(smt_id) [id_style, anchor=east, xshift=-7mm] at (t0.west) {SMT\_ID};
-    \draw[transparent] (smt_id.north) |- coordinate[midway](corner) (core0.west);
-    \node(core_id) [id_style] at (corner) {Core\_ID};
-  
+  \end{scope}
 
     \draw[transparent] (core0.north west) -- ++(0,5mm) coordinate(pid);
-    \node(pack0) [rectangle, draw=none, anchor=west] at (pid) {Package 0};
-    
+    \node(pack0) [rectangle, draw=none, anchor=west, xshift=-3mm] at (pid) {Package 0};
+
+%    \draw (-1.4cm,2.0cm) -- ++(0,-4.5cm) -- ++(5.5cm,0) -- ++(0,4.5cm) -- cycle;
+    \draw (-1.4cm,2.0cm) -- ++(0,-2.5cm) -- ++(5.5cm,0) -- ++(0,2.5cm) -- cycle;
+
+
+    \node(smt_id) [id_style, anchor=east, xshift=-11mm] at (t0.west) {SMT\_ID};
+    \draw[transparent] (smt_id.north) |- coordinate[midway](corner) (core0.west);
+    \node(core_id) [id_style] at (corner) {Core\_ID};
+
     \draw[transparent] (core_id.north) |- coordinate[midway](pidc) (pid);
     \node(package_id) [id_style] at (pidc) {Package\_ID};
+
+    \draw[transparent] (smt_id.south) |- coordinate[midway](cidc) (l1i.west);
+    \node(cid) [id_style] at (cidc) {L1--Cache\_ID};
+
+    \draw[transparent] (smt_id.south) |- coordinate[midway](cidc2) (l2.west);
+    \node(cid2) [id_style] at (cidc2) {L2--Cache\_ID};
+
   % Second core
+  \begin{scope}[xshift=2.7cm]
+    \node(1l2)	[l2_cache_shape] {L2--Cache};
+    \node(1l1i)  [l1_cache_shape, above of=1l2, anchor=south east] {L1I--Cache};
+    \node(1l1d)  [l1_cache_shape, above of=1l2, anchor=south west] {L1D--Cache};
 
+    \node(1t0)	[thread_shape, above of=1l1i, anchor=south] {T 2};
+    \node(1t1)	[thread_shape, above of=1l1d, anchor=south] {T 3};
 
+    \draw [transparent] (1l2.south west) -- ++(-1mm,-1mm) node(1swc) {};
+    \draw [transparent] (1l2.south east) -- ++(1mm,-1mm) node(1sec) {};
+    \draw [transparent] (1t1.north east) -- ++(1mm,5mm) node(1nec) {};
+    \draw [transparent] (1t0.north west) -- ++(-1mm,5mm) node(1nwc) {};
+
+    \draw[black] (1swc.south west) -- (1sec.south east) -- (1nec.north east) --
+    (1nwc.north west) -- cycle;
+
+    \node(core1) [anchor=north west] at (1nwc.south east) {Core 1};
+  \end{scope}
+
+\begin{comment}
+  % Third core
+  \begin{scope}[yshift=-1.9cm]
+    \node(2l2)	[l2_cache_shape] {L2--Cache};
+    \node(2l1i)  [l1_cache_shape, above of=2l2, anchor=south east] {L1I--Cache};
+    \node(2l1d)  [l1_cache_shape, above of=2l2, anchor=south west] {L1D--Cache};
+
+    \node(2t0)	[thread_shape, above of=2l1i, anchor=south] {T 4};
+    \node(2t1)	[thread_shape, above of=2l1d, anchor=south] {T 5};
+
+    \draw [transparent] (2l2.south west) -- ++(-1mm,-1mm) node(2swc) {};
+    \draw [transparent] (2l2.south east) -- ++(1mm,-1mm) node(2sec) {};
+    \draw [transparent] (2t1.north east) -- ++(1mm,5mm) node(2nec) {};
+    \draw [transparent] (2t0.north west) -- ++(-1mm,5mm) node(2nwc) {};
+
+    \draw[black] (2swc.south west) -- (2sec.south east) -- (2nec.north east) --
+    (2nwc.north west) -- cycle;
+
+    \node(core2) [anchor=north west] at (2nwc.south east) {Core 2};
+  \end{scope}
+
+  % Fourth core
+  \begin{scope}[xshift=2.7cm, yshift=-1.9cm]
+    \node(3l2)	[l2_cache_shape] {L2--Cache};
+    \node(3l1i)  [l1_cache_shape, above of=3l2, anchor=south east] {L1I--Cache};
+    \node(3l1d)  [l1_cache_shape, above of=3l2, anchor=south west] {L1D--Cache};
+
+    \node(3t0)	[thread_shape, above of=3l1i, anchor=south] {T 6};
+    \node(3t1)	[thread_shape, above of=3l1d, anchor=south] {T 7};
+
+    \draw [transparent] (3l2.south west) -- ++(-1mm,-1mm) node(3swc) {};
+    \draw [transparent] (3l2.south east) -- ++(1mm,-1mm) node(3sec) {};
+    \draw [transparent] (3t1.north east) -- ++(1mm,5mm) node(3nec) {};
+    \draw [transparent] (3t0.north west) -- ++(-1mm,5mm) node(3nwc) {};
+
+    \draw[black] (3swc.south west) -- (3sec.south east) -- (3nec.north east) --
+    (3nwc.north west) -- cycle;
+
+    \node(core3) [anchor=north west] at (3nwc.south east) {Core 3};
+  \end{scope}
+  \end{comment}
 \end{tikzpicture}
 
 \end{document}
