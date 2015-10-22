@@ -274,25 +274,6 @@ point improves overall application performance.
 
 % -----------------------------------------------------------------------------
 
-\section{Contribution}
-\label{state:contr}
-
-
-\begin{itemize}
-  \item Current processor architectures don't use CMP processors any more, therefore
-    the cache layout is different. My work evaluates the research results on the
-    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
-  \item User level scheduling on a $µ$-kernel. But user level scheduling was
-    done before.
-  \item More scheduling parameters \textit{or} less assumptions about threads.
-  \item No off-line measurements, only on-line information gathering.
-  \item Thread interaction possible (communication partner, security flag)
-  \item Designated cores for security critical applications.
-\end{itemize}
-
-
-% -----------------------------------------------------------------------------
-
 \section{\gls{intel} Haswell Architecture}
 \label{state:haswell}
 
@@ -336,6 +317,25 @@ On a multicore, only observing the \gls{llc}, other running applications will
 disturb the observations, effectivly reducing the side channel throughput.
 \todo{This should be part of the architecture chapter, as the security core
 idea wasn't presented yet.}
+
+% -----------------------------------------------------------------------------
+
+\section{Contribution}
+\label{state:contr}
+
+
+\begin{itemize}
+  \item Current processor architectures don't use CMP processors any more, therefore
+    the cache layout is different. My work evaluates the research results on the
+    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
+  \item User level scheduling on a $µ$-kernel. But user level scheduling was
+    done before.
+  \item More scheduling parameters \textit{or} less assumptions about threads.
+  \item No off-line measurements, only on-line information gathering.
+  \item Thread interaction possible (communication partner, security flag)
+  \item Designated cores for security critical applications.
+\end{itemize}
+
 
 % -----------------------------------------------------------------------------
 
