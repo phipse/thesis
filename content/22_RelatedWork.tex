@@ -313,8 +313,9 @@ cache lines correspond to the L1D \& L2 cache of the ``security core''.
 Attacks presented in \cite{yarom_recovering_2014} and
 \cite{bernstein_cache-timing_2005} rely on the fact, that only one application
 is using cache lines on the core.
-On a multicore, only observing the \gls{llc}, other running applications will
-disturb the observations, effectivly reducing the side channel throughput.
+On a multicore, only observing the \gls{llc}, other running applications are
+expected to disturb the observations, effectivly reducing the side channel
+throughput.
 \todo{This should be part of the architecture chapter, as the security core
 idea wasn't presented yet.}
 
