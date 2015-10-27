@@ -6,9 +6,20 @@ the microkernel environment mentioned in \ref{state:env} lead to the following
 assumptions:
 
 \begin{description}
+  \item[interacting threads]
   \item[Thread groups]
-  \item[Performance]
-  \item[Energy efficency] In case of overload equal to performance algorithm
+  \item[security core concept] think someone about real time
+  \item[thread priority levels]
+  \item[priority guarantees] accross core boundaries at placement time?
+    options: one prio bin on one core; RR on all cores by prio bin; high prio
+    first, place depending on LLC miss rate || exec time accounting?
+  \item[]
+  \item[partially symmetric multicore processor]
+  \item[fixed architecture] Haswell with HT en-/disabled
+  \item[Performance] thread placement algorithm using hardware topology and
+    thread behaviour information
+  \item[Energy efficency] In case of overload equal to performance algorithm,
+    otherwise, race to idle, typical: race to idle is best
 \end{description}
 
 
