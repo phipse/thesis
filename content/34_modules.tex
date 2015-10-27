@@ -67,11 +67,13 @@
   \paragraph{Minimize migration pseudo-code}
   \begin{verbatim}
   sort all threads by LLC-miss
-  sliding window size #cores  || threads with less than 5% LLC miss difference
+  sliding window size #threads with less than 5% LLC miss difference
   if at least 2 threads in the current window are migrated
-    if two threads are swaping cores &&
-       the LLC-miss-rate difference is smaller than 5% (upper bound to be determined)
+    if two threads are swaping cores
       don't do the migration
+    ALTERNATIVELY
+    if the from-core-to-core-matrix has entries on opposing fields
+      swap the to-values of both entries
   \end{verbatim}
 
 \subsection{Enforce}
