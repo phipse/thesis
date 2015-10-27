@@ -3,6 +3,8 @@
 
 \subsection{Hardware performance monitoring}
 
+* Thread description as central data storage
+
 \subsection{Analyse}
   \paragraph{Hardware}
     * Use dedicated hardware --> hardware analysis future work
@@ -10,18 +12,67 @@
 
   \paragraph{Measurement}
     * Measure the load on each core during a time interval \textbf{TI};
+    * measure LLC misses during last \textbf{TI};
 
 
 \subsection{Predict}
 
   * Predict load on each core for the next time intervall;
-    * IF thread {A, B, \ldots} is migrated to core {1,2,3,4};
+    * IF thread {A, B, \ldots} is migrated to core {0,1,2,3};
 
 
 \subsection{Decide}
 
-  * Decide on a thread distribution to cores, based on predicitons;
+  * Decide on a thread distribution to cores, based on predictions;
+  \subsubsection{Placement Generator}
 
+  \paragraph{Pseudo-code of placement algorithm}
+  \begin{verbatim}
+  from all threads:
+    select #core highest LLC miss rate
+    select #core highest exec-time
+    intersection of both are critical threads
+    if threads placed on different cores
+      then do nothing
+    else
+      move higher LLC miss rate thread to other core
+    do accounting
+
+  forall threads left do:
+    bin by priority levels
+    sort each bin by miss rate
+
+  forall prio-bin in prio-bin-list do:
+    while threads in prio-bin
+      dequeue highest miss rate
+      sort cores by lowest accounted miss rate
+      place max(#core, #threads left in bin) threads RR on cores;
+  \end{verbatim}
+
+  \paragraph{\gls{smt} abstraction code}
+  \begin{verbatim}
+  if SMT is enabled
+    sort threads once by exec time and once by LLC miss
+    while duplication:
+      look at next LLC-miss thread and dequeue it from exec-time
+      look at next exec-miss thread and dequeue it from LLC-miss
+
+    while threads unassigned && queue not empty:
+      dequeue one thread from LLC miss list for SMT#0
+      dequeue one thread from LLC-miss list for SMT#1
+      dequeue one thread from exe-time list for SMT#0
+      dequeue one thread form exec-time list for SMT#1
+  \end{verbatim}
+
+  \paragraph{Minimize migration pseudo-code}
+  \begin{verbatim}
+  sort all threads by LLC-miss
+  sliding window size #cores  || threads with less than 5% LLC miss difference
+  if at least 2 threads in the current window are migrated
+    if two threads are swaping cores &&
+       the LLC-miss-rate difference is smaller than 5% (upper bound to be determined)
+      don't do the migration
+  \end{verbatim}
 
 \subsection{Enforce}
 
