@@ -5,25 +5,31 @@
 
 * Thread description as central data storage
 
+% ----------------------------------------------------------------------------
+
 \subsection{Analyse}
   \paragraph{Hardware}
-    * Use dedicated hardware --> hardware analysis future work
+    * Use dedicated hardware --> hardware analysis future work \\
     * Haswell: per core: L1 \& L2 cache; shared L3 cache between all cores
 
   \paragraph{Measurement}
-    * Measure the load on each core during a time interval \textbf{TI};
+    * Measure the load on each core during a time interval \textbf{TI}; \\
     * measure LLC misses during last \textbf{TI};
 
 
+% ----------------------------------------------------------------------------
+
 \subsection{Predict}
 
-  * Predict load on each core for the next time intervall;
-    * IF thread {A, B, \ldots} is migrated to core {0,1,2,3};
+  * Predict load and LLC misses of each thread for the next time intervall; \\
 
+
+% ----------------------------------------------------------------------------
 
 \subsection{Decide}
 
   * Decide on a thread distribution to cores, based on predictions;
+
   \subsubsection{Placement Generator}
 
   \paragraph{Pseudo-code of placement algorithm}
@@ -75,6 +81,9 @@
     if the from-core-to-core-matrix has entries on opposing fields
       swap the to-values of both entries
   \end{verbatim}
+
+
+% ----------------------------------------------------------------------------
 
 \subsection{Enforce}
 
