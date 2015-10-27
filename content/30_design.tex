@@ -46,24 +46,22 @@ E.g. hardware performance counters,
 usage of time during the last epoch,
 \ldots{}.
 
-Uncategorized: dataspace sharing, can I even get this info?
-IPC - if the kernel sets up an identification mechanism which threads talk to
-each other and makes this list accessible via syscall, this would be a security
-risk, as the capabilities abstract from that for a reason.
-Can the communication be predicted by behaviour/side-channel?
-Can \gls{intel}'s hardware performance counters do that?
+Uncategorized: shared memory/dataspace sharing, can I even get this info?
+IPC: let the threads pass a cap list of frequent comm partners:
 
 \paragraph{Minimal Design}
 The load balancing service must maintain its own representation for all threads
 in the system and also for the hardware configuration, to be able to place
 threads on different cores.
 After initialization, where the service should query the kernel scheduler to
-set up its data structures, it has to replace the Schduler capability, to
+set up its data structures, it has to replace the Scheduler capability, to
 transparently intervene in the scheduling process.
-Hence, the service has to implement the L4\dots{}Scheduler Protokol.
+Hence, the service has to implement the L4\dots{}Scheduler Protocol.
 However, newly created threads are started by calling
 \begin{verbatim}
-L4::Env::env()->Scheduler()->run_thread(L4::Cap<L4::Thread>, l4_sched_param_t);
+L4::Env::env()->Scheduler()->run_thread(
+	      L4::Cap<L4::Thread>,
+	      l4_sched_param_t);
 \end{verbatim}
 So the Scheduler-Cap in Env needs to be the capability of the load balancing
 service.
