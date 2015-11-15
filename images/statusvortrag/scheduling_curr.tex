@@ -1,0 +1,107 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{verbatim}
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=2.5cm]
+
+  % Colors
+  % Styles
+  \tikzstyle{defaultRec} = [font=\small, text centered, inner sep = 1pt,
+    draw=black, shape=rectangle, fill=white, minimum height = .5cm];
+  \tikzstyle{smallJob} = [defaultRec, minimum width = .5cm, anchor=west];
+  \tikzstyle{largeJob} = [defaultRec, minimum width = 1.3cm, anchor=west];
+
+  \tikzstyle{defaultCirc} = [font=\small, text centered, inner sep = 1pt,
+    draw=none, shape=circle];
+  \tikzstyle{core} = [defaultCirc, minimum width = 1cm];
+  
+  \tikzstyle{timeArrow} = [->, thin, black];
+
+% Drawing
+
+  % Run Queue balancing
+  \begin{scope}
+    \draw[timeArrow] (0,0) -- (7.5,0);
+    \foreach \x in {1,...,7} 
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
+    \foreach \x in {1,...,7} 
+    \node[draw=none] at (\x cm, -.4cm) {\x};
+    \foreach \x in {1,...,7} 
+    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,3cm);
+
+    \draw[thin, black] (0,0) -- (0,3);
+
+    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, 1) {C0};
+    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, 2) {C1};
+
+    %core 1
+    \node[largeJob] at (1,2) {B};
+    \node[largeJob] at (2.4,2) {B};
+    \node[smallJob] at (3.8,2) {A};
+
+    %core 0
+    \node[smallJob] at (1,1) {A};
+    \node[smallJob] at (1.6,1) {A};
+    \node[smallJob] at (2.2,1) {A};
+  \end{scope}
+
+  % balanced by time usage
+  \begin{scope} [xshift = 10cm]
+    \draw[timeArrow] (0,0) -- (7.5,0);
+    \foreach \x in {1,...,7} 
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
+    \foreach \x in {1,...,7} 
+    \node[draw=none] at (\x cm, -.4cm) {\x};
+    \foreach \x in {1,...,7} 
+    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,3cm);
+
+    \draw[thin, black] (0,0) -- (0,3);
+
+    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, 1) {C0};
+    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, 2) {C1};
+    
+    %core 1
+    \node[largeJob] at (1,2) {B};
+    \node[smallJob] at (2.4,2) {A};
+    \node[smallJob] at (3,2) {A};
+
+    % core 0
+    \node[smallJob] at (1,1) {A};
+    \node[smallJob] at (1.6,1) {A};
+    \node[largeJob] at (2.2,1) {B};
+  \end{scope}
+
+  % Fiasco default
+  \begin{scope} [yshift = -5cm]
+    \draw[timeArrow] (0,0) -- (7.5,0);
+    \foreach \x in {1,...,7} 
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
+    \foreach \x in {1,...,7} 
+    \node[draw=none] at (\x cm, -.4cm) {\x};
+    \foreach \x in {1,...,7} 
+    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,3cm);
+
+    \draw[thin, black] (0,0) -- (0,3);
+
+    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, 1) {C0};
+    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, 2) {C1};
+    
+    %core 1
+    \node[largeJob] at (1,1) {B};
+    \node[smallJob] at (2.4,1) {A};
+    \node[largeJob] at (3,1) {B};
+    \node[smallJob] at (4.4,1) {A};
+    \node[smallJob] at (5,1) {A};
+    \node[smallJob] at (5.6,1) {A};
+
+    % core 0
+  \end{scope}
+\end{tikzpicture}
+
+\end{document}
