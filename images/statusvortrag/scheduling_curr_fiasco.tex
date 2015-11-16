@@ -1,0 +1,62 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{verbatim}
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  % Colors
+  % Styles
+  \tikzstyle{defaultRec} = [font=\small, text centered, inner sep = 1pt,
+    draw=black, shape=rectangle, fill=white, minimum height = .5cm];
+  \tikzstyle{smallJob} = [defaultRec, minimum width = .5cm, anchor=west];
+  \tikzstyle{largeJob} = [defaultRec, minimum width = 1.3cm, anchor=west];
+
+  \tikzstyle{defaultCirc} = [font=\small, text centered, inner sep = 1pt,
+    draw=none, shape=circle];
+  \tikzstyle{core} = [defaultCirc, minimum width = 1cm];
+  
+  \tikzstyle{timeArrow} = [->, thin, black];
+
+  % Variables
+  \newcommand\Ymax{3};
+  \newcommand\Xmax{7};
+  \newcommand\fstLvl{1};
+  \newcommand\sndLvl{2};
+
+% Drawing
+
+  % Fiasco default
+  \begin{scope} []
+    \draw[timeArrow] (0,0) -- (7.5,0);
+    \foreach \x in {0,...,\Xmax} 
+    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
+    \foreach \x in {0,...,\Xmax} 
+    \node[draw=none] at (\x cm, -.4cm) {\x};
+    \foreach \x in {1,...,\Xmax} 
+    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,\Ymax cm);
+
+    \draw[thin, black] (0,0) -- (0,\Ymax);
+
+    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, \fstLvl) {C0};
+    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, \sndLvl) {C1};
+    
+    %core 1
+    \node[largeJob] at (1,\fstLvl) {B};
+    \node[smallJob] at (2.4,\fstLvl) {A};
+    \node[largeJob] at (3,\fstLvl) {B};
+    \node[smallJob] at (4.4,\fstLvl) {A};
+    \node[smallJob] at (5,\fstLvl) {A};
+    \node[smallJob] at (5.6,\fstLvl) {A};
+
+    % core 0
+  \end{scope}
+
+\end{tikzpicture}
+
+\end{document}

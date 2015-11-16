@@ -1,0 +1,124 @@
+% vi:ft=tex
+\documentclass[utf8,10pt]{beamer}
+
+\usepackage[english]{babel}
+\usepackage{etex}
+\usepackage{pgf}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{standalone}
+\usepackage{enumitem}
+\usepackage[bitstream-charter]{mathdesign}
+\usepackage{berasans}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{ragged2e}
+
+\usetikzlibrary{arrows, shapes, positioning, trees,calc,intersections}
+\mode<presentation>
+
+% 45 degree rotated column descriptor
+\usepackage{adjustbox}
+\usepackage{array}
+
+\usetheme[noheader,smallrightmargin,smallleftmargin,nosectionnum,heavyfont]{tud}
+
+\setbeamertemplate{footnote}
+{
+  %\scriptsize
+  \tiny
+  \noindent%
+  \insertfootnotemark~\insertfootnotetext
+}
+
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{itemize items}[triangle]
+
+\title[]{Multicore Load Balancing based on behaviour observation}
+
+\author{Philipp Eppelt}
+
+\date{20.11.2015}
+\datecity{Dresden}
+
+\einrichtung{Fakultaet Informatik}
+\institut{Institut fuer Systemarchitektur}
+\professur{Lehrstuhl fuer Betriebssysteme}
+
+
+\begin{document}
+
+\maketitle
+
+\large
+
+\newcommand{\ft}[1]{\frametitle{\hfill #1}}
+
+% motivation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{fiasco does no balancing \& \\ run-queue balancing disregards
+  item size}
+  \centering
+  \begin{minipage}[l]{.49\columnwidth}
+    \includestandalone[width=\columnwidth]{./scheduling_curr_fiasco}
+  \end{minipage}
+  \begin{minipage}[r]{.49\columnwidth}
+    \includestandalone[width=\columnwidth]{./scheduling_curr_rq}
+  \end{minipage}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{observe and consider \\ thread's time \& cache usage}
+  \centering
+  \begin{minipage}[l]{.49\columnwidth}
+    \includestandalone[width=\columnwidth]{./scheduling_curr_bal_time}
+  \end{minipage}
+  \begin{minipage}[r]{.49\columnwidth}
+    \includestandalone[width=\columnwidth]{./scheduling_curr_bal_cache}
+  \end{minipage}
+\end{frame}
+
+
+\begin{frame}
+  \centering
+  What else can we do with a thread balancer?
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{isolation \\of real-time and security critical threads}
+
+  \begin{itemize}
+    \item full isolation depends on HW architecture
+    \item real-time or security core
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{deterministic \\execution times of equal thread sets}
+  \begin{itemize}
+    \item same thread set should have a low variance in execution time
+  \end{itemize}
+\end{frame}
+
+
+% state of the art
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SMT
+% cache observation
+% communication
+
+% service architecture 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

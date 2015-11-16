@@ -13,9 +13,10 @@
   % Colors
   % Styles
   \tikzstyle{defaultRec} = [font=\small, text centered, inner sep = 1pt,
-    draw=black, shape=rectangle, fill=white, minimum height = .5cm, anchor=west];
-  \tikzstyle{smallJob} = [defaultRec, minimum width = .5cm];
-  \tikzstyle{largeJob} = [defaultRec, minimum width = 1.3cm];
+    draw=black, shape=rectangle, fill=white, minimum height = .5cm];
+  \tikzstyle{smallJob} = [defaultRec, minimum width = .5cm, anchor=west];
+  \tikzstyle{largeJob} = [defaultRec, minimum width = 1.3cm, anchor=west];
+  \tikzstyle{cacheHeavyJob} = [defaultRec, minimum width = , anchor=west];
 
   \tikzstyle{defaultCirc} = [font=\small, text centered, inner sep = 1pt,
     draw=none, shape=circle];
@@ -36,7 +37,7 @@
   \begin{scope}
     \draw[timeArrow] (0,0) -- (7.5,0);
     \foreach \x in {0,...,\Xmax} 
-    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
     \foreach \x in {0,...,\Xmax} 
     \node[draw=none] at (\x cm, -.4cm) {\x};
     \foreach \x in {1,...,\Xmax} 
@@ -62,7 +63,7 @@
   \begin{scope} [xshift = 10cm]
     \draw[timeArrow] (0,0) -- (7.5,0);
     \foreach \x in {0,...,\Xmax} 
-    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
     \foreach \x in {0,...,\Xmax} 
     \node[draw=none] at (\x cm, -.4cm) {\x};
     \foreach \x in {1,...,\Xmax} 
@@ -88,7 +89,7 @@
   \begin{scope} [yshift = -5cm]
     \draw[timeArrow] (0,0) -- (7.5,0);
     \foreach \x in {0,...,\Xmax} 
-    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
+    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
     \foreach \x in {0,...,\Xmax} 
     \node[draw=none] at (\x cm, -.4cm) {\x};
     \foreach \x in {1,...,\Xmax} 
@@ -111,35 +112,30 @@
   \end{scope}
   
   % balanced by cache usage
-  \begin{scope} [xshift = 10cm, yshift = -5cm]
-    \tikzstyle{smallJobCache} = [defaultRec, minimum width = .5cm, minimum height =
-    1cm];
-    \tikzstyle{mediumJob} = [defaultRec, minimum width = .8cm, minimum height =
-    .7cm];
-
-    \draw[timeArrow] (0,0) -- (7.5,0);
-    \foreach \x in {0,...,\Xmax} 
-    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
-    \foreach \x in {0,...,\Xmax} 
-    \node[draw=none] at (\x cm, -.4cm) {\x};
-    \foreach \x in {1,...,\Xmax} 
-    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,\Ymax cm);
-
-    \draw[thin, black] (0,0) -- (0,\Ymax);
-
-    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, \fstLvl) {C0};
-    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, \sndLvl) {C1};
-    
-    %core 1
-    \node[largeJob] at (1,\sndLvl) {B};
-    \node[smallJobCache] at (2.4,\sndLvl) {A};
-    \node[mediumJob] at (3, \sndLvl) {C};
-
-    % core 0
-    \node[smallJobCache] at (1,\fstLvl) {A};
-    \node[smallJobCache] at (1.6,\fstLvl) {A};
-    \node[largeJob] at (2.2,\fstLvl) {B};
-  \end{scope}
+%  \begin{scope} [xshift = 10cm, yshift = -5cm]
+%    \draw[timeArrow] (0,0) -- (7.5,0);
+%    \foreach \x in {1,...,7} 
+%    \draw[black, thin] (\x cm,.1cm) -- (\x cm, -.1cm);
+%    \foreach \x in {1,...,7} 
+%    \node[draw=none] at (\x cm, -.4cm) {\x};
+%    \foreach \x in {1,...,7} 
+%    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,3cm);
+%
+%    \draw[thin, black] (0,0) -- (0,3);
+%
+%    \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, 1) {C0};
+%    \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, 2) {C1};
+%    
+%    %core 1
+%    \node[smallJob] at (2.4,2) {A};
+%    \node[smallJob] at (3,2) {A};
+%    \node[largeJob] at (1,2) {B};
+%
+%    % core 0
+%    \node[smallJob] at (1,1) {A};
+%    \node[smallJob] at (1.6,1) {A};
+%    \node[largeJob] at (1,1) {B};
+%  \end{scope}
 \end{tikzpicture}
 
 \end{document}

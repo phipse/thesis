@@ -21,6 +21,9 @@ auto
 *.toc
 .sconsign.dblite
 *~
+*.nav
+*.snm
+*.sty
 
 *.bcf
 *.pdf
