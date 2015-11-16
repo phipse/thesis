@@ -9,9 +9,9 @@ multicore.
 Partly symmetric means the target architecture supports \gls{smt},
 but besides this, it is a \gls{smp} architecture.
 Hence, research proposing hardware changes, e.g. \cite{cruz_dynamic_2014},
-are out of scope.
+is out of scope.
 Also research focusing on heterogeneous or multi-ISA architectures, e.g.
-\cite{sarma_smartbalance_2015}, are not part of the review.
+\cite{sarma_smartbalance_2015}, is not part of the review.
 
 %One restriction applies to this review: mechanism proposing hardware changes
 %are not in the focus of this work.
@@ -25,7 +25,7 @@ explored.
 \citeauthor{snavely_symbiotic_2000} introduced the term \emph{symbiotic
 scheduling} in \cite{snavely_symbiotic_2000}, describing a scheduling technique
 for \gls{smt}-systems.
-They propose scheduling these two jobs on a shared core, which provide the best
+They propose scheduling those two jobs on a shared core, which provide the best
 utilization of said core.
 The combination of two jobs on two corresponding \gls{smt}-cores call they a
 co-schedule.
@@ -36,7 +36,7 @@ In their experiments they run independent jobs on a simulator modeling a Compaq
 Alpha 21264 out-of-order processor with hardware additions for multi-threading.
 This simulator model includes performance counters to ``capture dynamic execution
 information''(\autocite[236]{snavely_symbiotic_2000}).
-To determine a good schedule they compute the weighted speedup \textit{WS} for
+To determine a good schedule the authors compute the weighted speedup \textit{WS} for
 a fixed time interval.
 For each job the change in instructions per cycle (IPC) compared to
 single-threaded execution is calculated.
@@ -57,6 +57,7 @@ The best predictor in their study made a majority vote of all other predictors
 to determine the best schedule.
 \citeauthor{snavely_symbiotic_2000} conclude, that good job symbiosis depends
 not only on high IPC, but on several behavioural factors.
+\todo{Be precise! Which factors?}
 \\
 
 
@@ -73,12 +74,12 @@ SOLOFRAC is the from the priority derived fraction of the CPU time,
 a job needs to be scheduled alone  and CS is the fraction of the CPU time,
 where no job is solo scheduled.
 
-The \textit{Naive} priority mechanism schedules a job alone for its SOLOFRAC
+The 'Naive' priority mechanism schedules a job alone for its SOLOFRAC
 share and co-schedules for CS cycles. Behind this stand two assumptions: first,
 during co-scheduling each job is an equal share of the cycles assigned.
 And second, the number of jobs does not exceed the number of \gls{smt}-cores.
 
-The proposed \textit{Symb} mechanism on the other hand, can handle more jobs
+The proposed 'Symb' mechanism on the other hand, can handle more jobs
 than available \gls{smt}-cores and observes job behaviour. By running jobs
 solo, it determines the job's ``'natural' IPC''
 (\autocite[71]{snavely_symbiotic_2002})
@@ -104,7 +105,7 @@ The turnaround time of a job is mainly influenced by the time it waits in the
 ready queue, when all cores are loaded.
 If the maximum throughput increases slightly, the waiting time is reduced,
 hence, a significant reduction in turnaround time is observed.
-Also a job reordering in a shortest remaining time first manner, can also
+Also, a job reordering in a shortest remaining time first manner, can also
 reduce the average turnaround time.
 For these reasons \citeauthor{eyerman_revisiting_2015} make the case,
 that turnaround time alone can be a misleading measure.
@@ -112,7 +113,7 @@ that turnaround time alone can be a misleading measure.
 Furthermore, maximum throughput cannot be used, because systems are not
 designed to run at peak load all the time, as this leads to long queues and
 turnaround times.
-Average throughput equals average load, if the system is not fully loaded,
+Average throughput equals average load if the system is not fully loaded,
 therefore, it is a useless comparator.
 Instead, they advocate to evaluate processor utilization (understood as average
 number of executing cores) and empty periods.
@@ -123,7 +124,7 @@ Hence, using these two measures scheduler caused improvements can be compared.
 \citeauthor{eyerman_revisiting_2015} conclude that one should not expect large
 improvements through symbiotic scheduling, but particular workloads my benefit.
 Furthermore, previous studies on partially symmetric mutlicores showed
-substantial throughput gains by symbiotically co-scheduling applications on
+notable throughput gains by symbiotically co-scheduling applications on
 SMT-packages.
 \\
 
@@ -156,8 +157,8 @@ Like \citeauthor{banikazemi_pam_2008}, they worked on a \gls{cmp}-machine with
 two separated cache groups sharing an L2 cache.
 Similarly, they tried to spread memory intensive tasks as much as possible,
 to reduce interference in the shared cache.
-They introduce the metric called cache weight, which terms the \gls{llc}-cache
-misses per cycle for the last time interval.
+The authors introduce the metric called 'cache weight', which denotes the
+\gls{llc}-cache misses per cycle for the last time interval.
 Their research showed, that longer histories worsen the prediction, as thread
 behaviour changes over time.
 To achieve the best possible spread of all threads across cache groups,
@@ -167,10 +168,10 @@ New threads are assigned to the cache group with the lowest weight and only
 cache light tasks are migrated across group boundaries.
 However, to care for workload changes, an overweight thread is periodically
 migrated to the lightest \gls{llc}-group.
-Cache light threads suffer next to cache intensive threads, as they most likely
-start with a cold cache, each time they are scheduled.
-To compensate this, \citeauthor{knauerhase_using_2008} propse to transfer CPU
-time from the cache heavy to the suffering threads.
+Furthermore, cache light threads suffer next to cache intensive ones, as they
+most likely start with a cold cache, each time they are scheduled.
+To compensate for this, \citeauthor{knauerhase_using_2008} propse to transfer
+CPU time from the cache heavy to the suffering threads.
 This fairness compensation reduced the performance degradation of the most
 suffering thread to less than 1\%.
 \\
@@ -184,14 +185,14 @@ resources.
 Although their assumption in \cite{fedorova_managing_2010} was, that memory
 reuse patterns are the indicator of
 choice to predict cache interference between threads, their research lead to
-the conclusion that \gls{llc}-misses are superior.
+the conclusion that \gls{llc}-misses are a superior predictor.
 Memory reuse patterns model the access frequency of a memory area and the miss
 frequency for a particular application.
 This analysis has to be done off-line and assumes, that applications with high
 reuse and low miss rates, do not affect other applications negatively, but
 applications with low reuse and high miss rates are likely to trash the cache
 of others.
-To do this on-line the authors derived a metric called \emph{Pain}, which
+To do this on-line the authors derived a metric called 'Pain', which
 consists of two parts: sensitivity and intensity.
 The former describes how much an application suffers from sharing caches with
 others, the latter how much an application will hurt others.
@@ -200,17 +201,17 @@ suffering and B's intensity.
 Vice versa for B.
 The sum of both describes the expected performance degradation for these two
 applications, when being scheduled together on the same \gls{llc}.
-To approximate sensitivity and intensity on-line they assumed cache miss and
+To approximate sensitivity and intensity on-line, they assumed cache miss and
 access rates would be a good measure, but it turned out only the cache miss
 rate is relevant.
-The memory reuse patterns only focus on the cache as shared resource.
+The memory reuse patterns focus only on the cache as shared resource.
 The cache miss rate on the other hand also predicts the load on prefetching
 hardware, memory controller and front side bus.
 Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \\
 
-However, they all assumed independent, non-interacting threads.
+However, all research covered up to now assumed independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming interacting, parallel applications.
 They propose a technique called \emph{speed balancing} with a notion for fast
@@ -222,11 +223,11 @@ Thread progress is slower on longer queues, hence, slow cores are cores with a
 longer run queue.
 The term speed is defined as the relation of execution time per elapsed wall
 clock time.
-The speed of each thread determins, if it is running on a fast or a slow core.
+The speed of each thread determines, if it is running on a fast or a slow core.
 The algorithm presented by \citeauthor{hofmeyr_load_2010} runs one thread per
-core producing a speed measure for each thread and the core respectivly.
+core producing a speed measure for each thread and the core respectively.
 To compare core speeds, a global average core speed is computed.
-To provide equal progress oportunities, each thread needs to run on a fast
+To provide equal progress opportunities, each thread needs to run on a fast
 core at least once.
 Hence, the balancing thread on a fast core searches for a suitable thread to
 migrate from a slow core and pull it to its local core.
@@ -323,6 +324,7 @@ idea wasn't presented yet.}
 
 \section{Contribution}
 \label{state:contr}
+\todo{rename to Summary, do summary of chapter}
 
 
 \begin{itemize}
