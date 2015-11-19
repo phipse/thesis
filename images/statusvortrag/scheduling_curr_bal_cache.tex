@@ -1,3 +1,4 @@
+% vi:ft=tex
 \documentclass{standalone}
 
 \usepackage{tikz}
@@ -23,7 +24,7 @@
   \tikzstyle{defaultCirc} = [font=\small, text centered, inner sep = 1pt,
     draw=none, shape=circle];
   \tikzstyle{core} = [defaultCirc, minimum width = 1cm];
-  
+
   \tikzstyle{timeArrow} = [->, thin, black];
 
   % Variables
@@ -37,28 +38,28 @@
 
   % balanced by time usage
   \begin{scope} []
-    \draw[timeArrow] (0,0) -- (7.5,0);
-    \foreach \x in {0,...,\Xmax} 
-    \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
-    \foreach \x in {0,...,\Xmax} 
-    \node[draw=none] at (\x cm, -.4cm) {\x};
-    \foreach \x in {1,...,\Xmax} 
-    \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,\Ymax cm);
+    \tikzstyle{smallJobCache} = [defaultRec, minimum width = 1.5cm];
+    \tikzstyle{mediumJob} = [defaultRec, minimum width = .8cm];
+
+    \draw[timeArrow] (0,0) -- (7.5,0) node[below, text centered, midway]{cache usage};
+
+    \node[draw=none] at (0.5 cm, -.4cm) {low};
+    \node[draw=none] at (6.5 cm, -.4cm) {high};
 
     \draw[thin, black] (0,0) -- (0,\Ymax);
 
     \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, \fstLvl) {C0};
     \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, \sndLvl) {C1};
-    
+
     %core 1
     \node[largeJob] at (1,\sndLvl) {B};
-    \node[smallJob] at (2.4,\sndLvl) {A};
-    \node[mediumJob] at (3, \sndLvl) {C};
+    \node[smallJobCache] at (2.4,\sndLvl) {A};
+    \node[largeJob] at (4,\sndLvl) {B};
 
     % core 0
-    \node[smallJob] at (1,\fstLvl) {A};
-    \node[smallJob] at (1.6,\fstLvl) {A};
-    \node[largeJob] at (2.2,\fstLvl) {B};
+    \node[smallJobCache] at (1,\fstLvl) {A};
+    \node[smallJobCache] at (2.6,\fstLvl) {A};
+    \node[mediumJob] at (4.2, \fstLvl) {C};
   \end{scope}
 
 \end{tikzpicture}

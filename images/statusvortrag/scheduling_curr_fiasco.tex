@@ -20,12 +20,13 @@
   \tikzstyle{defaultCirc} = [font=\small, text centered, inner sep = 1pt,
     draw=none, shape=circle];
   \tikzstyle{core} = [defaultCirc, minimum width = 1cm];
-  
+
   \tikzstyle{timeArrow} = [->, thin, black];
 
   % Variables
   \newcommand\Ymax{3};
   \newcommand\Xmax{7};
+  \newcommand\Xless{6};
   \newcommand\fstLvl{1};
   \newcommand\sndLvl{2};
 
@@ -34,18 +35,20 @@
   % Fiasco default
   \begin{scope} []
     \draw[timeArrow] (0,0) -- (7.5,0);
-    \foreach \x in {0,...,\Xmax} 
+    \foreach \x in {1,...,\Xmax}
     \draw[black, thin] (\x cm,0) -- (\x cm, -.1cm);
-    \foreach \x in {0,...,\Xmax} 
-    \node[draw=none] at (\x cm, -.4cm) {\x};
-    \foreach \x in {1,...,\Xmax} 
+
+    \foreach \x in {0,...,\Xless}
+    \node[draw=none] at (\x cm + 1cm, -.4cm) {\x};
+
+    \foreach \x in {1,...,\Xmax}
     \draw[dashed, black, very thin, black!20] (\x, 0) -- (\x,\Ymax cm);
 
     \draw[thin, black] (0,0) -- (0,\Ymax);
 
     \node(c1) [defaultCirc, minimum width = .5cm] at (-.5, \fstLvl) {C0};
     \node(c2) [defaultCirc, minimum width = .5cm] at (-.5, \sndLvl) {C1};
-    
+
     %core 1
     \node[largeJob] at (1,\fstLvl) {B};
     \node[smallJob] at (2.4,\fstLvl) {A};
