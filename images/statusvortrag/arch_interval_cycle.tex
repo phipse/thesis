@@ -17,7 +17,7 @@
     draw=black, shape=rectangle, fill=white, minimum height = .5cm, minimum
   width = 1.4cm];
 
-  \tikzstyle{arrow} = [->, black];
+  \tikzstyle{arrow} = [-open triangle 45, black];
 
   % Variables
   \newcommand\Ymax{3};
@@ -48,13 +48,13 @@
   \draw[arrow] (pred.south) to [bend left=45] (deci.east);
   \draw[arrow] (deci.west) to [bend left=45] (enf.south);
   \draw[arrow] (enf.north) to [bend left=45] (meas.west);
-  \draw[<->, black] (deci.south) -- (place.north);
-%  \draw[arrow] (topo.north) .. controls +(up:12mm) and +(left:10mm) 
+  \draw[open triangle 45 - open triangle 45, black] (deci.south) -- (place.north);
+%  \draw[arrow] (topo.north) .. controls +(up:12mm) and +(left:10mm)
 %				 .. (place.west);
 
   \draw[arrow] (topo.north) to [bend left=45] (place.west);
 %  \draw[arrow,blue] (pred.south) to [bend left=45] (deci.east);
-  
+
 \end{tikzpicture}
 
 \end{document}
