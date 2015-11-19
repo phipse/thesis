@@ -29,7 +29,8 @@
 \usepackage{adjustbox}
 \usepackage{array}
 
-\usetheme[noheader,smallrightmargin,smallleftmargin,nosectionnum,heavyfont]{tud}
+\usetheme[noheader,smallrightmargin,smallleftmargin,nosectionnum,heavyfont,pagenum]{tud}
+\addbibresource{./Related_Work.bib}
 
 \setbeamertemplate{footnote}
 {
@@ -94,30 +95,77 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SMT
 
-
-% cache observation
 \begin{frame}
-  \frametitle{PAM: performance aware meta-scheduler}
-  \centering
-  \includegraphics[scale=.5]{./pam_state}
+  \frametitle{three concepts to approach distribution}
+  \begin{itemize}
+    \item offline measurement --- online distribution
+      \footfullcite{eyerman_revisiting_2015}
+    \item online measurement --- online symbiosis
+      \footfullcite{banikazemi_pam_2008} \footfullcite{snavely_symbiotic_2000}
+    \item intertwined online measurement and adaption
+      \footfullcite{knauerhase_using_2008} \footfullcite{zhuravlev_addressing_2010}
+  \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{pain metric by Zhuravlev et al. combines ones suffering with the
-  hurting of another}
+  \frametitle{performance metrics \\may not depend on system load
+    \footfullcite{eyerman_revisiting_2015}}
+  \centering
+  \includegraphics[height=0.7\textheight, keepaspectratio]{./arrival_rate}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{performance metrics\footfullcite{eyerman_revisiting_2015}}
+  \centering
+  \includegraphics[height=0.7\textheight, keepaspectratio]{./empty_utilization_comparison}
+\end{frame}
+
+
+% cache observation
+\begin{frame}
+  \frametitle{contention sources \footfullcite{zhuravlev_addressing_2010}}
+  \centering
+  \includegraphics[height=0.7\textheight, keepaspectratio]{./contention_shared_hw}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{pain metric combines sensitivity to cache
+    changes with the intensity of cache usage\footfullcite{zhuravlev_addressing_2010}}
   \centering
   \begin{align*}
-    Pain(A|B) &= suffer(A) + hurt(B) \\
-    Pain(B|A) &= suffer(B) + hurt(A) \\
+    Pain(A|B) &= sensitivity(A) + intensity(B) \\
+    Pain(B|A) &= sensitivity(B) + intensity(A) \\
     Pain(A,B) &= Pain(A|B) + Pain(B|A)
   \end{align*}
 \end{frame}
 
+
+\begin{frame}
+  \frametitle{pain \& approx-pain \\ with LLC-miss approximation
+    \footfullcite{zhuravlev_addressing_2010}}
+  \centering
+  \includegraphics[height=0.7\textheight, keepaspectratio]{./pain_approx_comp}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{scheduling based on pain metric;\\ offline vs. online measurement
+    \footfullcite{zhuravlev_addressing_2010}}
+  \centering
+  \includegraphics[height=0.7\textheight, keepaspectratio]{./opteron_di_dio}
+\end{frame}
+
+
 % communication
 \begin{frame}
-  \frametitle{deterministic execution times \\ with little variance}
-
+  \frametitle{thread distribution considering
+    communication\footfullcite{hofmeyr_load_2010}}
+  HPC Workload $>$ Computation--communication--cycle \\
+  balance only one application in the system \\
+  notion of speed, regarding execution time on a core
 \end{frame}
 
 
@@ -178,5 +226,10 @@ ld:start({  caps = { },
   What else can we do with a thread balancer?
 \end{frame}
 
+\begin{frame}
+  \frametitle{PAM: performance aware meta-scheduler\footfullcite{banikazemi_pam_2008}}
+  \centering
+  \includegraphics[scale=.5]{./pam_state}
+\end{frame}
 
 \end{document}

@@ -19,6 +19,8 @@ all : $(PDF) Makefile
 %.pdf : %.tex
 	xelatex -shell-escape $<
 	xelatex -shell-escape $<
+	biber statusvortrag
+	xelatex -shell-escape $<
 
 clean :
 	$(RM) *.log *.aux *.out *.blg *.bbl *.snm *.nav *.toc *.vrb
