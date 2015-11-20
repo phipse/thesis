@@ -21,6 +21,7 @@
 \usepackage{verbatim}
 \usepackage{amssymb}
 \usepackage{amsfonts}
+\usepackage{textcomp}
 
 \usetikzlibrary{arrows, shapes, positioning, trees,calc,intersections}
 \mode<presentation>
@@ -43,16 +44,17 @@
 \setbeamertemplate{enumerate items}[default]
 \setbeamertemplate{itemize items}[triangle]
 
-\title[]{Multicore Load Balancing based on behaviour observation}
+\title[]{Multicore Load Balancing based on behaviour observation on \textmu--kernels}
 
 \author{Philipp Eppelt}
 
 \date{20.11.2015}
 \datecity{Dresden}
 
-\einrichtung{Fakultaet Informatik}
-\institut{Institut fuer Systemarchitektur}
-\professur{Lehrstuhl fuer Betriebssysteme}
+\einrichtung{Fakult\"a{}t Informatik}
+
+\institut{Institut f\"u{}r Systemarchitektur}
+\professur{Lehrstuhl f\"u{}r Betriebssysteme}
 
 
 \begin{document}
@@ -101,7 +103,7 @@
     \item offline measurement --- online distribution
       \footfullcite{eyerman_revisiting_2015}
     \item online measurement --- online symbiosis
-      \footfullcite{banikazemi_pam_2008} \footfullcite{snavely_symbiotic_2000}
+      \footfullcite{snavely_symbiotic_2000} \footfullcite{banikazemi_pam_2008}
     \item intertwined online measurement and adaption
       \footfullcite{knauerhase_using_2008} \footfullcite{zhuravlev_addressing_2010}
   \end{itemize}
@@ -109,7 +111,7 @@
 
 
 \begin{frame}
-  \frametitle{performance metrics \\may not depend on system load
+  \frametitle{performance metrics \\should not depend on system load
     \footfullcite{eyerman_revisiting_2015}}
   \centering
   \includegraphics[height=0.7\textheight, keepaspectratio]{./arrival_rate}
@@ -118,14 +120,22 @@
 
 \begin{frame}
   \frametitle{performance metrics\footfullcite{eyerman_revisiting_2015}}
-  \centering
-  \includegraphics[height=0.7\textheight, keepaspectratio]{./empty_utilization_comparison}
+  \begin{minipage}[l]{.49\columnwidth}
+    \centering
+    \includegraphics[height=0.7\textheight,
+    keepaspectratio]{./empty_utilization_comparison_bottom}
+  \end{minipage}
+  \begin{minipage}[r]{.49\columnwidth}
+    \centering
+    \includegraphics[width=\columnwidth,
+    keepaspectratio]{./empty_utilization_comparison_top}
+  \end{minipage}
 \end{frame}
 
 
 % cache observation
 \begin{frame}
-  \frametitle{contention sources \footfullcite{zhuravlev_addressing_2010}}
+  \frametitle{contention sources \footfullcite{fedorova_managing_2010}}
   \centering
   \includegraphics[height=0.7\textheight, keepaspectratio]{./contention_shared_hw}
 \end{frame}
@@ -136,8 +146,8 @@
     changes with the intensity of cache usage\footfullcite{zhuravlev_addressing_2010}}
   \centering
   \begin{align*}
-    Pain(A|B) &= sensitivity(A) + intensity(B) \\
-    Pain(B|A) &= sensitivity(B) + intensity(A) \\
+    Pain(A|B) &= sensitivity(A) * intensity(B) \\
+    Pain(B|A) &= sensitivity(B) * intensity(A) \\
     Pain(A,B) &= Pain(A|B) + Pain(B|A)
   \end{align*}
 \end{frame}
@@ -145,7 +155,7 @@
 
 \begin{frame}
   \frametitle{pain \& approx-pain \\ with LLC-miss approximation
-    \footfullcite{zhuravlev_addressing_2010}}
+    \footfullcite{fedorova_managing_2010}}
   \centering
   \includegraphics[height=0.7\textheight, keepaspectratio]{./pain_approx_comp}
 \end{frame}
@@ -163,9 +173,11 @@
 \begin{frame}
   \frametitle{thread distribution considering
     communication\footfullcite{hofmeyr_load_2010}}
-  HPC Workload $>$ Computation--communication--cycle \\
-  balance only one application in the system \\
-  notion of speed, regarding execution time on a core
+    \begin{itemize}
+      \item  HPC Workload: Computation--communication--cycle
+      \item  balance only one application in the system
+      \item  notion of speed: execution time on a core
+    \end{itemize}
 \end{frame}
 
 
