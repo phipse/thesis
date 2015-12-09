@@ -2,7 +2,7 @@
 \label{state:related}
 
 This section presents prior work and puts emphasis on the parts pertinent to
-this work.
+this thesis.
 One assumption for this work is already in place:
 the target architecture is a single ISA, partly symmetric homogeneous
 multicore.
@@ -30,7 +30,7 @@ utilization of said core.
 The combination of two jobs on two corresponding \gls{smt}-cores call they a
 co-schedule.
 The performance of a co-schedule is defined as the turnaround or response time:
-the time between the arrival of a job in the system and its completion.
+the time between the arrival of a job in the ready queue and its completion.
 
 In their experiments they run independent jobs on a simulator modeling a Compaq
 Alpha 21264 out-of-order processor with hardware additions for multi-threading.
@@ -56,8 +56,8 @@ predictors for the behaviour of jobs in the future and, hence, the best schedule
 The best predictor in their study made a majority vote of all other predictors
 to determine the best schedule.
 \citeauthor{snavely_symbiotic_2000} conclude, that good job symbiosis depends
-not only on high IPC, but on several behavioural factors.
-\todo{Be precise! Which factors?}
+not only on high IPC, but on a multitude of other factors, too, e.g. usage
+conflicts in shared hardware resources or cache hit rates.
 \\
 
 
@@ -70,8 +70,8 @@ machine proportional to priority'' or ``(B) guarantee a fraction of
 single-threaded performance proportional to priority''
 (\autocite[70]{snavely_symbiotic_2002}).
 The authors base their priority mechanisms on two values: SOLOFRAC and CS.
-SOLOFRAC is the from the priority derived fraction of the CPU time,
-a job needs to be scheduled alone  and CS is the fraction of the CPU time,
+SOLOFRAC is the, from the priority derived fraction of the CPU time,
+a job needs to be scheduled alone and CS is the fraction of the CPU time,
 where no job is solo scheduled.
 
 The 'Naive' priority mechanism schedules a job alone for its SOLOFRAC
@@ -81,10 +81,10 @@ And second, the number of jobs does not exceed the number of \gls{smt}-cores.
 
 The proposed 'Symb' mechanism on the other hand, can handle more jobs
 than available \gls{smt}-cores and observes job behaviour. By running jobs
-solo, it determines the job's ``'natural' IPC''
+solo, 'Symb' determines the job's ``'natural' IPC''
 (\autocite[71]{snavely_symbiotic_2002})
-and can evaluate the job's performance during a phase of co-scheduling.
-Based on this measurement, the SOLOFRAC is reduced such that the job get its
+and then evaluates the job's performance during a phase of co-scheduling.
+Based on this measurement, the SOLOFRAC portion is reduced such that the job get its
 rightful share of cycles. The increase in co-scheduling time leads to increased
 utilization of the system.
 
@@ -122,15 +122,29 @@ periods are enlarged, as the time to execute the current load is reduced.
 Hence, using these two measures scheduler caused improvements can be compared.
 
 \citeauthor{eyerman_revisiting_2015} conclude that one should not expect large
-improvements through symbiotic scheduling, but particular workloads my benefit.
+improvements through symbiotic scheduling, but particular workloads may benefit.
 Furthermore, previous studies on partially symmetric mutlicores showed
 notable throughput gains by symbiotically co-scheduling applications on
 SMT-packages.
+\todo{which particular workloads? Which previous studies? What's
+a notable gain?}
 \\
 
+Measuring the performance of a specific schedule in a \gls{smt}-system is
+difficult, especially, if no off-line knowledge is used. But even then,
+pinpointing the performance gain to the scheduling decision and is only
+manageable with fine granular observation of the system.
+However, \cite{snavely_symbiotic_2000} and \cite{eyerman_revisiting_2015}
+showed the relevance of a symbiotic co-schedule to fully utilize the shared
+hardware resources.
+Modern \gls{intel} processors use \gls{smt} in each physical core, but other
+than parts of the cache and memory subsystem, the cores are separated and
+identical.
+This limits the effectiveness of symbiosis analysis.
+\\
 
-\citeauthor{banikazemi_pam_2008} present a study concerning thread-to-core
-mappings on partially symmetric multicores.
+A different techniques is presented by \citeauthor{banikazemi_pam_2008}
+regarding thread-to-core mappings on a \gls{cmp}-system.
 In \cite{banikazemi_pam_2008} they present \emph{PAM}: a performance/power-aware
 meta-scheduler, working on top of the default Linux scheduler.
 While the default scheduler runs, PAM gathers information via performance
@@ -138,7 +152,7 @@ counters on cache occupancy, cycles per instruction, and the miss ratio of L1
 and L2 caches for each thread.
 If PAM can predict a better thread-to-core mapping, based on this information,
 it overrules the default scheduler and enforces the better mapping.
-With a \textit{Goodness(t)} metric PAM rates the current mapping for the last
+With a 'Goodness' metric PAM rates the current mapping for the last
 time interval.
 Depending on the goodness value of the PAM mapping being better than the one of
 the default scheduler, PAM continues to enforce its mapping or falls back to
@@ -146,7 +160,7 @@ default.
 Goodness can be describing performance, power or energy consumption.
 
 The experiments ran on a dual socket, quad-core machine, where two cores
-share an L2 cache, making this a \gls{cmp} approach.
+share an L2 cache.
 The processor does not support \gls{smt}.
 Hence, the improvement gains stem not from symbiosis, but rather from
 congestion awareness.
@@ -170,7 +184,7 @@ However, to care for workload changes, an overweight thread is periodically
 migrated to the lightest \gls{llc}-group.
 Furthermore, cache light threads suffer next to cache intensive ones, as they
 most likely start with a cold cache, each time they are scheduled.
-To compensate for this, \citeauthor{knauerhase_using_2008} propse to transfer
+To compensate for this, \citeauthor{knauerhase_using_2008} propose to transfer
 CPU time from the cache heavy to the suffering threads.
 This fairness compensation reduced the performance degradation of the most
 suffering thread to less than 1\%.
@@ -206,7 +220,7 @@ access rates would be a good measure, but it turned out only the cache miss
 rate is relevant.
 The memory reuse patterns focus only on the cache as shared resource.
 The cache miss rate on the other hand also predicts the load on prefetching
-hardware, memory controller and front side bus.
+hardware, memory controller and memory bus.
 Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \\
@@ -224,6 +238,7 @@ longer run queue.
 The term speed is defined as the relation of execution time per elapsed wall
 clock time.
 The speed of each thread determines, if it is running on a fast or a slow core.
+\todo{Is speed or run queue length defining a slow core?}
 The algorithm presented by \citeauthor{hofmeyr_load_2010} runs one thread per
 core producing a speed measure for each thread and the core respectively.
 To compare core speeds, a global average core speed is computed.
