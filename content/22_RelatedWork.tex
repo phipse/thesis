@@ -276,17 +276,17 @@ point improves overall application performance.
     core specified in the affinity descriptor
   \item affinity descriptor: core(s) a thread should run on
   \item Syscall via run\_thread() to pass affinity descr to kernel scheduler
-  \item interface to query execution time for each thread \todo{difference
-      between execution time and cycles? Cycles project changes in core speed
-      due to turbo boost or other mechanism}
-  \item	todo: Performance counters
-  \item capability system
+  \item interface to query execution time for each thread
+  \item capability system -- to derive communication relationships from
+  \item	Kernel feature wishes derived from related work: Performance counters
+    and per thread accounting
 \end{itemize}
 
 \textbf{L4Re}
 \begin{itemize}
   \item provides scheduler proxy interface, including affinity descriptor,
     scheduling parameters
+  \tiem syscall interface
 \end{itemize}
 
 
