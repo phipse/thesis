@@ -18,7 +18,7 @@
 \begin{itemize}
   \item provides scheduler proxy interface, including affinity descriptor,
     scheduling parameters
-  \tiem syscall interface
+  \item syscall interface
 \end{itemize}
 
 
@@ -27,10 +27,47 @@
 \section{\gls{intel} Haswell Architecture}
 \label{state:haswell}
 
-As the \ref{state:related}
-\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
+In section \ref{state:related} several hardware features were mentioned.
+The most important of all are performance counters for cache misses, cycles and
+instructions executed.
+Those and many more are present in the target processor: an \gls{intel} Core
+i7-6440K.
+The processor has ``architectural performance monitoring version 3''
+capabilities, which consists among other features of three fixed-function
+performance counters counting Instruction Retired, Unhalted Core Cycles, and
+Reference Instruction Retired.
+In contrast to the first two counters, the last counter is unaffected by
+processor speed changes due to power saving or turbo boost features.
+Besides these, four general purpose performance counters are available per
+logical core, which can be programmed to count one specific event.
+All \gls{intel} Core i generations support architectural performance monitoring
+in different versions, but all versions are guaranteed to support the events
+listed in table \ref{state:table:core_events}: Unhalted Core Cycles,
+Instruction Retired, Unhalted Reference Cycles, LLC Reference, LLC Misses,
+Branch Instruction Retired, and Branch Misses Retired.
 
-\includegraphics[width=0.8\textwidth]{images/haswell_core_layout}
+Besides these central events, each hardware generation supports a different set
+of so called ``non-architectural performance events''.
+This non-architectural event set allows to monitor many specific events, e.g.
+L2-misses/-hits, micro-ops per logical core executed per cycle, or unhalted
+core cycles, while the logical core is in ring 0.
+
+Another difference to the target processor, compared to most processors used in
+earlier research is the \gls{smp} architecture. In contrast to \gls{cmp}
+architectures no cache groups are defined, because the \gls{llc} is shared
+among all cores.
+\ref{state:fig:core_layout}
+
+%\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/haswell_core_layout}
+  \caption{Layout of a Core i7-4660K quad-core.
+    Each physical core has two logical cores T0 and T1 sharing the cores L1I-,
+    L1D-, and L2-cache.}
+  \label{state:fig:core_layout}
+\end{figure}
 
 
 \begin{itemize}
