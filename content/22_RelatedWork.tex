@@ -131,44 +131,45 @@ a notable gain?}
 \\
 
 Measuring the performance of a specific schedule in a \gls{smt}-system is
-difficult, especially, if no off-line knowledge is used. But even then,
-pinpointing the performance gain to the scheduling decision and is only
-manageable with fine granular observation of the system.
+difficult, especially, if no off-line knowledge is used.
+But even then, pinpointing the performance gain to the scheduling decision is
+only manageable with fine granular observation of the system.
 However, \cite{snavely_symbiotic_2000} and \cite{eyerman_revisiting_2015}
 showed the relevance of a symbiotic co-schedule to fully utilize the shared
 hardware resources.
-Modern \gls{intel} processors use \gls{smt} in each physical core, but other
-than parts of the cache and memory subsystem, the cores are separated and
+Modern \gls{intel} processors use \gls{smt} in each physical core, but besides
+parts of the cache and memory subsystem, the cores are separated and
 identical.
 This limits the effectiveness of symbiosis analysis.
 \\
 
 A different techniques is presented by \citeauthor{banikazemi_pam_2008}
 regarding thread-to-core mappings on a \gls{cmp}-system.
-In \cite{banikazemi_pam_2008} they present \emph{PAM}: a performance/power-aware
-meta-scheduler, working on top of the default Linux scheduler.
-While the default scheduler runs, PAM gathers information via performance
-counters on cache occupancy, cycles per instruction, and the miss ratio of L1
-and L2 caches for each thread.
-If PAM can predict a better thread-to-core mapping, based on this information,
+In \cite{banikazemi_pam_2008} they present \emph{pam}: a performance/power-aware
+meta-scheduler, working on top of the default linux scheduler.
+While the default scheduler runs, pam gathers information via performance
+counters on cache occupancy, cycles per instruction, and the miss ratio of l1
+and l2 caches for each thread.
+If pam can predict a better thread-to-core mapping, based on this information,
 it overrules the default scheduler and enforces the better mapping.
-With a 'Goodness' metric PAM rates the current mapping for the last
+With a 'goodness' metric pam rates the current mapping for the last
 time interval.
-Depending on the goodness value of the PAM mapping being better than the one of
-the default scheduler, PAM continues to enforce its mapping or falls back to
+Depending on the goodness value of the pam mapping being better than the one of
+the default scheduler, pam continues to enforce its mapping or falls back to
 default.
 Goodness can be describing performance, power or energy consumption.
 
 The experiments ran on a dual socket, quad-core machine, where two cores
-share an L2 cache.
+share an l2 cache.
 The processor does not support \gls{smt}.
-Hence, the improvement gains stem not from symbiosis, but rather from
+Hence, the performance gains stem not from symbiosis, but rather from
 congestion awareness.
 \\
+\todo{transition is a bit short}
 
 Reducing cache congestion was the main point in \cite{knauerhase_using_2008}.
 Like \citeauthor{banikazemi_pam_2008}, they worked on a \gls{cmp}-machine with
-two separated cache groups sharing an L2 cache.
+two separated cache groups sharing an l2 cache.
 Similarly, they tried to spread memory intensive tasks as much as possible,
 to reduce interference in the shared cache.
 The authors introduce the metric called 'cache weight', which denotes the
@@ -203,10 +204,11 @@ the conclusion that \gls{llc}-misses are a superior predictor.
 Memory reuse patterns model the access frequency of a memory area and the miss
 frequency for a particular application.
 This analysis has to be done off-line and assumes, that applications with high
-reuse and low miss rates, do not affect other applications negatively, but
+reuse and low miss rates do not affect other applications negatively, but
 applications with low reuse and high miss rates are likely to trash the cache
 of others.
-To do this on-line the authors derived a metric called 'Pain', which
+
+To do this analysis on-line the authors derived a metric called 'Pain', which
 consists of two parts: sensitivity and intensity.
 The former describes how much an application suffers from sharing caches with
 others, the latter how much an application will hurt others.
@@ -218,16 +220,16 @@ applications, when being scheduled together on the same \gls{llc}.
 To approximate sensitivity and intensity on-line, they assumed cache miss and
 access rates would be a good measure, but it turned out only the cache miss
 rate is relevant.
-The memory reuse patterns focus only on the cache as shared resource.
-The cache miss rate on the other hand also predicts the load on prefetching
-hardware, memory controller and memory bus.
+As memory reuse patterns only focus on the cache as a shared resource, the
+cache miss rate also displays the load on prefetching hardware, memory
+controller and memory bus.
 Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \\
 
 However, all research covered up to now assumed independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
-balancing technique explicitly assuming interacting, parallel applications.
+balancing technique explicitly assuming communicating, parallel applications.
 They propose a technique called \emph{speed balancing} with a notion for fast
 and slow cores.
 They assume an oversubscribed environment, where the number of runable threads
@@ -252,14 +254,14 @@ avoid constant migration of the same thread.
 The parallel application model the authors assume consists of one application
 spawning several worker threads, where a computation interval is followed by a
 communication barrier.
-Their implementation takes this application as input, executes it and provide
+Their implementation takes this application as input, executes it and provides
 equal progress to each thread.
-They do neither model communication between unrelated tasks in a client-server
+They do neither model communication between different tasks in a client-server
 notion, nor at arbitrary points in time.
 Hence, reducing the time the slowest thread needs to reach the synchronization
 point improves overall application performance.
 
-\todo{linux cfs scheduler}
+\todo{linux cfs scheduler?}
 
 
 % -----------------------------------------------------------------------------
