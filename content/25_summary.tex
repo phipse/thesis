@@ -1,0 +1,37 @@
+\section{Summary}
+\label{state:summ}
+\todo{rename to Summary, do summary of chapter}
+
+\begin{itemize}
+  \item introduction to relevant terminology
+  \item SMT, symbiotic scheduling, co-schedule, measurement difficulties
+  \item Congestion awareness of shared resources; Goal minimal slowdown for all
+    applications; fairness, cache weights, pain metric, reliance on default
+    scheduler, performance counters
+  \item communication awareness: compute-communicate cycle, distribution of one
+    application
+  \item don't haves: No CMP architecture -> SMT-SMP combination; client server
+    communication model;
+  \item Fiasco.OC: no logic, just mechanisms in the kernel, hence no balancing;
+  \item L4Re: no automatic, behaviour based balancing.
+  \item do: communication models: HPC, CL-SVR; behaviour analysis: perf
+    counters; SMT-SMP processor awareness, reduced conflicts in shared hardware
+    resources, only on-line measurements;
+  \item secure/real-time/exclusive core design.
+\end{itemize}
+
+
+\begin{itemize}
+  \item Current processor architectures don't use CMP processors any more, therefore
+    the cache layout is different. My work evaluates the research results on the
+    new HW layout. But AMD Opteron Barcelona had a similar cache layout.
+  \item User level scheduling on a $µ$-kernel. But user level scheduling was
+    done before.
+  \item More scheduling parameters \textit{or} less assumptions about threads.
+  \item No off-line measurements, only on-line information gathering.
+  \item Thread interaction possible (communication partner, security flag)
+  \item Designated cores for security critical applications.
+\end{itemize}
+
+
+% -----------------------------------------------------------------------------

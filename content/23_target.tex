@@ -1,0 +1,73 @@
+\section{Fiasco.OC \& L4Re}
+\label{state:env}
+\todo{Fiasco.OC \& L4Re}
+
+\textbf{Fiasco.OC}
+\begin{itemize}
+  \item Kernel scheduler does no balancing, assigns thread to the first
+    core specified in the affinity descriptor
+  \item affinity descriptor: core(s) a thread should run on
+  \item Syscall via run\_thread() to pass affinity descr to kernel scheduler
+  \item interface to query execution time for each thread
+  \item capability system -- to derive communication relationships from
+  \item	Kernel feature wishes derived from related work: Performance counters
+    and per thread accounting
+\end{itemize}
+
+\textbf{L4Re}
+\begin{itemize}
+  \item provides scheduler proxy interface, including affinity descriptor,
+    scheduling parameters
+  \tiem syscall interface
+\end{itemize}
+
+
+% -----------------------------------------------------------------------------
+
+\section{\gls{intel} Haswell Architecture}
+\label{state:haswell}
+
+As the \ref{state:related}
+\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
+
+\includegraphics[width=0.8\textwidth]{images/haswell_core_layout}
+
+
+\begin{itemize}
+  \item diagram of architecture: four cores with L1I/D \& L2 cache; two smt/ht
+    cores per physical core; L3 cache shared and sliced, ring buffer for
+    access; mem controler in uncore package;
+  \item 4 prefetcher per cache; 2 for L1D, 2 for L2 cache
+  \item L1D \& L2 cache data is present in L3 cache to be able to redirect
+    requests from other cores to the correct cache. --> Issue with security; no
+    cache side attack surface reduction
+  \item IF security: dual socket system with one core dedicated to security
+    tasks for an interval
+  \item L3 cache slices corespond to number of cores
+  \item logic portion and data array portion; access, coherency, memory
+    ordering, LLC misses, writeback to memory; cache lines
+  \item hash function uniformly distributes addresses
+  \item access times to L3 cache varies depending on travel distance on the
+    bi-directional ring buffer
+  \item system agent receives memory requests not serviced by cache and
+    redirects to IMC
+\end{itemize}
+
+\paragraph{Issues with security core idea:}
+The idea to reduce attack surface for e.g. openssh cache attacks was to provide
+a dedicated core for security critical applications.
+This idea spawned from the assumption that L1D \& L2 cache was solely present
+on a core, but the L3 cache content is a superset of all cores L1D \& L2 cache.
+Hence, cache side channel attacks are still possible, although more
+complicated, as the attacker not present on the core, must determine, which
+cache lines correspond to the L1D \& L2 cache of the ``security core''.
+Attacks presented in \cite{yarom_recovering_2014} and
+\cite{bernstein_cache-timing_2005} rely on the fact, that only one application
+is using cache lines on the core.
+On a multicore, only observing the \gls{llc}, other running applications are
+expected to disturb the observations, effectivly reducing the side channel
+throughput.
+\todo{This should be part of the architecture chapter, as the security core
+idea wasn't presented yet.}
+
+% -----------------------------------------------------------------------------
