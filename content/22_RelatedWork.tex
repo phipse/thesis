@@ -339,9 +339,26 @@ idea wasn't presented yet.}
 
 % -----------------------------------------------------------------------------
 
-\section{Contribution}
-\label{state:contr}
+\section{Summary}
+\label{state:summ}
 \todo{rename to Summary, do summary of chapter}
+
+\begin{itemize}
+  \item SMT, symbiotic scheduling, co-schedule, measurement difficulties
+  \item Congestion awareness of shared resources; Goal minimal slowdown for all
+    applications; fairness, cache weights, pain metric, reliance on default
+    scheduler, performance counters
+  \item communication awareness: compute-communicate cycle, distribution of one
+    application
+  \item don't haves: No CMP architecture -> SMT-SMP combination; client server
+    communication model;
+  \item Fiasco.OC: no logic, just mechanisms in the kernel, hence no balancing;
+  \item L4Re: no automatic, behaviour based balancing.
+  \item do: communication models: HPC, CL-SVR; behaviour analysis: perf
+    counters; SMT-SMP processor awareness, reduced conflicts in shared hardware
+    resources, only on-line measurements;
+  \item secure/real-time/exclusive core design.
+\end{itemize}
 
 
 \begin{itemize}
