@@ -1,8 +1,40 @@
 % vim:set ft=tex:
 \section{Fiasco.OC \& L4Re}
 \label{state:env}
-\todo{Fiasco.OC \& L4Re}
+The related research presented in section \ref{state:related} states
+requirements of kernel features:
+hardware performance counters, assignment of threads to specific
+cores, and the ability to overrule the kernel scheduler.
 
+Fiasco.OC is a µ-kernel of the L4-family and follows the design paradigm to
+only implement mechanisms in the kernel and no policies.
+For performance reasons the scheduling policy is the only policy implemented in
+the kernel.
+The scheduling parameters in a scheduling request form user land consist of
+a priority level, a time slice size request and a descriptor on which cores the
+thread wants to be scheduled.
+The kernel selects the first available core from the descriptor to schedule the
+thread on, checks if the priority level is in a valid range, and assigns a time
+quantum.
+It does neither balance the amount of threads per core, nor prevent
+oversubscription of one core.
+However, it provides the mechanism to design a more sophisticated load
+distribution scheme as user level service.
+
+Regarding hardware performance counters, the kernel provides neither a system
+call interface to read or configure them, nor per thread accounting of
+configured counters.
+Access to hardware performance counters is critical for this project, so a
+mechanism has to be provided for a user level service.
+
+The L4 Runtime environment provides a scheduling service skeleton, which
+defines the kernel and user interface.
+Using this skeleton the service can replace the default L4Re scheduler and do
+more analysis of each thread.
+This skeleton also enables thread specific proxies with an individual
+configuration.
+
+\begin{comment}
 \textbf{Fiasco.OC}
 \begin{itemize}
   \item Kernel scheduler does no balancing, assigns thread to the first
@@ -21,6 +53,7 @@
     scheduling parameters
   \item syscall interface
 \end{itemize}
+\end{comment}
 
 
 % -----------------------------------------------------------------------------
