@@ -56,9 +56,13 @@
     \draw[transparent] (core0.north west) -- ++(0,5mm) coordinate(pid);
     \node(pack0) [rectangle, draw=none, anchor=west, xshift=-3mm] at (pid) {Package 0};
 
+    % Package rectangle
 %    \draw (-1.4cm,2.0cm) -- ++(0,-4.5cm) -- ++(5.5cm,0) -- ++(0,4.5cm) -- cycle;
-    \draw (-1.4cm,2.0cm) -- ++(0,-2.5cm) -- ++(5.5cm,0) -- ++(0,2.5cm) -- cycle;
+    \draw (-1.4cm,2.0cm) -- ++(0,-2.9cm) -- ++(5.5cm,0) -- ++(0,2.9cm) -- cycle;
 
+    % draw LLC
+    \draw (-1.28cm,-.45) -- ++(5.25cm,0) -- ++(0,-.4cm) -- ++ (-5.25cm,0) -- cycle;
+    \node(llc) at (1.345cm,-.65cm) {Last Level Cache};
 
 %    \node(smt_id) [id_style, anchor=east, xshift=-11mm] at (t0.west) {SMT\_ID};
 %    \draw[transparent] (smt_id.north) |- coordinate[midway](corner) (core0.west);
