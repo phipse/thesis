@@ -1,3 +1,4 @@
+% vim:set ft=tex:
 \section{Fiasco.OC \& L4Re}
 \label{state:env}
 \todo{Fiasco.OC \& L4Re}
@@ -54,13 +55,20 @@ core cycles, while the logical core is in ring 0.
 
 Another difference to the target processor, compared to most processors used in
 earlier research is the \gls{smp} architecture. In contrast to \gls{cmp}
-architectures no cache groups are defined, because the \gls{llc} is shared
-among all cores.
-\ref{state:fig:core_layout}
+architectures no cache groups are defined by the hardware, because the
+\gls{llc} is shared among all cores.
+Figure \ref{state:fig:core_layout} shows examplary the cache hierarchy and core
+components of the \gls{intel} Haswell processor.
+Each core consists of two \gls{ht} cores, sharing L1- and L2-caches.
+Besides the \gls{llc} the cores on one socket share nothing.
+The caches are inclusive, meaning each cache line present in L1I or L1D
+cache is also present in the corresponding L2 cache and each L2 cache line is
+also present in the \gls{llc}.
+This eases the lookup of cache lines in other cores on the same package.
 
 %\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.7\textwidth]{images/haswell_core_layout}
   \caption{Layout of a Core i7-4660K quad-core.
