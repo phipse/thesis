@@ -1,6 +1,22 @@
+% vim:set ft=tex:
 \section{Features}
 \label{design:features}
 
 * First goal: Distribute several threads to different cores
 * L4Re integration
 * HyperThread awareness
+
+\paragraph{Issues with security core idea:}
+The idea to reduce attack surface for e.g. openssh cache attacks was to provide
+a dedicated core for security critical applications.
+This idea spawned from the assumption that L1D \& L2 cache was solely present
+on a core, but the L3 cache content is a superset of all cores L1D \& L2 cache.
+Hence, cache side channel attacks are still possible, although more
+complicated, as the attacker not present on the core, must determine, which
+cache lines correspond to the L1D \& L2 cache of the ``security core''.
+Attacks presented in \cite{yarom_recovering_2014} and
+\cite{bernstein_cache-timing_2005} rely on the fact, that only one application
+is using cache lines on the core.
+On a multicore, only observing the \gls{llc}, other running applications are
+expected to disturb the observations, effectivly reducing the side channel
+throughput.
