@@ -143,6 +143,7 @@ identical.
 This limits the effectiveness of symbiosis analysis.
 \\
 
+\todo{separate each research block with a paragraph?}
 A different techniques is presented by \citeauthor{banikazemi_pam_2008}
 regarding thread-to-core mappings on a \gls{cmp}-system.
 In \cite{banikazemi_pam_2008} they present \emph{pam}: a performance/power-aware
@@ -225,9 +226,61 @@ cache miss rate also displays the load on prefetching hardware, memory
 controller and memory bus.
 Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
+
+\citeauthor{zhuravlev_addressing_2010} implemented their off- and on-line
+derived pain metrics in two scheduling algorithms: Distributed Intensity (DI)
+and Distributed Intensity Online (DIO). \todo{emph?}
+DI uses the Pain metric derived off-line from the stack-distance profiles,
+whereas DIO uses Approx-Pain derived from the \gls{llc} miss rate.
+Like \citetitle{banikazemi_pam_2008}, both schedulers are implemented in the
+Linux user level and override the default scheduler.
+
+The DI algorithm orders the applications based on their solo cache miss rate derived
+off-line.
+This order is used to split the application set into two halfs: above and below
+average miss rate.
+Each core runs one application from each half.
+If the miss rate changes at runtime, the order changes, which could impair
+the performance.
+However, \citeauthor{zhuravlev_addressing_2010} observed only minor place
+switching, which they not expect to harm the performance.
+
+DIO on the other hand, constantly measures the applications miss rate and is
+thereby able to react to phase changes during runtime.
+The algorithm collects data every billion cycles and uses a running average to
+sort the applications.
+Besides this it acts like DI.
+
+\citeauthor{zhuravlev_addressing_2010} ran tests on a \gls{intel}
+Xeon and AMD Opteron.
+The Xeon consists of eight cores on four chips sharing the L2 cache.
+The Opteron eight core has two chips sharing a L3 cache each.
+Leading to four cache groups in the Xeon case and two in the Opterons.
+Their tests show only small performance differences for their tested workloads
+on both machines.
+The authors ran eight different workloads on each machine and compared the
+performance improvement to the default Linux scheduler.
+Of the total of 18 tests only three tests show performance differences above
+two percent.
+In the Opteron's case DIO improved all workloads, whereas DI showed gains in
+all but one.
+The Xeon showed a mixed picture for DI and DIO: from 14 percent gains to four percent loss
+compared to Linux's default scheduler.
+The good overall performance of the default scheduler account
+\citeauthor{zhuravlev_addressing_2010} to the small test set and the relatively
+low probability to select the worst thread combination.
+They emphasise the performance gain of each individual application with DI and
+DIO scheduling and the reduced variance in execution time from run to run.
+
+The tested workloads consisted of pairwise independent applications. Thus the
+trade off between placing two communicating, high miss rate applications on the
+same core, or communicating across chip boundaries was no research question.
+Additionally, \gls{cmp} architectures gave way to \gls{smp} architectures,
+which do not necessarily provide strictly separated cache groups.
+Hence, the performance gain must be reevaluated.
 \\
 
-However, all research covered up to now assumed independent, non-interacting threads.
+Up to now, all research covered assumed independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming communicating, parallel applications.
 They propose a technique called \emph{speed balancing} with a notion for fast
@@ -261,6 +314,8 @@ notion, nor at arbitrary points in time.
 Hence, reducing the time the slowest thread needs to reach the synchronization
 point improves overall application performance.
 
+\todo{energy efficiency model research}
+\todo{security research regarding cache attacks}
 \todo{linux cfs scheduler?}
 
 
