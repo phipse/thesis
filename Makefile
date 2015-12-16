@@ -17,7 +17,7 @@ DOC_TEX_ADD ?= preamble/packages.tex \
                $(wildcard content/*.tex)
 
 # your bibtex databases
-DOC_BIB     ?= own.bib
+DOC_BIB     ?= own.bib Related_Work.bib
 
 # images
 DOC_IMG_JPG  = images/squirrel.jpg # you can specify multiple images here
@@ -73,6 +73,10 @@ $(DOC_TXT): $(DOC_TEX) $(DOC_TEX_ADD)
 	$(DETEX) $(DOC_TEX) > $(DOC_TXT)
 
 pdf: $(DOC_PDF)
+
+quick: $(DOC_TEX) $(DOC_TEX_ADD) $(DOC_BIB) $(DOC_IMG_JPG)		\
+            $(DOC_IMG_PNG) $(DOC_IMG_PNG) $(DOC_IMG_PDF) Makefile
+	$(LUALATEX) $(DOC_TEX)
 
 clean:
 	rm -f $(DOC_CLEAN)
