@@ -34,6 +34,8 @@ more analysis of each thread.
 This skeleton also enables thread specific proxies with an individual
 configuration.
 
+\todo{More details? Or better in architecture and implementation?}
+
 \begin{comment}
 \textbf{Fiasco.OC}
 \begin{itemize}
@@ -62,23 +64,25 @@ configuration.
 \label{state:haswell}
 
 In section \ref{state:related} several hardware features were mentioned.
-The most important of all are performance counters for cache misses, cycles and
+The most important of all are performance counters to measure cache misses, cycles and
 instructions executed.
-Those and many more are present in the target processor: an \gls{intel} Core
-i7-6440K.
-The processor has ``architectural performance monitoring version 3''
+The performance counter in the target processor --- an \gls{intel} Core
+i7-6440K -- are able to count these three events and many more.
+The processor contains ``architectural performance monitoring version 3''
 capabilities, which consists among other features of three fixed-function
 performance counters counting Instruction Retired, Unhalted Core Cycles, and
 Reference Instruction Retired.
 In contrast to the first two counters, the last counter is unaffected by
 processor speed changes due to power saving or turbo boost features.
+
 Besides these, four general purpose performance counters are available per
 logical core, which can be programmed to count one specific event.
 All \gls{intel} Core i generations support architectural performance monitoring
-in different versions, but all versions are guaranteed to support the events
-listed in table \ref{state:table:core_events}: Unhalted Core Cycles,
-Instruction Retired, Unhalted Reference Cycles, LLC Reference, LLC Misses,
-Branch Instruction Retired, and Branch Misses Retired.
+in different versions, but all versions are guaranteed to support the following
+events:
+Unhalted Core Cycles, Instruction Retired, Unhalted Reference Cycles,
+LLC Reference, LLC Misses, Branch Instruction Retired,
+and Branch Misses Retired.
 
 Besides these central events, each hardware generation supports a different set
 of so called ``non-architectural performance events''.
@@ -90,10 +94,10 @@ Another difference to the target processor, compared to most processors used in
 earlier research is the \gls{smp} architecture. In contrast to \gls{cmp}
 architectures no cache groups are defined by the hardware, because the
 \gls{llc} is shared among all cores.
-Figure \ref{state:fig:core_layout} shows examplary the cache hierarchy and core
-components of the \gls{intel} Haswell processor.
+Figure \ref{state:fig:core_layout} shows examplary the cache hierarchy of the
+\gls{intel} Haswell processor.
 Each core consists of two \gls{ht} cores, sharing L1- and L2-caches.
-Besides the \gls{llc} the cores on one socket share nothing.
+All cores on one socket share the \gls{llc}.
 The caches are inclusive, meaning each cache line present in L1I or L1D
 cache is also present in the corresponding L2 cache and each L2 cache line is
 also present in the \gls{llc}.
@@ -109,6 +113,14 @@ This eases the lookup of cache lines in other cores on the same package.
     L1D-, and L2-cache.}
   \label{state:fig:core_layout}
 \end{figure}
+
+\paragraph{Topology analysis}
+The topology of the CPU can be analysed at runtime.
+This is useful to detect, which two logical cores run together on the same
+physical core.
+The CPU provides this information through the CPUID interface, when the
+extended topology enumeration leaf is supported. This is the case for the
+target CPU.
 
 \begin{comment}
 \begin{itemize}
