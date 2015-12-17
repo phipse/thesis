@@ -1,0 +1,90 @@
+% vim:set ft=tex
+\section{SMT}
+\label{design:smt}
+
+\paragraph{co-schedule}
+As mentioned in \ref{state:related} a co-schedule describes two threads running
+in parallel on the same physical core, but in different \gls{smt}-threads.
+A good co-schedule has the least performance degradation,
+compared to executing each application without a co-runner.
+Physical hardware resources are shared between co-runners, hence, two threads with
+different resource needs are expected to impair each other the least, as they
+compete little on the same resource.
+So the main criteria for a good co-schedule is little conflict potential
+between co-runners.
+
+\paragraph{performance expectation}
+But how can a performance expectation be formulated, without offline
+measurements or an online measurement phase?
+If a thread is scheduled the first time, no performance measurement is
+available.
+The thread can be placed on the core with the least threads or with the lowest
+cache weight. \todo{did I explain cache weight already?}
+At the next interval boundary, the thread is measured and can be placed by the
+chosen scheme, e.g. cache weight.
+
+\paragraph{performance measurement}
+But does this measurement at interval boundaries actually describe the
+performance of the co-schedule?
+Three cases must be considered during an interval:
+(A) a thread runs solo on a physical core,
+(B) a thread runs together with one other thread on a physical core and both
+threads execute on one logical core, and
+(C) more than two threads run on the same physical core.
+In case (A), the measurement describes the solo execution performance and
+resource usage.
+Case (B)'s measurement actually provides the co-schedule performance for both
+threads.
+And case (C) provides no reliable information at all.
+If three threads are present, two of them, say \alpha{} and \beta{}, are assumed to
+execute in parallel at each point in time.
+During the interval the combination will change, so \alpha{} and \gamma{} will be
+co-scheduled for some time and likewise \beta{} and \gamma{} and \alpha{} and
+\beta{}.
+The measurement takes place at the end of an interval, with no information
+about how long which thread combination was executing together. So no
+co-schedule performance statement for each pair of threads can be made.
+
+This example is simplified to ease the argumentation, in reality two additional
+problems must be considered.
+First, the \gls{llc} of the target hardare is shared among all four physical cores,
+hence the performance of each core local co-schedule is influenced by
+co-schedules on other cores, too.
+Second, the possible thread combinations are either (\alpha, \beta) and
+(\gamma, \beta), (\alpha, \beta) and (\alpha, \gamma), or (\alpha, \gamma) and
+(\beta, \gamma), because no scheduling decisions take place during an interval.
+So one of the three threads can execute for the whole interval and the other
+two execute for half an interval each.
+
+The following three questions are still unanswered:
+Which information regarding the performance of a group of threads on two
+corresponding logical cores can be derived at the end of an interval?
+How can this measurement be compared to other groups?
+What measures need to be taken after the comparison to improve performance?
+
+Instruction per cycle seems to be a good measure to rate the performance of a
+co-schedule group.
+\todo{ is it clear to the reader what a co-schedule group is, or do I need to
+define this  explicitly}
+If the co-runners at a point in time have a high conflict
+rate on shared resources, the amount of instructions executed per cycle will
+suffer.
+For example, if two co-runners execute integer operations, the number of
+instructions per cycle, will be the number of integer units physically available.
+However, if one co-runner executes integer and the other floating point
+operations, this number will change to the number of integer units plus
+the number of floating point units, leading to a higher number of instructions
+per cycle.
+
+But is this number representative? No. Consider three threads, one executing
+floating point operations and two executing integer operations. Obviously, the
+one executing floating point operations should run alone on one logical core.
+But this property is
+unknown at runtime and cannot be derived from the measurements.
+Hence, all three different combinations must be executed, before a concise
+statement regarding the best possible performance achievable for this 
+co-schedule group can be made.
+
+\paragraph{abstraction}
+\todo{after this discussion, it seems the abstraction needs to be part of the
+implementation chapter}

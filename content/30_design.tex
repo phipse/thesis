@@ -18,12 +18,31 @@
 % wohl mindestens 8 Seiten haben, mehr als 20 können ein Hinweis darauf
 % sein, daß das Abstraktionsniveau verfehlt wurde.
 
-\ldots design \ldots
-
 \todo{write design}
 
+This chapter describes the problems that need to be solved, to achieve the
+overall goal of a behaviour aware load balancer on the Fiasco.OC microkernel.
+From chapter \ref{sec:state} four main areas can be deduced: \gls{smt},
+cogestion awareness, communication, and isolation.
+\todo{congestion awareness -> behaviour observation?}
+Additionally, the scheduler proxy and distribution algorithms must be designed.
+Each of these areas brings with it its own set of problems, which will be
+discussed in the following sections.
+
+\input{content/31_smt.tex}
+
 \input{content/32_assumptions.tex}
+\todo{move assumptions to end of chapter}
  % ---------------------------------------------------------------------------
+
+\begin{itemize}
+  \item SMT
+  \item Isolation
+  \item Behaviour observation
+  \item Communication
+  \item ThreadMapper aka Scheduler Proxy \& TaskProxies
+  \item Algorithms
+\end{itemize}
 
 * Table with data sources for prediction and analysis
 
