@@ -131,7 +131,7 @@ a notable gain?}
 \\
 
 Measuring the performance of a specific schedule in a \gls{smt}-system is
-difficult, especially, if no off-line knowledge is used.
+difficult, especially, if no offline knowledge is used.
 But even then, pinpointing the performance gain to the scheduling decision is
 only manageable with fine granular observation of the system.
 However, \cite{snavely_symbiotic_2000} and \cite{eyerman_revisiting_2015}
@@ -204,12 +204,12 @@ choice to predict cache interference between threads, their research lead to
 the conclusion that \gls{llc}-misses are a superior predictor.
 Memory reuse patterns model the access frequency of a memory area and the miss
 frequency for a particular application.
-This analysis has to be done off-line and assumes, that applications with high
+This analysis has to be done offline and assumes, that applications with high
 reuse and low miss rates do not affect other applications negatively, but
 applications with low reuse and high miss rates are likely to trash the cache
 of others.
 
-To do this analysis on-line the authors derived a metric called 'Pain', which
+To do this analysis online the authors derived a metric called 'Pain', which
 consists of two parts: sensitivity and intensity.
 The former describes how much an application suffers from sharing caches with
 others, the latter how much an application will hurt others.
@@ -218,7 +218,7 @@ suffering and B's intensity.
 Vice versa for B.
 The sum of both describes the expected performance degradation for these two
 applications, when being scheduled together on the same \gls{llc}.
-To approximate sensitivity and intensity on-line, they assumed cache miss and
+To approximate sensitivity and intensity online, they assumed cache miss and
 access rates would be a good measure, but it turned out only the cache miss
 rate is relevant.
 As memory reuse patterns only focus on the cache as a shared resource, the
@@ -227,16 +227,16 @@ controller and memory bus.
 Load on these shared resources showed to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 
-\citeauthor{zhuravlev_addressing_2010} implemented their off- and on-line
+\citeauthor{zhuravlev_addressing_2010} implemented their off- and online
 derived pain metrics in two scheduling algorithms: Distributed Intensity (DI)
 and Distributed Intensity Online (DIO). \todo{emph?}
-DI uses the Pain metric derived off-line from the stack-distance profiles,
+DI uses the Pain metric derived offline from the stack-distance profiles,
 whereas DIO uses Approx-Pain derived from the \gls{llc} miss rate.
 Like \citetitle{banikazemi_pam_2008}, both schedulers are implemented in the
 Linux user level and override the default scheduler.
 
 The DI algorithm orders the applications based on their solo cache miss rate derived
-off-line.
+offline.
 This order is used to split the application set into two halfs: above and below
 average miss rate.
 Each core runs one application from each half.
@@ -393,7 +393,7 @@ point improves overall application performance.
 	scheduler efficiency than only presenting turnaround time, best use all
       \item compare scheduler by comparing these three indicators
       \item overload situations := job arrival > max throughput
-      \item besides FCFS scheduler all other need an off-line phase to measure
+      \item besides FCFS scheduler all other need an offline phase to measure
 	the jobs, to be able to determine an optimal co-schedule.
     \end{itemize}
 
@@ -404,16 +404,16 @@ point improves overall application performance.
 	and memory controller
       \item options: cache line reuse / memory reuse pattern vs. miss rate
       \item \citeauthor{fedorova_managing_2010} started out with cache line
-	reuse and came to the conclusion, that the off-line measurement of
+	reuse and came to the conclusion, that the offline measurement of
 	memory reuse pattern and conclude, that this is not the best approach
 	to approximate congestion.
       \item they develop a PAIN metric, combining sensitivity and intensity
 	concerning shared cache usage: sensitivity: how much do I suffer by
 	shared cache; intensity: how much do I hurt others;
-      \item off-line measurement possible, but what is a good on-line
+      \item offline measurement possible, but what is a good online
 	approximation? Cache-miss rate and cache-access rate? (Intuitively
 	correlate with intensity and reuse frequency)
-      \item evaluation shows best on-line approximation for pain metric is LLC
+      \item evaluation shows best online approximation for pain metric is LLC
 	miss rate: combines sensitivity and intensity
       \item miss rate expresses load on FSB, prefetching hardware and
 	mem controller, which are the main cause for performance degradation,
@@ -594,9 +594,9 @@ communication;
 \begin{itemize}
   \item LLC miss rate of threads \textit{vs.} memory-reuse pattern
   \item more arguments for mem-reuse pattern
-  \item cache sensitivit and intensity of threads --> Pain metric (off-line)
+  \item cache sensitivit and intensity of threads --> Pain metric (offline)
   \item cache-miss and cache-access rate
-  \item on-line metric to approximate pain metric -> approx-pain
+  \item online metric to approximate pain metric -> approx-pain
   \item approx-pain uses perfcounters to measure LLC-miss-rate, as this showed
     to be the best predictor for sensitivity and intensity
   \item LLC-miss-rate predicts contention in other shared hardware
