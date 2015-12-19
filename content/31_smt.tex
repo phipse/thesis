@@ -3,7 +3,7 @@
 \label{design:smt}
 
 \paragraph{co-schedule}
-As mentioned in \ref{state:related} a co-schedule describes two threads running
+As introduced in \ref{state:related} a co-schedule describes two threads running
 in parallel on the same physical core, but in different \gls{smt}-threads.
 A good co-schedule has the least performance degradation,
 compared to executing each application without a co-runner.
@@ -15,21 +15,23 @@ between co-runners.
 
 \paragraph{performance expectation}
 But how can a performance expectation be formulated, without offline
-measurements or an online measurement phase?
-If a thread is scheduled the first time, no performance measurement is
-available.
+measurements or a separate online measurement phase?
+If a thread is scheduled the first time, no performance or resource information
+is available.
 The thread can be placed on the core with the least threads or with the lowest
 cache weight. \todo{did I explain cache weight already?}
-At the next interval boundary, the thread is measured and can be placed by the
-chosen scheme, e.g. cache weight.
+At the next interval boundary, the thread is measured and a performance
+prediction is formulated.
+Based on this prediction the thread can be placed by the chosen scheme,
+e.g. cache weight.
 
 \paragraph{performance measurement}
 But does this measurement at interval boundaries actually describe the
 performance of the co-schedule?
 Three cases must be considered during an interval:
 (A) a thread runs solo on a physical core,
-(B) a thread runs together with one other thread on a physical core and both
-threads execute on one logical core, and
+(B) a thread runs together with one other thread on a physical core and each
+thread executes on one logical core, and
 (C) more than two threads run on the same physical core.
 In case (A), the measurement describes the solo execution performance and
 resource usage.
@@ -53,10 +55,12 @@ co-schedules on other cores, too.
 Second, the possible thread combinations are either (\alpha, \beta) and
 (\gamma, \beta), (\alpha, \beta) and (\alpha, \gamma), or (\alpha, \gamma) and
 (\beta, \gamma), because no scheduling decisions take place during an interval.
+\todo{make it clear, that each combination is the result of the last
+assignment?}
 So one of the three threads can execute for the whole interval and the other
 two execute for half an interval each.
 
-The following three questions are still unanswered:
+But the following three questions are still unanswered:
 Which information regarding the performance of a group of threads on two
 corresponding logical cores can be derived at the end of an interval?
 How can this measurement be compared to other groups?
@@ -79,7 +83,7 @@ per cycle.
 But is this number representative? No. Consider three threads, one executing
 floating point operations and two executing integer operations. Obviously, the
 one executing floating point operations should run alone on one logical core.
-But this property is
+But these properties are
 unknown at runtime and cannot be derived from the measurements.
 Hence, all three different combinations must be executed, before a concise
 statement regarding the best possible performance achievable for this 
