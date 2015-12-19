@@ -89,6 +89,32 @@ Hence, all three different combinations must be executed, before a concise
 statement regarding the best possible performance achievable for this 
 co-schedule group can be made.
 
+The number of possible combinations for a number of threads to two cores is
+a known problem in combinatorics and solved via the
+\emph{Stirling numbers of the second kind}.
+The Stirling numbers of the second kind describes the number of ways to
+partition a set of $n$ objects into $k$ non-empty subsets.
+\todo{Wikipedia, can I find a different formulation}
+Let $k=2$ the number of cores and $n>0$ the number of threads.
+$k=2$ is a special case for the Stirling numbers of the second kind:
+\todo{Source}
+%
+$$S_{n,2} = 2^{n-1}-1$$
+%
+Therefore, to formulate a concise statement for the best possible performance
+for a group of threads on a physical core containing two logical cores,
+3, 7, 15, 31, \ldots{} combinations must be scheduled for group sizes of
+3, 4, 5, 6, \ldots.
+
+So assuming each group of threads on each physical core, was executed
+$S(_{n,2})$ times, where $n$ is the group size.
+The best performance for each group was measured and can be compared across
+all groups.
+
+Is it now possible to compare the measurements?
+No.
+
+
 \paragraph{abstraction}
 \todo{after this discussion, it seems the abstraction needs to be part of the
 implementation chapter}
