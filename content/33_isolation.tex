@@ -1,0 +1,44 @@
+% vim:set ft=tex
+\section{Isolation}
+\label{design:isolation}
+
+A microkernel provides strong isolation and also real-time guarantees.
+A requirement aware thread to core mapping, can support these guarantees.
+The following discusses security and real-time needs of applications and how to
+manage these.
+
+\paragraph{Security}
+As presented in section \ref{state:related} even in virtualized environments
+CPU cache is a valid side channel to attack secret keys.
+To reduce the channel's throughput, security critical applications should share
+as little cache as possible with unknown applications.
+In Haswell's cache hierarchy, only the \gls{llc} is shared among all cores, but
+the L1 and L2 caches are core local.
+To reduce the possibility for FLUSH + RELOAD attacks, write access to the core
+local caches must be prevented, hence, if the security critical applications
+run alone on one physical core, only read access to the core local cache is
+possible from other cores.
+Thus, the L1 and L2 caches cannot be flushed.
+
+But the cache design of Haswell is inclusive, meaning all cache lines in L1 \&
+L2 caches are also present in the \gls{llc}.
+This is assumed to limit the impact of a ``security core'' design.
+A precise measurement of the size and reduction of the side channel is beyond
+the scope of this thesis.
+\\
+
+The security requirement of a task is defined by the system design.
+Therefore, a way to provide this static information to the load balancing
+service is necessary.
+It is also preferable to define specific security groups to separate different
+security critical tasks or to place a group of related security tasks.
+Hence, the configuration scheme must allow to define groups and identify the
+same group in the configurations of different tasks.
+
+This can be achieved by a per task configuration parameter identifying
+different groups by name.
+
+\paragraph{Real-Time}
+Very similar isolation guarantees 
+
+\paragraph{Configuration}
