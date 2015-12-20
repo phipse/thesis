@@ -13,6 +13,93 @@ compete little on the same resource.
 So the main criteria for a good co-schedule is little conflict potential
 between co-runners.
 
+\paragraph{performance measurement \& expectation}
+But what describes the performance of a co-schedule.
+\citeauthor{snavely_symbiotic_2000} measured conflicts in shared
+resources and weighted speedup (see \ref{state:related}).
+\citeauthor{eyerman_revisiting_2015} criticized this measure, as it measures
+the work done in a fixed period of time, which depends on the period measured.
+They proposed weighted instructions, as the amount of cycles per instruction
+varies.
+But both approaches require either each thread to be scheduled alone on a core,
+to derive a reference measure, or knowledge about the instructions executed.
+Both is infeasible for this work.
+
+The argument for weighted instructions is also an argument against all measures
+that use instruction per cycle (IPC) without a weight.
+Naturally, threads executing more memory bound work will have less IPC than
+threads executing CPU bound work.
+
+All these variables, lead me to the conclusion, that IPC alone is not a good
+measure for co-schedule performance.
+\\
+
+More issues arise, if each physical core consisting of two logical cores,
+executes more than two threads during an measurement interval.
+If three threads \alpha{}, \beta{}, \gamma{} are executed on one physical core,
+the following assignments to the two logical cores are possible:
+(\alpha{}, \beta{}\gamma{}), (\beta{}, \alpha{}\gamma{}), (\gamma{}, \alpha\beta).
+Where each logical core executes at least one thread.
+Each combination has to be executed and measured, to determine which
+combination has the best co-schedule performance for the whole group.
+
+For example, \gamma{} executes mainly floating-point operations and
+\alpha{} and \beta{} execute mainly integer operations.
+The third distribution has the least conflict potential.
+But the kind of operations a thread executes is unknown at runtime.
+Hence, all combinations must be executed before a concise statement regarding
+the best co-schedule can be made.
+
+The number of possible assignments for a number of threads to two cores is
+a known problem in combinatorics and solved via the
+\emph{Stirling numbers of the second kind}: $S_{n,k}$.
+The Stirling numbers of the second kind describe the number of ways to
+partition a set of $n$ objects into $k$ non-empty subsets.
+\todo{Wikipedia, can I find a different formulation}
+Let $k=2$ the number of cores and $n>0$ the number of threads.
+$k=2$ is a special case for the Stirling numbers of the second kind:
+\todo{Source other than wikipedia}
+%
+$$S_{n,2} = 2^{n-1}-1$$
+%
+Therefore, to formulate a concise statement for the best possible performance
+for a group of threads on a physical core containing two logical cores,
+seven combinations must already be evaluated, when running only four threads.
+If five threads are running the number increases to fifteen combinations.
+
+Measurement of all possible combinations is infeasible for more than four
+threads.
+But still, thread behaviour is not necessarily consistent throughout the whole
+measurement process.
+And additionally, the above example is simplified, as the target CPU contains a
+shared \gls{llc}, which was not considered.
+Due to the connection through the \gls{llc}, one cache heavy thread can impair
+threads on all other cores, by evicting large amounts of cache lines in the
+\gls{llc}.
+
+To summarize: Neither is there a precise performance measure,
+nor is it possible to execute and compare all assignment combinations for two
+corresponding logical cores,
+nor is the measurement free of influences from other cores.
+
+After establishing, that a precise performance statement is impossible to do
+exclusively online, is it sufficient to work with an approximation?
+\todo{Is impossible a to definite statement?}
+Obviously, IPC serves as an approximation.
+Other performance approximations will be discussed in the remainder of this
+chapter.
+How well these approximations perform will be discussed in the evaluation
+chapter \ref{sec:evaluation}.
+\todo{Thread groups, comparison and migration missing}
+\\
+
+Should I mention cache usage as approximation? Isn't this behaviour analysis,
+isn't this all behaviour analysis?
+Should I stop here and mention this again in later chapters, e.g.
+Implementation. Maybe a good place will show up, once I have written more.
+
+
+\begin{comment}
 \paragraph{performance expectation}
 But how can a performance expectation be formulated, without offline
 measurements or a separate online measurement phase?
@@ -114,6 +201,7 @@ all groups.
 Is it now possible to compare the measurements?
 No.
 
+\end{comment}
 
 \paragraph{abstraction}
 \todo{after this discussion, it seems the abstraction needs to be part of the
