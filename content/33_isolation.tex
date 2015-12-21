@@ -38,7 +38,17 @@ same group in the configurations of different tasks.
 This can be achieved by a per task configuration parameter identifying
 different groups by name.
 
+
 \paragraph{Real-Time}
-Very similar isolation guarantees 
+Very similar isolation guarantee is necessary for real-time tasks.
+The main difference is possibility to assign more than one core to a real-time
+task group.
+\todo{reason for multiprocessor support}
+
+The configuration parameter parameter must identify different groups by name
+and their physical core requirements.
+
+
+
 
 \paragraph{Configuration}
