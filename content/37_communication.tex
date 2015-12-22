@@ -1,0 +1,33 @@
+% vim:set ft=tex
+\section{Communication}
+\label{design:comm}
+
+\paragraph{Comm types}
+distributed computation with comm synchronization
+client-server communication with single threaded server and single threaded
+client or multithreaded client.
+multi thread clients need to be distributed like distr. computations
+one client is scheduled to server thread.
+
+Observation possibilities, quantity, partners, kernel and userland. 
+
+\paragraph{Kernel}
+\paragraph{Matrix}
+sparse matrix, symmetric, thread to thread communication increases counter
+\paragraph{Map}
+thread local storage of <capability, counter> map, counting each \gls{ipc}
+
+\paragraph{User land}
+\paragraph{static configuration parameter}
+communication group and type property via task specific configuration
+distr \& clsvr;
+\paragraph{Comm partner cap}
+scheduler interface addition to cooperate with the thread and let him tell the
+threadMapper the threads it talks to, by providing a cap on the thread.
+TM can check, if object is known -- caps point to same object syscall -- and
+build groups and schedule them accordingly. 
+
+
+\paragraph{Implementation}
+Ned script with task specific configuration if communication attributes are
+necessary.
