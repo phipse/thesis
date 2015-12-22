@@ -1,0 +1,17 @@
+% vim:set ft=tex
+\section{Behaviour Observation}
+\label{design:behaviour}
+
+\paragraph{performance counter}
+\begin{itemize}
+  \item build into the kernel, provide thread accounting
+  \item syscall interface to request measurements and reset counters.
+  \item performance counter value struct
+  \item fixed set of counters stored in kernel and UL struct.
+\end{itemize}
+
+\paragraph{LLC metric}
+As explored by Zhuravlev et al. \gls{llc}-misses predict the load on cache,
+prefetching hardware, memory bus and controller.
+
+\paragraph{}
