@@ -2,12 +2,50 @@
 \section{Communication}
 \label{design:comm}
 
-\paragraph{Comm types}
-distributed computation with comm synchronization
-client-server communication with single threaded server and single threaded
-client or multithreaded client.
-multi thread clients need to be distributed like distr. computations
-one client is scheduled to server thread.
+A less attended behaviour property of threads is communication.
+It is difficult to observe which threads are communicating with each other and
+how often.
+This section explores kernel and user land approaches to acquire this
+information static and dynamically.
+
+
+\paragraph{Communication types}
+Two types of communication exist.
+\citeauthor{hofmeyr_load_2010} assumed a program running several threads which
+compute a chunk of work and then communicate their results to each other.
+This cycle repeats until all work is executed, where the time executed is the
+major part of the cycle and only a small part is used for communication.
+Nevertheless, the overall program performance is best, if each thread reaches
+the communication synchronisation at the same time to spend as little time as
+possible waiting for others.
+This connection was also note in \cite{hofmeyr_load_2010}.
+The compute-communicate pattern is typical for distributed systems and is named
+distributed communication in the following.
+
+The other type is client-server communication.
+To achieve the best possible performance, the communication latency, meaning
+the time difference between sending and receiving the message, must be minimal.
+The latency is minimal, if both communication partners are on the same core.
+Additionally, time slice donation, where the server executes on the time slice
+of the client, is only possible if both execute on the same core.
+Furthermore, the server won't execute unless it has a client request, so a
+server typically has long idle times.
+Therefore, it is preferable to execute both communication partners on the same
+core.
+
+But this conclusion is wrong, if there are several clients of the same task.
+If the task runs several threads, then it most likely wants these threads to
+execute in parallel.
+To run all threads on one core, close to the server, would heavily impact their
+performance.
+In the worst case, the performance drops to single threaded performance.
+
+The same argumentation applies, if the server has a high number of clients from
+different tasks.
+To execute all clients on the server's core, would be a waste of resources.
+Hence, the distribution of the tasks threads to different cores takes priority
+over low communication latencies.
+
 
 Observation possibilities, quantity, partners, kernel and userland. 
 
