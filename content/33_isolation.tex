@@ -41,9 +41,10 @@ different groups by name.
 
 \paragraph{Real-Time}
 Very similar isolation guarantee is necessary for real-time tasks.
-The main difference is possibility to assign more than one core to a real-time
-task group.
-\todo{reason for multiprocessor support}
+The main difference is the possibility to assign more than one core to a
+real-time task group.
+If this is necessary depends on the group size and the tasks' requirements.
+\todo{reason for multicore support}
 
 The configuration parameter parameter must identify different groups by name
 and their physical core requirements.
@@ -52,3 +53,14 @@ and their physical core requirements.
 
 
 \paragraph{Configuration}
+% move to implementation?
+The configuration parameters for security and real-time tasks are the
+following:
+\begin{lstlisting}
+  SEC = <Name>
+  RT = <Name>
+\end{lstlisting}
+Multicore support for real-time tasks is not provided at the current state of
+the implementation.
+Also, if the number of RT and SEC groups is higher than the number of physical
+cores, or if core 0 is used the system will output an error message.
