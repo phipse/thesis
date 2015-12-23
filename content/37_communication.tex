@@ -28,7 +28,7 @@ the time difference between sending and receiving the message, must be minimal.
 The latency is minimal, if both communication partners are on the same core.
 Additionally, time slice donation, where the server executes on the time slice
 of the client, is only possible if both execute on the same core.
-Furthermore, the server won't execute unless it has a client request, so a
+Furthermore, the server will not execute unless it has a client request, so a
 server typically has long idle times.
 Therefore, it is preferable to execute both communication partners on the same
 core.
@@ -36,9 +36,10 @@ core.
 But this conclusion is wrong, if there are several clients of the same task.
 If the task runs several threads, then it most likely wants these threads to
 execute in parallel.
-To run all threads on one core, close to the server, would heavily impact their
-performance.
-In the worst case, the performance drops to single threaded performance.
+Running all threads close to the server on the same core, would heavily impact
+their performance.
+In the worst case, the performance drops below single threaded performance, due
+to context switch overhead.
 
 The same argumentation applies, if the server has a high number of clients from
 different tasks.
