@@ -2,16 +2,26 @@
 \section{Behaviour Observation}
 \label{design:behaviour}
 
-\paragraph{performance counter}
-\begin{itemize}
-  \item build into the kernel, provide thread accounting
-  \item syscall interface to request measurements and reset counters.
-  \item performance counter value struct
-  \item fixed set of counters stored in kernel and UL struct.
-\end{itemize}
+The key element of this project is behaviour observation.
+The threads behaviour is displayed through its resource usage.
+Cache misses and instructions show how memory and computation intense a thread
+is.
 
-\paragraph{LLC metric}
-As explored by Zhuravlev et al. \gls{llc}-misses predict the load on cache,
-prefetching hardware, memory bus and controller.
+To acquire these information, the kernel needs to run performance counter on
+each core and provide per thread accounting.
+Via a system call interface the account values can be requested and reseted for
+each thread.
 
-\paragraph{}
+As shown in \cite{zhuravlev_addressing_2010} and \cite{knauerhase_using_2008}
+\gls{llc} misses are a good indicate for the memory usage of a thread.
+A high \gls{llc} miss value indicates the thread is using a lot of memory and
+due to the misses it waits often for the memory request to be served.
+During this waiting phases, the thread cannot proceed, hence the executed
+instruction count is low.
+
+So a memory intensive thread differs in \gls{llc} misses and instructions per
+cycle from a computation intense thread.
+
+
+\todo{what else to write here?}
+
