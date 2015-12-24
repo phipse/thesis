@@ -1,26 +1,42 @@
-\section{Modules}
-\label{design:modules}
+\section{ThreadMapper - Load Balancer}
+\label{design:threadmapper}
+
+\paragraph{Thread Mapper \& Task Proxies}
+% Factory and configuration, groups
+
+\paragraph{Thread Management}
+
+\paragraph{CPU Topology \& Accounting}
+\paragraph{Information Gathering \& Balancing}
+
+
+\begin{comment}
 
 \subsection{Hardware performance monitoring}
 
-\subsection{Data Structures}
+\subsection{Core Accounting}
+Besides the structure of topology data, threads, thread-groups and the
+different thread to core assignments need to be modeled.
+
 
 \paragraph{Topology description}
 Represents the cache and core layout of the CPU.
 On Haswell it consist of a package description containing core descriptions.
-A core description consists of the hardware assigned APIC_id, the kernel
-assigned fiasco_id, and the SMT abstraction.
+A core description consists of the hardware assigned APIC\_id, the kernel
+assigned fiasco\_id, and the SMT abstraction.
 It can be expanded to include multi-socket systems by adding more package
 descriptions.
 It maps the fiasco view on the cores onto the actual HW topology and uses CPUID
 to determine corresponding logical cores.
 
-\paragraph{Thread_t}
+\paragraph{Thread\_t}
 is the administrative representation of a L4-thread.
 It contains not only of the thread parameters passed via run\_thread(), but
 also measurements for the current and last interval.
 LLC-misses, execution time, an identifier, and the cores it currently runs on
 and will run on in the next interval.
+
+\paragraph{Thread Groups}
 
 
 % ----------------------------------------------------------------------------
@@ -108,3 +124,4 @@ and will run on in the next interval.
   * Enforce the thread-to-core assignment
 
 
+\end{comment}
