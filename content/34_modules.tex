@@ -1,13 +1,70 @@
-\section{ThreadMapper - Load Balancer}
+\section{Load Balancer}
 \label{design:threadmapper}
 
-\paragraph{Thread Mapper \& Task Proxies}
-% Factory and configuration, groups
+All the techniques introduced in the previous sections of this chapter
+are now united into the central load balancing component.
+The section describes the components the load balancer is build of and relies
+upon.
+\todo{chapter structure}
+
+
+\paragraph{Load Balancer \& Task Proxies}
+To achieve good load balancing performance, the load balancer needs information
+about the underlying hardware, as well as the amount of work in the system.
+Thereby is it also possible to build hierarchical load balancing, where
+only a partial view on the hardware and only a subset of tasks runs on this
+specific load balancer.
+However, while leading to isolation between different subsets of the system,
+the overall performance can suffer, as the system is effectively partitioned.
+A surplus of computing resources in one partition is unusable by another
+partition leading to wasted resources.
+The partition size can only be adapted at core granularity, so a precise
+resource accounting may not be possible.
+
+Isolation between parts of the system can also be provided by a central load
+balancing component.
+A central load balancer as well as a hierarchical approach is part of the chain
+of trust of each balanced application, so both approaches are equally
+trustworthy.
+But the central component can react dynamically to changes in the workloads and
+shift the partition borders dynamically.
+Also if tasks with security properties, as discussed in section
+\ref{design:isolation}, enter or leave the system, the dynamic approach can
+repurpose a core.
+Redistribution of cores between hierarchical load balancer would require
+additional reasoning which load balancer the free core is assigned to, or which
+load balancer must release a core.
+Either the load balancer must communicate their reasoning between each other or
+with a central instance further up the hierarchy.
+The former weakens the isolation and increases overhead, the latter means more
+logic in a central instance.
+
+To decrease the overhead and due to the easier implementation a central load
+balancing component is chosen.
+
+Next to the load balancer task specific proxy scheduler act as information
+source.
+Each task can have isolation (\ref{design:isolation}) and communication
+properties (\ref{design:communication}).
+The task proxy stores this task specific configuration and provides it to the
+load balancer.
+
+A factory creates the load balancer as well as the task proxies and creates
+from the configuration parameters the configuration structure exchanged between
+proxies and balancer.
+The configuration structure comprises of the priority band and a list of
+the group types and identifiers.
+
 
 \paragraph{Thread Management}
 
 \paragraph{CPU Topology \& Accounting}
+
 \paragraph{Information Gathering \& Balancing}
+% Interval cycle with Measure, Predict, Decide (PlacementGen), Enforce
+% all including implementation details. Algorithms make the next chapter.
+% A separated implementation chapter doesn't feel natural
+
 
 
 \begin{comment}
