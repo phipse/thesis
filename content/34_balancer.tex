@@ -1,3 +1,4 @@
+% vim:set ft=tex:
 \section{Load Balancer}
 \label{design:threadmapper}
 
@@ -57,6 +58,16 @@ the group types and identifiers.
 
 
 \paragraph{Thread Management}
+The main management component inside the load balancer is the thread
+management.
+It creates a internal management class for each thread and identifies the
+thread via its capability.
+Using the configuration passed, the thread manager builds the thread groups,
+defined in the Ned configuration.
+It answeres existance requests for threads by capability and also cleans up
+threads, which left the system.
+It also provides a consistent view on all managed threads for other components.
+
 
 \paragraph{CPU Topology \& Accounting}
 
