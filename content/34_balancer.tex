@@ -70,6 +70,18 @@ It also provides a consistent view on all managed threads for other components.
 
 
 \paragraph{CPU Topology \& Accounting}
+Besides the management of threads, the load balancer must also know the load on
+each core and the topology of the underlying hardware.
+The topology is generated via the topology enumeration capability of CPUID.
+Each socket is described as a package consisting of physical cores.
+If \gls{ht} is present and enabled, each physical core contains two logical
+cores.
+
+Accounting consists of a physical core and list of thread scheduled on this
+core.
+From this list it computes the cores load, represented as instruction
+per cycle, \gls{llc}-weight, or thread count.
+
 
 \paragraph{Information Gathering \& Balancing}
 % Interval cycle with Measure, Predict, Decide (PlacementGen), Enforce
