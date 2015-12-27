@@ -315,6 +315,35 @@ Hence, reducing the time the slowest thread needs to reach the synchronization
 point improves overall application performance.
 
 \todo{energy efficiency model research}
+But performance is not a one dimensional value anymore.
+Performance/watt is the important measure on battery supported devices like
+notebooks or smartphones, and also in datacenters, as less watts mean less
+energy cost for running and cooling the datacenter.
+In \cite{POET} a mobile \gls{intel} Haswell and a Samsung Exynos 5 Octa are
+compared regarding their minimal energy consumption.
+The authors show that different strategies are necessary to achieve minimal
+energy consumption of the two processors.
+In case of the \gls{intel} Haswell processor, race to idle proved to be the
+strategy to reduce energy consumption.
+The Samsung processor on the other hand, should run constantly at low clock
+speeds.
+
+\cite{slow down or sleep} considers server utilization below 30\%, at which
+point the server's energy efficiency is worst.
+\citeauthor{slow down or sleep} suggest, that low frequency/low voltage setup
+provide the best energy efficiency, while meeting quality of service
+parameters.
+But only for web-server or video decoding like workloads.
+Overall, their research suggest to avoid turbo boost and to use high sleep
+states.
+However, the possibilities to influence sleep states are limited for a load
+balancer.
+If the thread count is low, the load balancer can clear cores to allow the CPU
+to go to sleep.
+% todo can I derive a model. How can a load balancer affect the sleep states?
+
+
+
 \todo{security research regarding cache attacks}
 \todo{linux cfs scheduler?}
 
