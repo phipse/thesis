@@ -328,20 +328,20 @@ strategy to reduce energy consumption.
 The Samsung processor on the other hand, should run constantly at low clock
 speeds.
 
-\cite{slow down or sleep} considers server utilization below 30\%, at which
-point the server's energy efficiency is worst.
-\citeauthor{slow down or sleep} suggest, that low frequency/low voltage setup
-provide the best energy efficiency, while meeting quality of service
-parameters.
-But only for web-server or video decoding like workloads.
-Overall, their research suggest to avoid turbo boost and to use high sleep
-states.
-However, the possibilities to influence sleep states are limited for a load
-balancer.
-If the thread count is low, the load balancer can clear cores to allow the CPU
-to go to sleep.
-% todo can I derive a model. How can a load balancer affect the sleep states?
+\cite{slow down or sleep} considers systems loads below 30\% and different
+workloads: video playback and a web-server.
+Their measurements suggest, that it is best to maintain low clock speeds, as
+long as the system load and quality of service guarantees allow it.
+During idle time, the processor changes to deep sleep states and saves
+energy.
+The recovery from deep sleep states -- power up core, load data into core local
+caches -- increases system load only slightly.
+To conserve energy, turbo boost should not be used, as the gained frequency
+comes at a high energy cost.
 
+It is interesting for this work, how a load balancer can change the assignment
+of threads to cores, to reduce overall energy consumption.
+In \ref{sec:design} different models will be discussed.
 
 
 \todo{security research regarding cache attacks}
