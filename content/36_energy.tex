@@ -1,0 +1,27 @@
+% vim:set ft=tex:
+\section{Energy model}
+\label{design:energy}
+
+Energy consumption is important in modern systems, as battery powered devices
+become more popular.
+But observing energy consumption is not part of this thesis and energy
+measurement itself consumes energy.
+Hence, a model describing energy consumption is derived from related work
+presented in section \ref{state:related}.
+
+\cite{imes_poet_2015} showed that different models are necessary for different
+platforms.
+A mobile Haswell generation processor consumes least energy, if the race to
+idle scheme is used, whereas an embedded Exynos5 generation CPU is designed for
+constant low frequency operation.
+The target hardware for this work is a Haswell generation processor, so the
+race to idle model looks promising.
+However, the additional energy cost of turbo boos should be avoided, as noted
+in \cite{le_sueur_slow_2011}.
+Turbo boost can be avoided by either completely disabling the feature or by
+distributing work to all cores.
+
+% least energy consumption in deep sleep states
+% energy account = working time energy + sleeping time energy
+%
+
