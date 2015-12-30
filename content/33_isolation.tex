@@ -12,19 +12,13 @@ As presented in section \ref{state:related} even in virtualized environments
 CPU cache is a valid side channel to attack secret keys.
 To reduce the channel's throughput, security critical applications should share
 as little cache as possible with unknown applications.
-In Haswell's cache hierarchy, only the \gls{llc} is shared among all cores, but
-the L1 and L2 caches are core local.
-To reduce the possibility for FLUSH + RELOAD attacks, write access to the core
-local caches must be prevented, hence, if the security critical applications
-run alone on one physical core, only read access to the core local cache is
-possible from other cores.
-Thus, the L1 and L2 caches cannot be flushed.
+In Haswell's inclusive cache hierarchy, the \gls{llc} is shared among all
+cores, but the L1 and L2 caches are core local.
+However, their cache lines are included in the shared \gls{llc}.
 
-But the cache design of Haswell is inclusive, meaning all cache lines in L1 \&
-L2 caches are also present in the \gls{llc}.
-This is assumed to limit the impact of a ``security core'' design.
-A precise measurement of the size and reduction of the side channel is beyond
-the scope of this thesis.
+As shown in \cite{inci_seriously_2015} and \cite{liu_last-level_2015}
+the impact of a ``security core'' design is limited.
+Still, a security core increases the difficulty for PRIME+PROBE attacks.
 \\
 
 The security requirement of a task is defined by the system design.
