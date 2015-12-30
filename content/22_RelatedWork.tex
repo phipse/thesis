@@ -343,9 +343,76 @@ comes at a high energy cost.
 It is interesting for this work, how a load balancer can change the assignment
 of threads to cores, to reduce overall energy consumption.
 In \ref{sec:design} different models will be discussed.
+\\
+
+\paragraph{Cache side-channel attacks}
+The CPU cache has proved to be a great side channel to deduce private
+cryptographic keys.
+To different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.
+
+The former exploits a x86 instruction to flush a specified cache line, if read
+access is allowed.
+Another necessity is shared memory between attacker and victim, e.g. binary
+code in shared libraries or executables.
+The third part are branches in the code path of the attacked program.
+\citeauthor{yarom_recovering_2014} present in \cite{yarom_recovering_2014} an
+attack to recover private keys via FLUSH+RELOAD.
+Thereby, a set of cache lines is flushed from the cache and after a waiting
+period it is reloaded.
+If the cache line was present in the cache, the time it takes to read the data
+is small.
+If it is not present in the cache the read from memory is significantly slower
+for \gls{llc} lines.
+\todo{numbers?}
+
+The attack uses the fact, that the OpenSSL implementation of the Montgomery
+ladder executes different branches depending on the bit tested is zero or one.
+If the data containing the \textit{then} branch is present in the cache, the
+tested bit was one, if the \textit{else} branch data is present, the bit was
+zero.
+The length of the waiting period presents a trade-off between missing
+subsequent accesses if the period was to long or observing single accesses as
+duplicates of themselves.
+In \cite{yarom_recovering_2014} the private key was recovered using this
+technique.
+Other implementations of the Montgomery ladder, e.g. in Network and
+Cryptographic Library (NaCL) by Bernstein et al.,
+\todo{footnote, cite}
+do not rely on branching and are therefore not susceptible to this attack.
+
+However, shared memory with the target application is necessary.
+But between virtual machines no data is shared, making FLUSH+RELOAD
+impossible.
+The PRIME+PROBE attack on the other hand works without this requirement.
+This attack writes known data to a set of cache lines, the eviction set,
+and accesses the same data after a waiting period.
+If a cache line was used by other processes the data is gone and it takes
+longer to reload it from memory.
+
+The attack utilises the inclusiveness property of the CPU cache, to observe
+changes in core local L1 and L2 caches in the \gls{llc}.
+Each cache line of the L1 caches is present in L2 and each line present in L2
+is present in the L3 cache.
+\todo{picture}
+Therefore the eviction set must cover the cache lines in the \gls{llc} that
+correspond to the core local caches.
+Hence, the core running the application, which is attacked must be known.
+Now, after the right set of cache lines is found, the access frequency can be
+observed.
+The access to the cache set reveals squaring operations in the algorithm.
+Based on the time passed between two squaring operations, the attacker deduces
+a one or zero bit.
+The execution path in case of a one bit is longer, hence more time passed.
+Two attacks are presented in \cite{liu_last-level_2015} and
+\cite{inci_seriously_2015}, both recovering a private key of an attacked
+virtual machine.
+\citeauthor{inci_seriously_2015} tested their attack on Amazon EC2 instances,
+proving its practicality in a real world scenario.
+
+Separating security critical applications on architectures, with shared
+\gls{llc} raises the difficulty of an attack, but does not mitigate it.
 
 
-\todo{security research regarding cache attacks}
 \todo{linux cfs scheduler?}
 
 
