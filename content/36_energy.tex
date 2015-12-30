@@ -16,12 +16,16 @@ idle scheme is used, whereas an embedded Exynos5 generation CPU is designed for
 constant low frequency operation.
 The target hardware for this work is a Haswell generation processor, so the
 race to idle model looks promising.
-However, the additional energy cost of turbo boos should be avoided, as noted
+However, the additional energy cost of turbo boost should be avoided, as noted
 in \cite{le_sueur_slow_2011}.
 Turbo boost can be avoided by either completely disabling the feature or by
 distributing work to all cores.
 
+\cite{le_sueur_slow_2011} also suggest, to use deep sleep states as much as
+possible, as the overhead of reactivating the core is small and if a deep sleep
+state can be considered, the overall system load is low enough to cope with
+this additional load.
 % least energy consumption in deep sleep states
 % energy account = working time energy + sleeping time energy
+% overhead through deep sleep states is small
 %
-
