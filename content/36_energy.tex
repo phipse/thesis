@@ -4,28 +4,55 @@
 
 Energy consumption is important in modern systems, as battery powered devices
 become more popular.
-But observing energy consumption is not part of this thesis and energy
-measurement itself consumes energy.
-Hence, a model describing energy consumption is derived from related work
-presented in section \ref{state:related}.
+But observing energy consumption is not part of this thesis.
+However, based on a energy consumption model, an energy efficient load
+balancing strategy is designed.
+This model is derived from related work presented in section
+\ref{state:related}.
 
-\cite{imes_poet_2015} showed that different models are necessary for different
+The critical question for an energy model is:
+When is least energy consumed?
+If the work is done fast and the cores sleep for a longer time or if the work
+is done at lower frequencies for a longer time.
+
+Assume the system is only at half utilization at the lowest possible frequency.
+In \cite{le_sueur_slow_2011} it is assumed, that quality of service is
+maintained, even at low frequencies.
+They showed, for their three applications that the energy efficiency is best
+for low frequencies, but depending on the application, at the cost of
+throughput.
+So it is highly application specific to find the right frequency for the
+running application.
+The complexity increases, if more than one application is present in the
+system.
+Furthermore, it is not the job of the load balancer to decide on core
+frequencies.
+
+\citeauthor{le_sueur_slow_2011} noted that turbo boost -- raising the frequency
+of one core above standard, if other cores are idle -- should be avoided at
+all cost, as the performance gain is little compared to the increased energy
+consumption.
+Usage of turbo boost can be avoided, if all cores are loaded, so the
+prerequisites are not met, or by disabling it in the BIOS.
+
+Another relevant observation in \cite{le_sueur_slow_2011} was, that the usage
+of deep sleep states and the related restart costs only slightly increase the
+system load.
+If deep sleep states are used, the system load is low anyway, so the additional
+load poses no problem.
+\\
+
+\cite{imes_poet_2015} states that different models are necessary for different
 platforms.
 A mobile Haswell generation processor consumes least energy, if the race to
 idle scheme is used, whereas an embedded Exynos5 generation CPU is designed for
 constant low frequency operation.
 The target hardware for this work is a Haswell generation processor, so the
 race to idle model looks promising.
-However, the additional energy cost of turbo boost should be avoided, as noted
-in \cite{le_sueur_slow_2011}.
-Turbo boost can be avoided by either completely disabling the feature or by
-distributing work to all cores.
+\\
 
-\cite{le_sueur_slow_2011} also suggest, to use deep sleep states as much as
-possible, as the overhead of reactivating the core is small and if a deep sleep
-state can be considered, the overall system load is low enough to cope with
-this additional load.
-% least energy consumption in deep sleep states
-% energy account = working time energy + sleeping time energy
-% overhead through deep sleep states is small
-%
+It is assumed, that a good energy efficient model makes use of race to idle on all
+cores, avoiding turbo boost and maximizing the time for deep sleep states.
+
+% todo Can POET be used in conjunction with a load balancer? Do they benefit each
+% other?
