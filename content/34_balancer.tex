@@ -12,15 +12,16 @@ upon.
 \paragraph{Load Balancer \& Task Proxies}
 To achieve good load balancing performance, the load balancer needs information
 about the underlying hardware, as well as the amount of work in the system.
-Thereby is it also possible to build hierarchical load balancing, where
+Thereby, it is also possible to build hierarchical load balancing, where
 only a partial view on the hardware and only a subset of tasks runs on this
 specific load balancer.
 However, while leading to isolation between different subsets of the system,
 the overall performance can suffer, as the system is effectively partitioned.
 A surplus of computing resources in one partition is unusable by another
 partition leading to wasted resources.
-The partition size can only be adapted at core granularity, so a precise
-resource accounting may not be possible.
+The partition size can only be adapted at core granularity, so meeting the
+precise resource needs may not be possible, leading to overprovisioning and
+additional resource waste.
 
 Isolation between parts of the system can also be provided by a central load
 balancing component.
@@ -43,7 +44,7 @@ logic in a central instance.
 To decrease the overhead and due to the easier implementation a central load
 balancing component is chosen.
 
-Next to the load balancer task specific proxy scheduler act as information
+Next to the load balancer, task specific proxy scheduler act as information
 source.
 Each task can have isolation (\ref{design:isolation}) and communication
 properties (\ref{design:comm}).
@@ -54,7 +55,7 @@ A factory creates the load balancer as well as the task proxies and creates
 from the configuration parameters the configuration structure exchanged between
 proxies and balancer.
 The configuration structure comprises of the priority band and a list of
-the group types and identifiers.
+the groups derived from the configuration.
 
 
 \paragraph{Thread Management}
@@ -62,11 +63,10 @@ The main management component inside the load balancer is the thread
 management.
 It creates a internal administration class for each thread and identifies the
 thread via its capability.
-Using the configuration passed, the thread manager builds the thread groups,
-defined in the Ned configuration.
-It answeres existance requests for threads by capability and also cleans up
-threads, which left the system.
-It also provides a consistent view on all managed threads for other components.
+The configuration passed by the task proxy is evaluated and if isolation or
+communication groups are given, the thread is assigned to these groups.
+The management provides a consistent view on all managed, grouped, and not grouped
+threads for other components and also cleans up left threads.
 
 
 \paragraph{CPU Topology \& Accounting}
@@ -77,10 +77,16 @@ Each socket is described as a package consisting of physical cores.
 If \gls{ht} is present and enabled, each physical core contains two logical
 cores.
 
-Accounting consists of a physical core and list of thread scheduled on this
-core.
-From this list it computes the cores load, represented as instruction
-per cycle, \gls{llc}-weight, or thread count.
+Each physical core is associated with an accounting object.
+It stores all assigned threads and computes the accumulated load on its core.
+Additionally, it provides information on which thread to migrate in case of an
+imbalance.
+The accounting object connects topology, physical cores and threads, therefore,
+it is the place for the SMT abstraction introduced in \ref{design:smt}.
+Each thread assigned to the physical core, is distributed to its hyper-threads
+by some algorithm, e.g. round robin, \gls{llc} weight, or IPC.
+If no \gls{ht} is available, no further assignment is necessary.
+The availability of \gls{ht} is deduced from the topology enumeration results.
 
 
 \paragraph{Information Gathering \& Balancing}
@@ -93,28 +99,28 @@ per cycle, \gls{llc}-weight, or thread count.
 % enforce: configure the core affinity for each thread and inform the kernel
 The logic of the load balancer is partitioned into four consecutive modules:
 measurement, prediction, decision, and enforcement.
-Each balancing interval they run once and adapt the current thread to core
+Each balancing interval, they run once and adapt the thread to core
 assignment to the current circumstances.
 
-First the information about the current situation is updated by gathering
-performance counter and execution time values from the last interval for each
+First, the information about the current situation is updated by gathering
+performance counter and execution time values of the last interval for each
 thread.
 Based on these measurements, the prediction module generates a forecast for
 each thread's resource needs.
 This forecast forms the input for the decision module.
 Together with the topology information and the accounting values for each core
-from last interval, the decision module checks if the system is still balanced.
+from last interval, the decision module checks, if the system is still balanced.
 If not, selected threads must be migrated to establish balance again.
 After deciding which threads must be migrated, the enforce module applies the
 migrations by modifying each thread's affinity and informs the kernel.
 
 These steps repeat every interval. A high interval duration reduces the
 load balancing overhead, but also leaves the system longer in a bad state, when
-thread behaviour or the workload changes.
-A short interval duration has the inverse effect.
+thread behaviour changes or threads enter and leave the system.
+A short interval duration increases the measurement overhead and may increase
+the amount of migrations.
 The ideal interval size increases system performance to outweigh the interval's
-balancing overhead.
-
+own balancing overhead.
 
 
 \begin{comment}
