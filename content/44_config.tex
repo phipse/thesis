@@ -1,0 +1,45 @@
+% vim:set ft=tex
+\section{Task Configuration}
+\label{impl:config}
+
+\paragraph{configuration parameters}
+The implemented configuration parameters are:
+
+\begin{lstlisting}
+min_prio  = <number>
+max_prio  = <number>
+sec	  = <name>
+rt	  = <name>
+distr	  = <name>
+clsvr	  = <name>_{C|S}
+\end{lstlisting}
+
+\begin{lstlisting}
+tmFactory:create(
+  L4.Proto.Scheduler, 
+  min_prio = 0, 
+  max_prio = 5,
+  clsvr = A_S)
+\end{lstlisting}
+
+
+\paragraph{configuration groups}
+
+\paragraph{scheduler replacement}
+To replace the scheduler in the target task, the default scheduler environment
+variable must be overwritten as follows:
+
+\begin{lstlisting}
+L4.default_loader:start(
+  { 
+    caps = {},
+    scheduler = tmFactory:create(
+      L4.Proto.Scheduler, 
+      ``min_prio = 0'', ``max_prio = 5'', ``distr = A'')
+  },
+  ``rom/app_matrixmul''
+)
+\end{lstlisting}
+
+\paragraph{example ned script}
+
