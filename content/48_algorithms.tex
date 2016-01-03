@@ -2,8 +2,26 @@
 \section{Algorithms}
 \label{impl:algos}
 
+The first last placement and group placement algorithms are used in the
+placement generator.
+The balancing need algorithm is used in the decision component to see if the
+current performance values bring the system out of balance.
+SMT distribution algorithms are part of the core accounting, as the SMT
+abstraction is implemented there.
+The ready queue balancing serves as baseline to show the benefit of behaviour
+analysis.
+
 \paragraph{First Last Placement}
 \paragraph{Balancing Need Test}
 \paragraph{Group placements}
 \paragraph{SMT distribution}
-\paragraph{Round Robin Placement}
+\paragraph{Balanced Ready Queue Placement}
+The simple balanced ready queue assignment to cores is used to rate the
+performance of the behaviour aware scheduling.
+It ignores configurations and just places an incoming thread on the core with
+the least threads.
+As threads leave the system the ready queues shrink differently, which is
+compensated by entering threads.
+
+To prove that behaviour analysis brings any benefit, it has to clearly beat
+this simple algorithm.
