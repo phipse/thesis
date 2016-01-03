@@ -26,12 +26,13 @@ one core assigned, but this is currently not implemented.
 In the future the name could be followed by a core count, to state the number
 of necessary cores.
 
-To configure the task  a create call to the factory service of the load
+To configure the task a create call to the factory service of the load
 balancer must be issued, containing the scheduler protocol as first parameter
-and then a comma separated list of strings containing the configuration
+and then a comma separated list of strings stating the configuration
 parameters.
 The factory will then return a capability on an proxy scheduler encapsulating
-the task configuration and passing it to the global load balancer.
+the task configuration.
+
 \begin{lstlisting}[language={[5.2]Lua}]
 tmFactory:create(
   L4.Proto.Scheduler,
@@ -55,8 +56,33 @@ L4.default_loader:start(
 )
 \end{lstlisting}
 
-\paragraph{example ned script}
+Therefore, the only change necessary to the application are the configuration
+parameters, which are encapsulated in the Ned startup script, shown in listing
+\ref{config:ned_full}.
+The load balancing service is completely transparent to the application.
 
-\lstinputlisting[language={[5.2]Lua}, firstline=3]{app_restart_mmul_parallel.cfg}
+\lstinputlisting[language={[5.2]Lua}, firstline=3, caption={Complete Benchmark
+configuration}, label={config:ned_full}]{app_restart_mmul_parallel.cfg}
+
 
 \paragraph{configuration groups}
+
+The configuration arguments stated in the startup script are parsed by the
+factory service and stored in a \texttt{config\_t} type
+(listing \ref{config:config_t}).
+The parser strips all white spaces from the configuration string and splits it
+in two parts: before and after the equality sign.
+The front part evaluates to minimum or maximum priority, or group type and the
+rear part evaluates to either an integer or a string identifier for the group.
+If the group type is a client-server type, the last character is matched
+against \texttt{C} or \texttt{S} to recognize clients and server tasks.
+
+Note, this configuration is per task, hence all threads of this task possess
+the same configuration.
+A configuration group must not necessarily span across several tasks.
+The \texttt{distr} parameter, for example, can group all threads of one task
+and ensures, that all threads of this task will be assigned to the maximal
+number of available cores.
+
+\lstinputlisting[language=c++, caption={Configuration Type},
+label={config:config_t}]{codeSamples/config.cc}
