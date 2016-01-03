@@ -121,6 +121,22 @@ A short interval duration increases the measurement overhead and may increase
 the amount of migrations.
 The ideal interval size increases system performance to outweigh the interval's
 own balancing overhead.
+\\
+
+The benefit of dividing the interval cycle into four separate components lies
+in its flexibility.
+If other information sources should be used, the measurement component is the
+place to add them.
+If different performance prediction algorithms should be tested, only the
+prediction component must be changed.
+The decision component allows to easily test balancing and placement algorithms
+and also incorporating multi socket systems is neatly encapsulated in it.
+
+Of course if information sources arise, changes down the line are necessary.
+But this approach provides a concise description of the different components.
+Also extending the load balancer to heterogeneous architectures is assumed to
+work well, as the design is similar to the approach in
+\cite{sarma_smartbalance_2015}.
 
 
 \begin{comment}
