@@ -2,8 +2,51 @@
 \section{Internal Data Management}
 \label{impl:internal}
 
-\paragraph{Thread representation}
-\paragraph{Thread Management}
-\paragraph{Core Accounting}
+\paragraph{Thread representation \& management}
+If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)} passing
+a capability on itself and its scheduling parameters, the proxy scheduler
+receives the call and forwards it to the central load balancer and adds the
+task's configuration: \texttt{run\_thread(cap, sched\_params, config)}.
+The load balancer then ask the thread management to look up the capability in
+its list of known threads.
+If none is found, a new internal thread object of type \texttt{Thread\_t} is
+created, encapsulating the capability, the scheduling parameters, and the
+configuration.
+Besides these three values, \texttt{Thread\_t} stores previous and current
+performance values and execution times.
+
+Next, the group configuration is evaluated and the \texttt{Thread\_t} instance
+is assigned to all configured groups.
+
+Besides creating and searching, the thread management also validates the
+presence of threads and in the case of deletion, it removes the corresponding
+\texttt{Thread\_t} instance from all groups, management lists, and deletes empty
+groups, before the object is destroyed.
+
+
 \paragraph{Interval Cycle}
-\paragraph{CPU Topology}
+The interval cycle design introduced in section \ref{design:balancer} is
+implemented as designed.
+Measurements and prediction are stored in the threads \texttt{Thread\_t}
+instance.
+Decision writes there the adapted scheduling parameters, too, and enforcement
+uses the capability and updated parameters to call the kernel.
+\texttt{Thread\_t} is the central structure connecting all these components.
+
+Threads in groups have the benefit to be placed separately, maintaining their
+group properties.
+Also, when the system is unbalanced, threads without group associations are
+considered first for migration.
+Distr type group threads are placed by first last placement using the \gls{llc}
+weight metric.
+Clsvr type group threads are placed on the core with the least \gls{llc} weight
+and several clients from the same task are distributed by first last placement,
+also using \gls{llc} weight.
+
+The threads without group association are distributed by first last placement
+using IPC as metric.
+Execution time of the different threads is not considered at the moment, but
+could be a good indicator, if the group cluster can be extended or should be
+reduced.
+
+The algorithms are presented in the following section.
