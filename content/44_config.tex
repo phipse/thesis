@@ -3,38 +3,52 @@
 \label{impl:config}
 
 \paragraph{configuration parameters}
-The implemented configuration parameters are:
+The following configuration parameters are implemented:
 
-\begin{lstlisting}
+\begin{lstlisting}[language={[5.2]Lua}]
 min_prio  = <number>
 max_prio  = <number>
-sec	  = <name>
-rt	  = <name>
-distr	  = <name>
-clsvr	  = <name>_{C|S}
+sec       = <name>
+rt        = <name>
+distr     = <name>
+clsvr     = <name>_{C|S}
 \end{lstlisting}
 
-\begin{lstlisting}
+The system designer needs not to define orthogonal parameters for
+a task at the same time.
+Either a task is in a security or in a real-time group, never in both.
+The same goes for \texttt{clsvr\_C} and \texttt{clsvr\_S}:
+A task cannot be client and server in the same group.
+Additionally, the system designer may not define more real-time and security
+groups than physical cores available.
+As mentioned in \ref{design:isolation} a real-time group could have more than
+one core assigned, but this is currently not implemented.
+In the future the name could be followed by a core count, to state the number
+of necessary cores.
+
+To configure the task  a create call to the factory service of the load
+balancer must be issued, containing the scheduler protocol as first parameter
+and then a comma separated list of strings containing the configuration
+parameters.
+The factory will then return a capability on an proxy scheduler encapsulating
+the task configuration and passing it to the global load balancer.
+\begin{lstlisting}[language={[5.2]Lua}]
 tmFactory:create(
-  L4.Proto.Scheduler, 
-  min_prio = 0, 
-  max_prio = 5,
-  clsvr = A_S)
+  L4.Proto.Scheduler,
+  ``min_prio = 0'',
+  ``max_prio = 5'',
+  ``clsvr = A_S'')
 \end{lstlisting}
 
+This proxy scheduler replaces the task environment's default scheduler and is
+then accessible via the common \texttt{L4Re::Env::env()->scheduler()} invocation.
 
-\paragraph{configuration groups}
-
-\paragraph{scheduler replacement}
-To replace the scheduler in the target task, the default scheduler environment
-variable must be overwritten as follows:
-
-\begin{lstlisting}
+\begin{lstlisting}[language={[5.2]Lua}]
 L4.default_loader:start(
-  { 
+  {
     caps = {},
     scheduler = tmFactory:create(
-      L4.Proto.Scheduler, 
+      L4.Proto.Scheduler,
       ``min_prio = 0'', ``max_prio = 5'', ``distr = A'')
   },
   ``rom/app_matrixmul''
@@ -43,3 +57,6 @@ L4.default_loader:start(
 
 \paragraph{example ned script}
 
+\lstinputlisting[language={[5.2]Lua}, firstline=3]{app_restart_mmul_parallel.cfg}
+
+\paragraph{configuration groups}
