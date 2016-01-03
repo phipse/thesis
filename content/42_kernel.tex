@@ -19,8 +19,8 @@ leaving three counters for future use.
 \paragraph{Configuring \& starting the counters}
 Each general purpose performance counter consists of a counter register and a
 configuration register.
-The configuration register must be filled with the counter ``UMask'' and
-``Event Select'' to specify the event which should be counted.
+The configuration register must be filled with the counter \texttt{UMask} and
+\texttt{Event Select} to specify the event which should be counted.
 Then user and operating system mode bits must be set, to count events happening
 in both, privileged and unprivileged mode.
 With the edge detect bit set, every new occurrence of the selected event is
@@ -38,8 +38,8 @@ performance monitoring control register.
 This register contains a bit for each counter, which must also be set to enable
 the counter.
 
-Fiasco.OC already contains the boot parameter '-loadcnt' enabling the unhalted
-core cycle counter on each core.
+Fiasco.OC already contains the boot parameter \texttt{-loadcnt} enabling the
+unhalted core cycle counter on each core.
 Although a fixed-function counter is available for this event, the
 implementation still used a general purpose counter.
 Using this flag, all mentioned events are configured and enabled on each core.
@@ -48,13 +48,14 @@ Using this flag, all mentioned events are configured and enabled on each core.
 % todo find out, where and when thread perf counting is enabled?
 After performance counting is enabled for a thread,
 Fiasco.OC adds the counter values on each context switch to the thread's
-account and resets the counter to zero.
+account and resets the hardware counter to zero.
 
 
 \paragraph{user land interface}
-Two new thread operations are introduced: perf\_read and perf\_reset.
-Perf\_read fills a passed perf\_counter struct with the values passed from the
-kernel, whereas perf\_reset tells the kernel to set all counters to zero.
+Two new thread operations are introduced: \texttt{perf\_read} and
+\texttt{perf\_reset}.
+\texttt{Perf\_read} fills a passed struct with the values passed from the
+kernel, whereas \texttt{perf\_reset} tells the kernel to set all counters to zero.
 
 \begin{lstlisting}[language=c++]
 enum L4_thread_ops {
