@@ -19,6 +19,8 @@ a task at the same time.
 Either a task is in a security or in a real-time group, never in both.
 The same goes for \texttt{clsvr\_C} and \texttt{clsvr\_S}:
 A task cannot be client and server in the same group.
+Also, distr and clsvr may not be combined, as the distr property is assumed
+if a client task runs more than one thread.
 Additionally, the system designer may not define more real-time and security
 groups than physical cores available.
 As mentioned in \ref{design:isolation} a real-time group could have more than
