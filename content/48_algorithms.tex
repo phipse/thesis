@@ -67,7 +67,7 @@ As long as the number of threads is larger than the number of cores times two,
 the first and last element of the sorted list are assigned to the core with the
 lowest metric value.
 If less threads are available, they are assigned one by one to the core with
-the lowest account.
+the least threads.
 If ties between core accounts are detected, the next thread or thread pair is
 assigned to the core with the least assigned threads.
 By assigning the first and last thread a first average is generated and the
@@ -127,6 +127,26 @@ compensated by entering threads.
 To prove that behaviour analysis brings any benefit, it has to clearly beat
 this simple algorithm
 
+
+\paragraph{Missing logic for shared memory}
+Tasks running several threads which use shared memory to communicate will have
+a worse performance using these algorithms.
+No communication parameter tells the load balancer, that these tasks should be
+grouped together.
+Consider two threads with shared memory on two separated cores.
+The only connection is the \gls{llc}.
+The cache line holding the shared memory, will bounce back and forth between
+the two cores, as one writes and invalidates the cache of the other.
+This means additional L1 and L2 cache miss costs, each time they communicate.
+
+If the number of threads is equal to the number of cores, the cache line will
+bounce between four different L1 and L2 caches, impairing the overall
+performance of the threads.
+
+An additional shared memory configuration parameter is necessary to help the
+load balancer diminish this issue.
+Then two threads could be placed, so that they run co-scheduled on the same
+caches.
 
 
 
