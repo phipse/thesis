@@ -12,9 +12,70 @@ The ready queue balancing serves as baseline to show the benefit of behaviour
 analysis.
 
 \paragraph{First Last Placement}
+The list of threads is sorted by a metric.
+As long as the number of threads is larger than the number of cores times two,
+the first and last element of the sorted list are assigned to the core with the
+lowest metric value.
+If less threads are available, they are assigned one by one to the core with
+the lowest account.
+If ties between accounts are detected, the next thread is assigned to the core
+with the least assigned threads.
+
+Let $x$ be the number of threads and $c$ the number of cores.
+The number of placement iterations $i$ after sorting is
+$i = x / (2*c) + x \% (2*c)$.
+
 \paragraph{Balancing Need Test}
+This test takes the most effort.
+First, a balance has to be established.
+Either each core is evaluated separately or all cores are evaluated together.
+The first approach assumes, that a system wide balance was established
+previously and only if the core itself gets out of balance, actions are
+necessary.
+There the question arises, how far is the current value allowed to divert from
+the balance value?
+
+The second approach bears the problem of a global balance value.
+Consider four cores and four threads with highly different \gls{llc} weight
+values.
+Of course, each core is assigned one thread, but what is then the global
+balance?
+Maximum, minimum, and average and overall distribution needs to be considered
+before a statement regarding the balance can be made.
+
+A system in balance has minimal distance between the highest and lowest
+\gls{llc} weight of each core.
+But here the question also arises: How high is the tolerance for the current
+balance?
+
+
 \paragraph{Group placements}
+If the group is of type \texttt{distr} first last placement is used for its
+members.
+
+\texttt{Clsvr} type groups are handled in two ways: First it is checked, which
+group members belong to the same tasks.
+Of each task one thread is assigned to the same core as the server thread.
+The others threads are distributed by first last placement.
+
+\texttt{Sec} and \texttt{rt} type groups get their private physical core, hence
+all threads of these groups are assigned to the same core.
+
+
 \paragraph{SMT distribution}
+After the physical core assignment is done, each physical core internally
+distributes its set of assigned threads to the hyper-threads.
+Different options arise: simple round robin or round robin after sorting the
+threads by \gls{llc} weight or by IPC.
+
+Or one core get the highest \gls{llc} weight threads and the other the threads
+with high IPC.
+It is assumed, this leads to a good symbiosis, as the high IPC threads compute,
+while the high \gls{llc} weight threads wait for memory.
+
+Superiority of one above the others must be empirically evaluated.
+
+
 \paragraph{Balanced Ready Queue Placement}
 The simple balanced ready queue assignment to cores is used to rate the
 performance of the behaviour aware scheduling.
@@ -24,4 +85,60 @@ As threads leave the system the ready queues shrink differently, which is
 compensated by entering threads.
 
 To prove that behaviour analysis brings any benefit, it has to clearly beat
-this simple algorithm.
+this simple algorithm
+
+
+
+
+\begin{comment}
+\paragraph{Pseudo-code of placement algorithm}
+  \begin{verbatim}
+  from all threads:
+    select #core highest LLC miss rate
+    select #core highest exec-time
+    intersection of both are critical threads
+    if threads placed on different cores
+      then do nothing
+    else
+      move higher LLC miss rate thread to other core
+    do accounting
+
+  forall threads left do:
+    bin by priority levels
+    sort each bin by miss rate
+
+  forall prio-bin in prio-bin-list do:
+    while threads in prio-bin
+      dequeue highest miss rate
+      sort cores by lowest accounted miss rate
+      place max(#core, #threads left in bin) threads RR on cores;
+  \end{verbatim}
+
+  \paragraph{\gls{smt} abstraction code}
+  \begin{verbatim}
+  if SMT is enabled
+    sort threads once by exec time and once by LLC miss
+    while duplication:
+      look at next LLC-miss thread and dequeue it from exec-time
+      look at next exec-miss thread and dequeue it from LLC-miss
+
+    while threads unassigned && queue not empty:
+      dequeue one thread from LLC miss list for SMT#0
+      dequeue one thread from LLC-miss list for SMT#1
+      dequeue one thread from exe-time list for SMT#0
+      dequeue one thread form exec-time list for SMT#1
+  \end{verbatim}
+
+  \paragraph{Minimize migration pseudo-code}
+  \begin{verbatim}
+  sort all threads by LLC-miss
+  sliding window size #threads with less than 5% LLC miss difference
+  if at least 2 threads in the current window are migrated
+    if two threads are swaping cores
+      don't do the migration
+    ALTERNATIVELY
+    if the from-core-to-core-matrix has entries on opposing fields
+      swap the to-values of both entries
+  \end{verbatim}
+
+\end{comment}
