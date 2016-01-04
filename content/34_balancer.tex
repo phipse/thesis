@@ -141,13 +141,6 @@ work well, as the design is similar to the approach in
 
 \begin{comment}
 
-\subsection{Hardware performance monitoring}
-
-\subsection{Core Accounting}
-Besides the structure of topology data, threads, thread-groups and the
-different thread to core assignments need to be modeled.
-
-
 \paragraph{Topology description}
 Represents the cache and core layout of the CPU.
 On Haswell it consist of a package description containing core descriptions.
@@ -164,93 +157,5 @@ It contains not only of the thread parameters passed via run\_thread(), but
 also measurements for the current and last interval.
 LLC-misses, execution time, an identifier, and the cores it currently runs on
 and will run on in the next interval.
-
-\paragraph{Thread Groups}
-
-
-% ----------------------------------------------------------------------------
-
-\subsection{Analyse}
-  \paragraph{Hardware}
-    * Use dedicated hardware --> hardware analysis future work \\
-    * Haswell: per core: L1 \& L2 cache; shared L3 cache between all cores
-
-  \paragraph{Measurement}
-    * Measure the load on each core during a time interval \textbf{TI}; \\
-    * measure LLC misses during last \textbf{TI};
-
-
-% ----------------------------------------------------------------------------
-
-\subsection{Predict}
-
-  * Predict load and LLC misses of each thread for the next time intervall; \\
-
-
-% ----------------------------------------------------------------------------
-
-\subsection{Decide}
-
-  * Decide on a thread distribution to cores, based on predictions;
-
-  \subsubsection{Placement Generator}
-
-  \paragraph{Pseudo-code of placement algorithm}
-  \begin{verbatim}
-  from all threads:
-    select #core highest LLC miss rate
-    select #core highest exec-time
-    intersection of both are critical threads
-    if threads placed on different cores
-      then do nothing
-    else
-      move higher LLC miss rate thread to other core
-    do accounting
-
-  forall threads left do:
-    bin by priority levels
-    sort each bin by miss rate
-
-  forall prio-bin in prio-bin-list do:
-    while threads in prio-bin
-      dequeue highest miss rate
-      sort cores by lowest accounted miss rate
-      place max(#core, #threads left in bin) threads RR on cores;
-  \end{verbatim}
-
-  \paragraph{\gls{smt} abstraction code}
-  \begin{verbatim}
-  if SMT is enabled
-    sort threads once by exec time and once by LLC miss
-    while duplication:
-      look at next LLC-miss thread and dequeue it from exec-time
-      look at next exec-miss thread and dequeue it from LLC-miss
-
-    while threads unassigned && queue not empty:
-      dequeue one thread from LLC miss list for SMT#0
-      dequeue one thread from LLC-miss list for SMT#1
-      dequeue one thread from exe-time list for SMT#0
-      dequeue one thread form exec-time list for SMT#1
-  \end{verbatim}
-
-  \paragraph{Minimize migration pseudo-code}
-  \begin{verbatim}
-  sort all threads by LLC-miss
-  sliding window size #threads with less than 5% LLC miss difference
-  if at least 2 threads in the current window are migrated
-    if two threads are swaping cores
-      don't do the migration
-    ALTERNATIVELY
-    if the from-core-to-core-matrix has entries on opposing fields
-      swap the to-values of both entries
-  \end{verbatim}
-
-
-% ----------------------------------------------------------------------------
-
-\subsection{Enforce}
-
-  * Enforce the thread-to-core assignment
-
 
 \end{comment}
