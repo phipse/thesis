@@ -11,20 +11,6 @@ abstraction is implemented there.
 The ready queue balancing serves as baseline to show the benefit of behaviour
 analysis.
 
-\paragraph{First Last Placement}
-The list of threads is sorted by a metric.
-As long as the number of threads is larger than the number of cores times two,
-the first and last element of the sorted list are assigned to the core with the
-lowest metric value.
-If less threads are available, they are assigned one by one to the core with
-the lowest account.
-If ties between accounts are detected, the next thread is assigned to the core
-with the least assigned threads.
-
-Let $x$ be the number of threads and $c$ the number of cores.
-The number of placement iterations $i$ after sorting is
-$i = x / (2*c) + x \% (2*c)$.
-
 \paragraph{Balancing Need Test}
 This test takes the most effort.
 First, a balance has to be established.
@@ -40,13 +26,57 @@ Consider four cores and four threads with highly different \gls{llc} weight
 values.
 Of course, each core is assigned one thread, but what is then the global
 balance?
-Maximum, minimum, and average and overall distribution needs to be considered
+Maximum, minimum, average, and overall distribution need to be considered
 before a statement regarding the balance can be made.
-
 A system in balance has minimal distance between the highest and lowest
 \gls{llc} weight of each core.
 But here the question also arises: How high is the tolerance for the current
 balance?
+
+And what happens, if we have six threads on four cores, two with a high,
+one with medium, and three with low weight?
+A pure weight balance, would assign 1-1-1-3, which is not very well balanced,
+as low weight threads are assumed to have a high computational demand.
+Hence, 1-1-2-2 or 1-2-1-2 appear better balanced.
+
+As extendedly discussed in section \ref{design:smt}, an pure online load
+balancing algorithm for arbitrary threads, without offline information, cannot
+achieve perfect symbiosis and hence, not perfect performance.
+But approximations are possible.
+1-1-1-3, 1-1-2-2, and 1-2-1-2 look like a series of improved balancing
+decisions.
+If three high IPC threads are scheduled on the same core, their \gls{llc}
+weight is not expected to change much, but their IPC value will suffer.
+This suffering is observable and should trigger a migration, to try to increase
+the threads performance again.
+
+This leads to the conclusion, that a system balanced by \gls{llc} weight,
+should be extended by a second metric to counter overfitting.
+But here is an assumption in place: It is assumed, a better IPC value was
+observed, what if not?
+If a high number of threads is assigned to one core, it is likely, at least one
+of them had better performance in a previous iteration.
+Additionally, if a high imbalance regarding thread count per core is observed,
+a thread is migrated from the high to the low count core, providing the chance
+of better performance.
+
+
+\paragraph{First Last Placement}
+The list of threads is sorted by a metric.
+As long as the number of threads is larger than the number of cores times two,
+the first and last element of the sorted list are assigned to the core with the
+lowest metric value.
+If less threads are available, they are assigned one by one to the core with
+the lowest account.
+If ties between core accounts are detected, the next thread or thread pair is
+assigned to the core with the least assigned threads.
+By assigning the first and last thread a first average is generated and the
+number of iterations to assign all threads is nearly halved.
+Also the imbalance regarding thread count per core, is smaller.
+
+Let $x$ be the number of threads and $c$ the number of cores.
+The number of placement iterations $i$ after sorting is
+$i = x / (2*c) + x \% (2*c)$.
 
 
 \paragraph{Group placements}
@@ -60,6 +90,16 @@ The others threads are distributed by first last placement.
 
 \texttt{Sec} and \texttt{rt} type groups get their private physical core, hence
 all threads of these groups are assigned to the same core.
+
+\texttt{Sec} and \texttt{rt} are of linear complexity to the number of threads,
+\texttt{distr} has the complexity of first last placement.
+For \texttt{clsvr} the complexity estimation is dependent on the number of client
+threads from different tasks and from the same task.
+If only single threaded clients are in the group the complexity is linear, if
+only multi threaded clients are present, the complexity is the number of
+client tasks plus the server plus the complexity of first last placement for
+the additional threads.
+\todo{formal complexity analysis?}
 
 
 \paragraph{SMT distribution}
