@@ -21,6 +21,7 @@ description={Intel\textregistered{} Corp.} }
 \newacronym{lru}{LRU}{least-recently-used}
 \newacronym{llc}{LLC}{last-level-cache}
 \newacronym{ipc}{IPC}{inter-process communication}
+\newacronym{isa}{ISA}{Instruction Set Architecture}
 
 \todo{Item sorting}
 
@@ -38,7 +39,7 @@ description={Intel\textregistered{} Corp.} }
     and a \gls{sc}.
 
   \item[Task] A task consists of a one or more threads and provides memory and
-    memory management for it's threads.
+    memory management for its threads.
 
   \item[\Gls{ipc}] \Gls{ipc} is the only way for threads in L4Re/Fiasco.OC
     to communicate with one another.
@@ -78,10 +79,10 @@ description={Intel\textregistered{} Corp.} }
     threads on the same physical core.
     Thus, sharing all the cores resources (ALU, FP units, caches, prefetcher,
     etc.) among the core's hardware threads.
-    The goal is to improve the utilization of the core, by increasing the
-    available instructions and, hence, the possibility that each computation
-    unit is utilized.
-    This transfers thread level parallelism to instruction level parallelism.
+    The goal is to improve the utilization of the execution units by increasing
+    the number of instructions available to them.
+    \gls{smt} transforms thread level parallelism to instruction level
+    parallelism.
     A \gls{smt}-thread is referenced as logical core or hardware thread.
 
   \item[\Gls{ht}] \gls{ht} is the \gls{intel} specific implementation of the
@@ -95,7 +96,10 @@ description={Intel\textregistered{} Corp.} }
 
   \item[\Gls{smp}] \gls{smp} is a category of processor architectures, where
     all cores are equal and the \gls{llc} is either shared among all of them or
-    each core has it's own \gls{llc}.
+    each core has its own \gls{llc}.
+
+  \item[\Gls{isa}]\gls{isa} describes the set of hardware instructions executed
+    by a processor.
 
   \item[Intervall] Describes a pre-defined number of clock ticks.
 
