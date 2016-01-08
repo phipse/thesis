@@ -10,7 +10,7 @@ Fiasco.OC is a µ-kernel of the L4-family and follows the design paradigm to
 only implement mechanisms in the kernel and no policies.
 For performance reasons the scheduling policy is the only policy implemented in
 the kernel.
-The scheduling parameters in a scheduling request form user land consist of
+The scheduling parameters in a scheduling request from user land consist of
 a priority level, a time slice size request and a descriptor on which cores the
 thread wants to be scheduled.
 The kernel selects the first available core from the descriptor to schedule the
@@ -35,6 +35,7 @@ This skeleton also enables thread specific proxies with an individual
 configuration.
 
 \todo{More details? Or better in architecture and implementation?}
+% todo why did I chose fiasco? what makes it special?
 
 \begin{comment}
 \textbf{Fiasco.OC}
@@ -66,10 +67,10 @@ configuration.
 In section \ref{state:related} several hardware features were mentioned.
 The most important of all are performance counters to measure cache misses, cycles and
 instructions executed.
-The performance counter in the target processor --- an \gls{intel} Core
+The performance counters in the target processor --- an \gls{intel} Core
 i7-6440K -- are able to count these three events and many more.
 The processor contains ``architectural performance monitoring version 3''
-capabilities, which consists among other features of three fixed-function
+capabilities, which consists, among other features, of three fixed-function
 performance counters counting Instruction Retired, Unhalted Core Cycles, and
 Reference Instruction Retired.
 In contrast to the first two counters, the last counter is unaffected by
@@ -91,11 +92,11 @@ L2-misses/-hits, micro-ops per logical core executed per cycle, or unhalted
 core cycles, while the logical core is in ring 0.
 
 Another difference to the target processor, compared to most processors used in
-earlier research is the \gls{smp} architecture. In contrast to \gls{cmp}
-architectures no cache groups are defined by the hardware, because the
-\gls{llc} is shared among all cores.
-Figure \ref{state:fig:core_layout} shows examplary the cache hierarchy of the
-\gls{intel} Haswell processor.
+earlier research, is the \gls{smp} architecture.
+In contrast to \gls{cmp}, the architectures does not define cache groups,
+because the \gls{llc} is shared among all cores.
+Figure \ref{state:fig:core_layout} shows an example of the cache hierarchy of
+the \gls{intel} Haswell processor.
 Each core consists of two \gls{ht} cores, sharing L1- and L2-caches.
 All cores on one socket share the \gls{llc}.
 The caches are inclusive, meaning each cache line present in L1I or L1D
@@ -117,8 +118,8 @@ This eases the lookup of cache lines in other cores on the same package.
 \paragraph{Topology analysis}
 The topology of the CPU can be analysed at runtime.
 This is useful to detect, which two logical cores run together on the same
-physical core.
-The CPU provides this information through the CPUID interface, when the
+physical core, as Fiasco boots the physical cores in a nondeterministic order.
+The CPU provides this information through the CPUID interface, if the
 extended topology enumeration leaf is supported. This is the case for the
 target CPU.
 
