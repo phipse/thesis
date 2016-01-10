@@ -388,8 +388,8 @@ too long, or observing single accesses as duplicates of themselves.
 In \cite{yarom_recovering_2014} the private key was recovered using this
 technique.
 Other implementations of the Montgomery ladder, e.g. in Network and
-Cryptographic Library (NaCL)\footnote{https://nacl.cr.yp.to} by Bernstein et al.,
-\todo{cite}
+Cryptographic Library (NaCL)\footnote{https://nacl.cr.yp.to} by
+\citeauthor{bernstein_security_2012}
 do not rely on branching and are therefore not susceptible to this attack.
 
 However, shared memory with the target application is necessary.
@@ -405,7 +405,7 @@ The attack utilises the inclusiveness property of the CPU cache, to observe
 changes in core local L1 and L2 caches in the \gls{llc}.
 Each cache line of the L1 caches is present in L2 and each line present in L2
 is present in the L3 cache.
-\todo{picture}
+\todo{picture about inclusive caches}
 Therefore the eviction set must cover the cache lines in the \gls{llc} that
 correspond to the core local caches.
 Hence, the core running the application under attack must be known.
