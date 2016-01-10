@@ -21,9 +21,8 @@ Also, research focusing on heterogeneous or multi-\gls{isa} architectures, e.g.
 
 % todo: write overview over topic, first smt, second  goodness, third
 % congestion, fourth communication, fifth energy, sixth security.
-This review will focus on research regarding six topics: \gls{smt},
-performance metrics, resource congestion, communication, energy usage, and
-security.
+This review will focus on research regarding five topics: \gls{smt},
+resource congestion, communication, energy usage, and security.
 A load balancer must address all these topics, to efficiently use available resources
 and to make repeated execution more predictable.
 \\
@@ -76,8 +75,8 @@ not only on high IPC.
 
 \begin{comment}
 In \citeyear{snavely_symbiotic_2002} \citeauthor{snavely_symbiotic_2002}
-discussed the topic of priorities in symbiotic schedules.
-In their earlier work (\cite{snavely_symbiotic_2000}) they assumed same
+discuss the topic of priorities in symbiotic schedules.
+In their earlier work (\cite{snavely_symbiotic_2000}) they assume same
 priority jobs.
 Now, they present two meanings for priority: ``(A) guarantee a fraction of
 machine proportional to priority'' or ``(B) guarantee a fraction of
@@ -119,39 +118,39 @@ The authors explain the notable difference in \cite{eyerman_revisiting_2015} as
 different experimental views.
 \citeauthor{snavely_symbiotic_2000} study a fully loaded system with twice
 as much ready jobs as SMT-cores and observe the turnaround time.
-The turnaround time of a job is mainly influenced by the time it waits in the
-ready queue, when all cores are loaded.
-If the maximum throughput increases slightly, the waiting time is reduced,
-leading to a significant decrease in turnaround time.
-Reordering the jobs in a shortest remaining time first manner can also
-reduce the average turnaround time.
+In this scenario, the time the job spends waiting in the ready queue causes the
+largest increase in turnaround time.
+A slight increase in maximum throughput reduces the waiting time and
+consequently leads to a significant decrease in turnaround time.
+Also, reordering the jobs in a shortest remaining time first manner can
+reduce the average turnaround time, too.
 For these reasons \citeauthor{eyerman_revisiting_2015} make the case
 that turnaround time alone can be a misleading measure.
 
-Furthermore, maximum throughput cannot be used, because systems are not
+Also, maximum throughput cannot be used, because systems are not
 designed to run at peak load all the time, as this leads to long queues and
-turnaround times.
-Average throughput equals average load if the system is not fully loaded,
-therefore, it is a useless comparator.
-Instead, they advocate to evaluate processor utilization (understood as average
-number of executing cores) and empty periods.
-If throughput is improved, the processor utilization decreases and empty
-periods are enlarged, as the time to execute the current load is reduced.
-Hence, using these two measures, improvements caused by the scheduler can be
-compared.
+long turnaround times.
+If the system is not fully loaded, average throughput equals average load,
+therefore, this too is a useless comparator.
+Instead, they advocate to evaluate processor utilization --- understood as average
+number of executing cores --- and empty periods.
+If throughput improves, the processor utilization decreases and empty
+periods expand, as the time to execute the current load is reduced.
+Hence, using these two measures, improvements caused by the scheduler are
+compareable.
 \\
 
 Although no large performance improvements can be expected, symbiotic
-scheduling proved to be relevant to improve resource usage.
-But if no offline knowledge is used, it is difficult to connect performance
+scheduling proves to be relevant to improve resource usage.
+But if no offline knowledge is available, it is difficult to connect performance
 gains to scheduling decisions.
 As modern \gls{intel} multicores use \gls{smt} in each physical core, symbiotic
 scheduling provides an opportunity for performance gains.
-Together with hardware peformance counters it might be possible to at least
+Together with hardware peformance counters, it might be possible to at least
 avoid bad co-schedules.
 \\
 
-\paragraph{Performance Metrics}
+\paragraph{Resource Congestion}
 A different technique is presented by \citeauthor{banikazemi_pam_2008}
 regarding thread-to-core mappings on a \gls{cmp}-system.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
@@ -165,9 +164,9 @@ PAM uses a 'goodness' metric to rate the mapping of the last time interval.
 If the goodness value of the PAM mapping is better than the last observed
 default mapping, PAM continues to overrule the default scheduler.
 If it is worse, PAM falls back to observing the default scheduler.
-Goodness can describe performance, power or energy consumption.
+The goodness metric can describe performance, power or energy consumption.
 
-The experiments ran on a dual socket, quad-core machine, where two cores
+Their experiments run on a dual socket, quad-core machine, where two cores
 share an L2 cache.
 The processor does not support \gls{smt}.
 Hence, the performance gains stem not from symbiosis, but rather from
@@ -177,81 +176,81 @@ congestion awareness.
 
 Becoming aware of and reducing cache congestion is also topic of
 \cite{knauerhase_using_2008}.
-Like \citeauthor{banikazemi_pam_2008}, they worked on a \gls{cmp}-machine with
+Like \citeauthor{banikazemi_pam_2008}, they work on a \gls{cmp}-machine with
 two separated cache groups sharing an L2 cache.
-Similarly, they tried to spread memory intensive tasks as much as possible,
+Similarly, they try to spread memory intensive tasks as much as possible,
 to reduce interference in the shared cache.
 The authors introduce the metric called 'cache weight', which denotes the
 \gls{llc}-cache misses per cycle for the last time interval.
-Their research showed that longer histories worsen the prediction, as thread
+Their research shows that longer histories worsen the prediction, as thread
 behaviour changes over time.
 To achieve the best possible spread of all threads across cache groups,
 \citeauthor{knauerhase_using_2008} balance the threads in the \gls{llc}-group
 based on the aggregate cache weight.
 New threads are assigned to the cache group with the lowest weight and only
 cache light threads are migrated across group boundaries.
-However, to care for workload changes, an overweight thread is periodically
-migrated to the lightest \gls{llc}-group.
+However, to care for workload changes, their scheduler periodically migrates an
+overweight thread to the lightest \gls{llc}-group.
+
 Furthermore, cache light threads suffer next to cache intensive ones, as they
-most likely start with a cold cache, each time they are scheduled.
+most likely start with a cold cache each time they are scheduled.
 To compensate for this, \citeauthor{knauerhase_using_2008} propose to transfer
 CPU time from the cache heavy to the suffering threads.
-This fairness compensation reduced the performance degradation of the most
-suffering thread to less than 1\%.
+In their experiments, this fairness compensation reduces the performance
+degradation of the most suffering thread to less than 1\%.
 \\
 
-\paragraph{Shared Resource Congestion}
 Both, \gls{cmp} and \gls{smp} systems share more resources than just the cache.
 In \cite{fedorova_managing_2010}, \cite{zhuravlev_addressing_2010}, and
 \cite{zhuravlev_survey_2012} \citeauthor{fedorova_managing_2010} and
 \citeauthor{zhuravlev_addressing_2010} further investigate congestion on shared
 resources.
-Although their assumption in \cite{fedorova_managing_2010} was that memory
+Although their assumption in \cite{fedorova_managing_2010} is that memory
 reuse patterns are the indicator of
-choice to predict cache interference between threads, their research led to
+choice to predict cache interference between threads, their research leads to
 the conclusion that \gls{llc}-misses are a superior predictor.
-Memory reuse patterns model the access frequency of a memory area and the miss
-frequency for a particular application.
-This analysis has to be done offline and assumes that applications with high
-reuse and low miss rates do not affect other applications negatively, but
-applications with low reuse and high miss rates are likely to evict cache lines
-of others.
+Memory reuse patterns model the access and miss frequency to a memory area for
+a particular application.
+This analysis is to be done offline and assumes that applications with high
+reuse and low miss rates do not affect other applications negatively.
+But applications with low reuse and high miss rates are likely to evict cache
+lines of others.
 
-\citeauthor{zhuravlev_addressing_2010} used this analysis and developed a
+\citeauthor{zhuravlev_addressing_2010} use this analysis and develope a
 metric called 'Pain', which consists of two parts: sensitivity and intensity.
 The former describes how much an application suffers from sharing caches with
 others, the latter how much an application will hurt others.
-The pain application A feels when scheduled with B is the product of A's
+The pain application A feels, when scheduled with B, is the product of A's
 suffering and B's intensity.
 Vice versa for B.
 The sum of both describes the expected performance degradation for these two
-applications, when being scheduled together on the same \gls{llc}.
+applications, when scheduled together on the same \gls{llc}.
 
-To approximate sensitivity and intensity online, they assumed cache miss and
-access rates would be a good measure, but it turned out only the cache miss
+To approximate sensitivity and intensity online, they assume cache miss and
+access rates to be a good measure, but it turnes out, only the cache miss
 rate is relevant.
-As memory reuse patterns only focus on the cache as a shared resource, the
-cache miss rate also displays the load on prefetching hardware, memory
-controller and memory bus.
-Load on these shared resources turned out to be the main reason for performance
+In contrast to memory reuse patterns, which focus solely on the cache as shared
+resource, the cache miss rate also displays the load on prefetching hardware,
+memory controller and memory bus.
+Load on these shared resources turnes out to be the main reason for performance
 degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 
-\citeauthor{zhuravlev_addressing_2010} implemented their off- and online
+\citeauthor{zhuravlev_addressing_2010} implemente their off- and online
 derived pain metrics in two scheduling algorithms: Distributed Intensity (DI)
 and Distributed Intensity Online (DIO).
-DI uses the Pain metric derived offline from the stack-distance profiles,
-whereas DIO uses Approx-Pain derived from the \gls{llc} miss rate.
+DI uses the 'Pain' metric derived offline from the stack-distance profiles,
+whereas DIO uses 'Approx-Pain' derived from the \gls{llc} miss rate.
 Like \cite{banikazemi_pam_2008}, both schedulers are implemented in the
 Linux user level and override the default scheduler.
 
-The DI algorithm orders the applications based on their solo cache miss rate derived
+The DI algorithm sorts the applications based on their solo cache miss rate derived
 offline.
 This order is used to split the application set into two halfs: above and below
 average miss rate.
 Each core runs one application from each half.
 If the miss rate changes at runtime, the order changes, which could impair
 the performance.
-However, \citeauthor{zhuravlev_addressing_2010} observed only minor place
+However, \citeauthor{zhuravlev_addressing_2010} observe only minor place
 switching, which they not expect to harm the performance.
 
 DIO on the other hand, constantly measures the applications miss rate and is
@@ -260,20 +259,20 @@ The algorithm collects data every billion cycles and uses a running average to
 sort the applications.
 Besides this it acts like DI.
 
-\citeauthor{zhuravlev_addressing_2010} ran tests on a \gls{intel}
+\citeauthor{zhuravlev_addressing_2010} run tests on a \gls{intel}
 Xeon and AMD Opteron.
 The Xeon consists of eight cores on four chips sharing the L2 cache.
 The Opteron eight core has two chips sharing a L3 cache each.
-Leading to four cache groups in the Xeon case and two in the Opterons.
+Leading to four cache groups in the Xeon case and two in the Opteron's.
 Their tests show only small performance differences for their tested workloads
 on both machines.
-The authors ran eight different workloads on each machine and compared the
+The authors run eight different workloads on each machine and compare the
 performance improvement to the default Linux scheduler.
 Of the total of 16 tests only three tests show performance differences above
 two percent between DI and DIO.
-In the Opteron's case DIO improved all workloads, whereas DI showed gains in
+In the Opteron's case DIO improves all workloads, whereas DI shows gains in
 all but one.
-The Xeon showed a mixed picture for DI and DIO: from 14 percent gains to four
+The Xeon showes a mixed picture for DI and DIO: from 14 percent gains to four
 percent loss compared to Linux's default scheduler.
 According to \citeauthor{zhuravlev_addressing_2010}, the good overall
 performance of the default scheduler can be accounted to the small test set and
@@ -281,7 +280,7 @@ the relatively low probability to select the worst thread combination.
 They emphasise the performance gain of each individual application with DI and
 DIO scheduling and the reduced variance in execution time from run to run.
 
-The tested workloads consisted of pairwise independent applications.
+The test workloads consist of independent applications.
 Thus, the trade off between placing two communicating, high miss rate
 applications on the same core, or communicating across chip boundaries was no
 research question.
@@ -291,12 +290,12 @@ Therefore, the performance gain must be reevaluated.
 \\
 
 \paragraph{Communication}
-Up to now, all research covered assumed independent, non-interacting threads.
+Up to now, all research covered assumes independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming communicating, parallel applications.
 They propose a technique called \emph{speed balancing} with a notion for fast
 and slow cores.
-Their concept assumes the number of thread $N$ to be greater than the number of
+Their concept assumes the number of threads $N$ to be greater than the number of
 cores $C$.
 Consequently, the number of threads per core will be either
 $T = \left \lfloor{N/C}\right \rfloor$ or $T+1$.
@@ -306,22 +305,22 @@ For their implementation, they also assume to be running besides other
 workloads on the same hardware.
 Therefore, the term speed is defined as the relation of execution time per
 elapsed wall clock time.
-The authors algorithm runs one thread per core measuring the speed of each
-thread and of the core, respectively.
+The authors algorithm runs one observation thread per core measuring the speed
+of each thread and of the core, respectively.
 The sum of all core speeds determines the global average speed, which
 distinguishes fast and slow cores.
 To provide equal progress opportunities, each thread needs to run on a fast
 core at least once.
-So, the balancing thread on a fast core searches for a suitable thread to
+So, the observation thread on a fast core searches for a suitable thread to
 migrate from a slow core and pulls it to its local core.
-Thereby, the balancing thread tries to migrate the least migrated thread to
+Thereby, the observation thread tries to migrate the least migrated thread to
 avoid constant migration of the same thread.
 
 The assumed parallel application model consists of one application
 spawning several worker threads, where a computation interval is followed by a
 communication barrier.
 Their implementation takes this kind of application as input, executes it and
-provides equal progress oportunities to each thread.
+distributes its worker threads.
 They do neither model communication between different tasks in a client-server
 notion, nor at arbitrary points in time.
 Hence, reducing the time the slowest thread needs to reach the synchronization
@@ -333,12 +332,12 @@ Performance is not a one dimensional value anymore.
 Performance/watt is the important measure on battery supported devices like
 notebooks or smartphones, and also in datacenters, as less watts mean less
 energy cost for running and cooling the datacenter.
-In \cite{imes_poet_2015} a mobile \gls{intel} Haswell and a Samsung Exynos5 Octa are
-compared regarding their minimal energy consumption.
+In \cite{imes_poet_2015} the authors compare a mobile \gls{intel} Haswell and a
+Samsung Exynos5 Octa regarding their minimal energy consumption.
 The authors show that different strategies are necessary to achieve minimal
 energy consumption of the two processors.
-In case of the \gls{intel} Haswell processor, race to idle proved to be the
-strategy to reduce energy consumption.
+In case of the \gls{intel} Haswell processor, race to idle proves to be the
+strategy of choice to reduce energy consumption.
 The Samsung processor on the other hand, should run constantly at low clock
 speeds.
 
@@ -350,7 +349,7 @@ During idle time, the processor changes to deep sleep states and saves
 energy.
 The recovery from deep sleep states -- power up core, load data into core local
 caches -- increases system load only slightly.
-To conserve energy, turbo boost should not be used, as the gained frequency
+To conserve energy, turbo boost should be avoided, as the gained frequency
 comes at a high energy cost.
 
 It is interesting for this work, how a load balancer can change the assignment
@@ -363,7 +362,7 @@ The CPU cache has proved to be a great side channel to deduce private
 cryptographic keys.
 Two different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.
 
-Three conditionas are necessary for this attack:
+Three conditions are necessary for this attack:
 the x86 instruction to flush a specified cache line, if read access is allowed;
 shared memory between attacker and victim, e.g. binary
 code in shared libraries or executables;
@@ -374,10 +373,9 @@ Thereby, they flush a set of cache lines from the cache and reload it after a
 waiting period.
 If the cache line was present in the cache, the time it takes to read the data
 is small; reading the data from memory is significantly slower.
-\todo{numbers?}
 
 The attack uses the fact that the OpenSSL implementation of the Montgomery
-ladder executes a different branche, depending on the bit value of the current
+ladder executes a different branch, depending on the bit value of the current
 bit in the private key.
 If the data containing the \textit{then} branch is present in the cache, the
 tested bit was one, if the \textit{else} branch data is present, the bit was
@@ -419,7 +417,7 @@ The execution path in case of a one bit is longer, hence more time passed.
 Two attacks are presented in \cite{liu_last-level_2015} and
 \cite{inci_seriously_2015}, both recovering a private key of an attacked
 virtual machine.
-\citeauthor{inci_seriously_2015} tested their attack on Amazon EC2 instances,
+\citeauthor{inci_seriously_2015} test their attack on Amazon EC2 instances,
 proving its practicality in a real world scenario.
 
 Separating security critical applications on architectures, with shared
