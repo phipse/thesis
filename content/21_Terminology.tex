@@ -26,14 +26,12 @@ description={Intel\textregistered{} Corp.} }
 \todo{Item sorting}
 
 \begin{description}
-  \item[\Gls{utcb}] A \gls{utcb} is user-level memory section containing
-    information about a thread and the thread's communication registers and
-    buffers.
-    \todo{UTCB description}
+  \item[\Gls{utcb}] A \gls{utcb} is a user-level memory section containing
+    information about a thread, the thread's communication registers and
+    communication buffers.
 
   \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
     of a priority level, execution time, and remaining execution time.
-    \todo{What other items are in a scheduling context}
 
   \item[Thread] A thread is a unit of execution, consisting of a \gls{utcb}
     and a \gls{sc}.
@@ -50,7 +48,6 @@ description={Intel\textregistered{} Corp.} }
     thread.
     A call is normally used for communication with a service, where a reply is
     awaited, hence it combines a send and a closed wait operation.
-    \todo{atomic?}
     To initiate an \gls{ipc} in L4Re/Fiasco.OC the sending thread needs to hold
     a capability on the receiving thread.
     \todo{IPC -> instructions per cycle}
