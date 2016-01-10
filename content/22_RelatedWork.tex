@@ -21,29 +21,29 @@ Also, research focusing on heterogeneous or multi-\gls{isa} architectures, e.g.
 
 % todo: write overview over topic, first smt, second  goodness, third
 % congestion, fourth communication, fifth energy, sixth security.
-The review will focus on research regarding FIXME topics: \gls{smt},
+This review will focus on research regarding six topics: \gls{smt},
 performance metrics, resource congestion, communication, energy usage, and
 security.
 A load balancer must address all these topics, to efficiently use available resources
 and to make repeated execution more predictable.
+\\
 
-Different approaches to load balancing on a multicore have been explored in
-literature.
-\citeauthor{snavely_symbiotic_2000} introduced the term \emph{symbiotic
-scheduling} in \cite{snavely_symbiotic_2000}, describing a scheduling technique
-for \gls{smt}-systems.
+\paragraph{Simultaneous Multi-Threading}
+\citeauthor{snavely_symbiotic_2000} introduce the term \emph{symbiotic
+scheduling}, describing a scheduling technique
+for \gls{smt}-systems in \cite{snavely_symbiotic_2000}.
 They propose scheduling those two jobs on a shared core, which provide the best
 utilization of said core.
-The combination of two jobs on two corresponding \gls{smt}-cores they call a
+The combination of two jobs on two corresponding \gls{smt}-cores is called a
 co-schedule.
-The performance of a co-schedule is defined as the turnaround or response time:
+A co-schedule's performance is defined as the turnaround or response time:
 the time between the arrival of a job in the ready queue and its completion.
 
 In their experiments they run independent jobs on a simulator modeling a Compaq
 Alpha 21264 out-of-order processor with hardware additions for multi-threading.
 This simulator model includes performance counters to ``capture dynamic execution
 information''(\autocite[236]{snavely_symbiotic_2000}).
-To determine a good schedule the authors compute the weighted speedup \textit{WS} for
+To determine a good schedule, the authors compute the weighted speedup \textit{WS} for
 a fixed time interval.
 For each job the change in instructions per cycle (IPC) compared to
 single-threaded execution is calculated.
@@ -52,19 +52,22 @@ schedule.
 $$ WS(t) = \sum_{i=1}^n (\text{realized IPC job}_i / \text{single-threaded IPC
 job}_i)$$
 Their developed scheduler consists of two phases: sampling and symbiosis.
-During the sampling phase, different job combinations are measured.
-When enough samples are gathered, the scheduler moves to the symbiosis phase
-and uses schedules, which promise the highest weighted speedup.
-The scheduler will move back and forth between these phases, as the job mix
-changes.
+The sampling phase measures different job combinations and moves to the
+symbiosis phase, when enough samples were gathered.
+During in the symbiosis phase, the scheduler selects the schedule, which
+promises the highest weighted speedup.
+As the job mix changes, the scheduler will move back and forth between these two
+phases.
 
-They then use the measurements of the performance counters to create several
-predictors for the future behaviour of the jobs.
-% todo and, hence, the best schedule.
-The best predictor in their study made a majority vote of all other predictors
-to determine the best schedule.
-Some of their other predictors were data cache hit rate, floating point unit
-conflicts, and floating point queue conflicts.
+A sampling phase measure describes the performance of the threads in a
+co-schedule, as measured by performance counters.
+The predictors use these measures of each single thread to predict the
+performance of a future co-schedule.
+Among others, the authors created predictors for the following:
+data cache hit rate, floating point unit conflicts, and floating point queue
+conflicts.
+However, the best predictor in their study made a majority vote of all other
+predictors to determine the best schedule.
 \citeauthor{snavely_symbiotic_2000} conclude, that good job symbiosis depends
 not only on high IPC.
 %, but on a multitude of other factors, too, e.g. usage
@@ -105,7 +108,7 @@ changes and are therefore out of scope.
 \end{comment}
 
 % todo connection
-However, measuring performance improvements due to increased symbiosis is
+Still, measuring performance improvements due to increased symbiosis is
 difficult.
 While \citeauthor{snavely_symbiotic_2000} claim a reduction in average
 turnaround time by up to 17\% in \cite{snavely_symbiotic_2000},
@@ -119,7 +122,7 @@ as much ready jobs as SMT-cores and observe the turnaround time.
 The turnaround time of a job is mainly influenced by the time it waits in the
 ready queue, when all cores are loaded.
 If the maximum throughput increases slightly, the waiting time is reduced,
-hence, a significant reduction in turnaround time is observed.
+leading to a significant decrease in turnaround time.
 Reordering the jobs in a shortest remaining time first manner can also
 reduce the average turnaround time.
 For these reasons \citeauthor{eyerman_revisiting_2015} make the case
@@ -134,32 +137,21 @@ Instead, they advocate to evaluate processor utilization (understood as average
 number of executing cores) and empty periods.
 If throughput is improved, the processor utilization decreases and empty
 periods are enlarged, as the time to execute the current load is reduced.
-Hence, using these two measures improvements caused by the scheduler can be
+Hence, using these two measures, improvements caused by the scheduler can be
 compared.
-
-\citeauthor{eyerman_revisiting_2015} conclude that one should not expect large
-improvements through symbiotic scheduling, but particular workloads may benefit.
-Furthermore, previous studies on partially symmetric mutlicores showed
-notable throughput gains by symbiotically co-scheduling applications on
-SMT-packages.
-\todo{which particular workloads? Which previous studies? What's
-a notable gain?}
 \\
 
-Measuring the performance of a specific schedule in a \gls{smt}-system is
-difficult, especially if no offline knowledge is used.
-But even then, pinpointing the performance gain to the scheduling decision is
-only manageable with fine-granular observation of the system.
-However, \cite{snavely_symbiotic_2000} and \cite{eyerman_revisiting_2015}
-showed the relevance of a symbiotic co-schedule to fully utilize the shared
-hardware resources.
-Modern \gls{intel} processors use \gls{smt} in each physical core, but besides
-parts of the cache and memory subsystem, the cores are separated and
-identical.
-This limits the effectiveness of symbiosis analysis.
+Although no large performance improvements can be expected, symbiotic
+scheduling proved to be relevant to improve resource usage.
+But if no offline knowledge is used, it is difficult to connect performance
+gains to scheduling decisions.
+As modern \gls{intel} multicores use \gls{smt} in each physical core, symbiotic
+scheduling provides an opportunity for performance gains.
+Together with hardware peformance counters it might be possible to at least
+avoid bad co-schedules.
 \\
 
-\todo{separate each research block with a paragraph?}
+\paragraph{Performance Metrics}
 A different technique is presented by \citeauthor{banikazemi_pam_2008}
 regarding thread-to-core mappings on a \gls{cmp}-system.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
@@ -208,7 +200,7 @@ This fairness compensation reduced the performance degradation of the most
 suffering thread to less than 1\%.
 \\
 
-
+\paragraph{Shared Resource Congestion}
 Both, \gls{cmp} and \gls{smp} systems share more resources than just the cache.
 In \cite{fedorova_managing_2010}, \cite{zhuravlev_addressing_2010}, and
 \cite{zhuravlev_survey_2012} \citeauthor{fedorova_managing_2010} and
@@ -298,6 +290,7 @@ which do not necessarily provide strictly separated cache groups.
 Therefore, the performance gain must be reevaluated.
 \\
 
+\paragraph{Communication}
 Up to now, all research covered assumed independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming communicating, parallel applications.
