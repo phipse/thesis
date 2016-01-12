@@ -116,16 +116,18 @@ while the high \gls{llc} weight threads wait for memory.
 Superiority of one above the others must be empirically evaluated.
 
 
-\paragraph{Balanced Ready Queue Placement}
-The simple balanced ready queue assignment to cores is used to rate the
-performance of the behaviour aware scheduling.
-It ignores configurations and just places an incoming thread on the core with
-the least threads.
-As threads leave the system the ready queues shrink differently, which is
-compensated by entering threads.
+\paragraph{Simple Logic Distribution}
+The algorithm assigns incoming threads to the core with the least load.
+If several cores have the same load, e.g. in an overload scenario, the
+algorithm assigns the thread to the core with the least threads.
+
+A core's load is determined by the amount of idle time since the last
+placement.
+When threads leave, the system becomes unbalanced, but not extra balancing
+actions are taken.
 
 To prove that behaviour analysis brings any benefit, it has to clearly beat
-this simple algorithm
+this simple algorithm.
 
 
 \paragraph{Missing logic for shared memory}
