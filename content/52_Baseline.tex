@@ -1,0 +1,42 @@
+
+\paragraph{Baseline}
+
+A baseline is necessary to assess the improvements through a behaviour aware
+load balancing.
+Previous work on Linux, uses the default Linux scheduler.
+However, as neither Fiasco.OC's nor L4Re's scheduler does thread distribution,
+I have to write a simple distribution mechanism to provide a baseline.
+
+The aforementioned algorithmcore simple logic distribution is implemented in a
+simple load balancer and provides this baseline.
+It has no knowledge about thread behaviour and relies on system side
+knowledge about core utilization and thread count.
+\\
+
+Each of the selected SPEC programs runs solo with the simple balancer as its
+scheduler 101 times.
+Figures 1-4 show histograms of the runtimes together with the average runtime.
+
+\begin{figure}[h!]
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/plots/gcc_110116_tcb_fix_plot.pdf}
+    \caption{SPEC GCC}
+    \label{baseline:gcc}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/plots/gamess_110116_tcb_fix_plot.pdf}
+    \caption{SPEC GAMESS}
+    \label{baseline:gamess}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/plots/lbm_110116_tcb_fix_plot.pdf}
+    \caption{SPEC LBM}
+    \label{baseline:gcc}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/plots/mcf_110116_tcb_fix_plot.pdf}
+    \caption{SPEC MCF}
+    \label{baseline:gamess}
+  \end{subfigure}
+  \caption{Histograms of runtimes with simple balancer}
+\end{figure}
