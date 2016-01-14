@@ -1,0 +1,53 @@
+\documentclass[border=5mm]{standalone}
+\usepackage{pgfplots,siunitx,pgfplotstable}
+
+\usepgfplotslibrary{statistics, units}
+
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\pgfplotsset{
+  tufte bar/.style={
+    ymajorgrids,
+    grid style=gray!30!white,
+    major grid style={ultra thin},
+    axis on top,
+    axis x line*=bottom,
+%    major ytick length=0pt,
+    major y tick style={opacity=0},
+    y axis line style={opacity=0},
+%    enlarge x limits={
+%      abs=0.5*\pgfkeysvalueof{/pgf/bar width}
+%    },
+%    bar width=2mm,
+%    x=1.5*\pgfkeysvalueof{/pgfplots/bar width},
+  }
+}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      tufte bar,
+      title=average over 10x sld,
+      symbolic x coords={gcc, gamess, mcf, lbm},
+      xtick=data,
+      ylabel={Runtime},
+      y unit=s,
+      ybar,
+      enlargelimits=0.15,
+%      ymin=0,
+%      ybar legend,
+      legend style={at={(0.5,-0.20)},anchor=north, legend columns=-1},
+      nodes near coords,
+      nodes near coords align={vertical},
+      /pgf/number format/precision=0,
+    ]
+
+    \addplot +[draw=none] coordinates {(mcf, 155.83) (lbm, 165.25) (gamess, 87.28) (gcc,
+    64.20)};
+    
+    \legend{sld}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

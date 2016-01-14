@@ -1,0 +1,52 @@
+\documentclass[border=5mm]{standalone}
+\usepackage{pgfplots,siunitx,pgfplotstable}
+
+\usepgfplotslibrary{statistics, units}
+
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\pgfplotsset{
+  tufte bar/.style={
+    ymajorgrids,
+    grid style=gray!30!white,
+    major grid style={ultra thin},
+    axis on top,
+    axis x line*=bottom,
+%    major ytick length=0pt,
+    major y tick style={opacity=0},
+    y axis line style={opacity=0},
+  }
+}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      tufte bar,
+      title=$NAME,
+      xlabel={Runtime},
+      ylabel={Rate},
+      ybar interval stacked,
+      stacked ignores zero=true,
+      ymin=0,
+      xmin=$XMIN,
+      xmax=$XMAX,
+      ybar legend,
+      legend style={at={(0.5,-0.20)},anchor=north, legend columns=-1},
+%      nodes near coords,
+    ]
+
+    \addplot +[
+      hist={
+	bins=48,
+	handler/.style={ycomb},
+      }
+    ] table [y index=0, col sep=comma] {$DATAFILENAME};
+    
+    \draw[green!60!black, very thick, loosely dashdotdotted] ($AVG,0) -- ({$AVG,0}|-{current axis.above origin});
+
+    \legend{mpc}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}
