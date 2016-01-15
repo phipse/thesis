@@ -19,7 +19,7 @@ quantum.
 It does neither balance the amount of threads per core, nor prevent
 oversubscription of one core.
 However, it provides the mechanism to design a more sophisticated load
-distribution scheme as user level service.
+distribution scheme as a user level service.
 
 Regarding hardware performance counters, the kernel provides neither a system
 call interface to read or configure them, nor per thread accounting of
@@ -36,6 +36,9 @@ configuration.
 
 \todo{More details? Or better in architecture and implementation?}
 % todo why did I chose fiasco? what makes it special?
+% capability system, local naming scheme,
+% proxies can be used for a subhierarchy of tasks implementing functionality
+% differently, different policies.
 
 \begin{comment}
 \textbf{Fiasco.OC}
@@ -68,7 +71,7 @@ In section \ref{state:related} several hardware features were mentioned.
 The most important of all are performance counters to measure cache misses, cycles and
 instructions executed.
 The performance counters in the target processor --- an \gls{intel} Core
-i7-6440K -- are able to count these three events and many more.
+i7-4660K -- are able to count these three events and many more.
 The processor contains ``architectural performance monitoring version 3''
 capabilities, which consists, among other features, of three fixed-function
 performance counters counting Instruction Retired, Unhalted Core Cycles, and
@@ -116,7 +119,7 @@ This eases the lookup of cache lines in other cores on the same package.
 \end{figure}
 
 \paragraph{Topology analysis}
-The topology of the CPU can be analysed at runtime.
+The topology of the CPU can be determined at runtime.
 This is useful to detect, which two logical cores run together on the same
 physical core, as Fiasco boots the physical cores in a nondeterministic order.
 The CPU provides this information through the CPUID interface, if the

@@ -152,7 +152,7 @@ avoid bad co-schedules.
 
 \paragraph{Resource Congestion}
 A different technique is presented by \citeauthor{banikazemi_pam_2008}
-regarding thread-to-core mappings on a \gls{cmp}-system.
+regarding thread-to-core mappings on a chip multiprocessor system.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
 meta-scheduler, working on top of the default linux scheduler.
 While the default scheduler runs, PAM gathers information via performance
@@ -262,7 +262,7 @@ Besides this it acts like DI.
 \citeauthor{zhuravlev_addressing_2010} run tests on a \gls{intel}
 Xeon and AMD Opteron.
 The Xeon consists of eight cores on four chips sharing the L2 cache.
-The Opteron eight core has two chips sharing a L3 cache each.
+The Opteron eight core has two chips sharing an L3 cache each.
 Leading to four cache groups in the Xeon case and two in the Opteron's.
 Their tests show only small performance differences for their tested workloads
 on both machines.
@@ -362,7 +362,7 @@ The CPU cache has proved to be a great side channel to deduce private
 cryptographic keys.
 Two different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.
 
-Three conditions are necessary for this attack:
+Three conditions are necessary for a FLUSH+RELOAD attack:
 the x86 instruction to flush a specified cache line, if read access is allowed;
 shared memory between attacker and victim, e.g. binary
 code in shared libraries or executables;
@@ -375,7 +375,7 @@ If the cache line was present in the cache, the time it takes to read the data
 is small; reading the data from memory is significantly slower.
 
 The attack uses the fact that the OpenSSL implementation of the Montgomery
-ladder executes a different branch, depending on the bit value of the current
+ladder\footnote{fix published 05 Jun 2014} executes a different branch, depending on the bit value of the current
 bit in the private key.
 If the data containing the \textit{then} branch is present in the cache, the
 tested bit was one, if the \textit{else} branch data is present, the bit was
