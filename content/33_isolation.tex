@@ -2,16 +2,16 @@
 \section{Isolation}
 \label{design:isolation}
 
-A microkernel provides strong isolation and also real-time guarantees.
-A requirement aware thread to core mapping, can support these guarantees.
+Fiasco.OC provides strong isolation and also real-time guarantees.
+A requirement aware thread to core mapping can support these guarantees.
 The following discusses security and real-time needs of applications and how to
 manage these.
 
 \paragraph{Security}
 As presented in section \ref{state:related} even in virtualized environments
-CPU cache is a valid side channel to attack secret keys.
+CPU cache is a valid side channel to attack secret information.
 To reduce the channel's throughput, security critical applications should share
-as little cache as possible with unknown applications.
+as little cache as possible with untrusted applications.
 In Haswell's inclusive cache hierarchy, the \gls{llc} is shared among all
 cores, but the L1 and L2 caches are core local.
 However, their cache lines are included in the shared \gls{llc}.
