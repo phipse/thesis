@@ -19,13 +19,13 @@ quantum.
 It does neither balance the amount of threads per core, nor prevent
 oversubscription of one core.
 However, it provides the mechanism to design a more sophisticated load
-distribution scheme as a user level service.
+distribution scheme as an user level service.
 
 Regarding hardware performance counters, the kernel provides neither a system
 call interface to read or configure them, nor per thread accounting of
 configured counters.
 Access to hardware performance counters is critical for this project, so a
-mechanism has to be provided for a user level service.
+mechanism has to be provided for an user level service.
 
 The L4 Runtime environment provides a scheduling service skeleton, which
 defines the kernel and user interface.
