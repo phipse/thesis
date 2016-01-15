@@ -129,11 +129,11 @@ This approach requires careful system design, but no change of program source
 code or thread cooperation.
 
 \paragraph{Implementation}
-The two communication types are named ``DISTR'' and ``CLSVR''.
-A group is identified via ``<name>'' and either distributed or clustered.
+The two communication types are named \texttt{DISTR} and \texttt{CLSVR}.
+A group is identified via \texttt{<name>} and either distributed or clustered.
 To identify the server in the client-server relationship, the server task's
-group name is assigned the ``\_S'' postfix.
-Client tasks use the ``\_C'' postfix.
+group name is assigned the \texttt{\_S} postfix.
+Client tasks use the \texttt{\_C} postfix.
 
 \begin{lstlisting}
   distr = <Name>
