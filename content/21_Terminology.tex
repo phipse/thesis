@@ -20,7 +20,8 @@ description={Intel\textregistered{} Corp.} }
 \newacronym{fifo}{FIFO}{First-in-First-out}
 \newacronym{lru}{LRU}{least-recently-used}
 \newacronym{llc}{LLC}{last-level-cache}
-\newacronym{ipc}{IPC}{inter-process communication}
+\newacronym{ipc}{L4-IPC}{L4 inter-process communication}
+\newacronym{instpc}{IPC}{instructions per cycle}
 \newacronym{isa}{ISA}{Instruction Set Architecture}
 
 \todo{Item sorting}
@@ -28,7 +29,7 @@ description={Intel\textregistered{} Corp.} }
 \begin{description}
   \item[\Gls{utcb}] A \gls{utcb} is a user-level memory section containing
     information about a thread, the thread's communication registers and
-    communication buffers.
+    communication buffers. It is primarily used for message transfer.
 
   \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
     of a priority level, execution time, and remaining execution time.
@@ -36,10 +37,11 @@ description={Intel\textregistered{} Corp.} }
   \item[Thread] A thread is a unit of execution, consisting of a \gls{utcb}
     and a \gls{sc}.
 
-  \item[Task] A task consists of a one or more threads and provides memory and
-    memory management for its threads.
+  \item[Task] A task is a unit of isolation. It manages different address
+    spaces; for example memory, capabilities, and ioports.
+    A task runs at least one thread.
 
-  \item[\Gls{ipc}] \Gls{ipc} is the only way for threads in L4Re/Fiasco.OC
+  \item[\Gls{ipc}] \Gls{ipc} is one way for threads in L4Re/Fiasco.OC
     to communicate with one another.
     It is synchronous communication with the following modes of operation:
     send, open wait, closed wait, reply \& open wait, call.
@@ -49,33 +51,35 @@ description={Intel\textregistered{} Corp.} }
     A call is normally used for communication with a service, where a reply is
     awaited, hence it combines a send and a closed wait operation.
     To initiate an \gls{ipc} in L4Re/Fiasco.OC the sending thread needs to hold
-    a capability on the receiving thread.
-    \todo{IPC -> instructions per cycle}
+    a capability on a channel going to its communication partner.
+
+  \item{\Gls{instpc}] \Gls{instpc} describe the number of instructions executed
+    per processor cycle.
 
   \todo{Make context specific description lists?}
 
   \item[Core] A physical CPU core is referred to as core.
 
-  \item[Cache] Generally, a cache is used to store frequently accessed data.
+  \item[Cache] Generally, a cache is used to store frequently accessed data
+    in the CPU core to reduce access times.
     As a cache has size restriction, depending on the type of cache different
     evocation policies can be applied, e.g. \gls{fifo} or \gls{lru}.
-    The hardware cache present on a CPU uses \gls{lru}.
-    A cache in general can have an arbitrary count of levels, creating a cache
-    hierarchy.
-    In current CPUs three cache levels are common.
-    If data is evicted in a lower hierarchy level, it moves to a higher level.
-    If there is no higher level, the data is written back to memory.
+    There are multiple levels of caches in modern CPUs, creating a hierarchy;
+    three levels are common.
+    If data is evicted from the highest level of the hierarchy, it is written
+    back to memory.
     \todo{Write-through and write-back cache?}
 
   \item[Migration] The process of moving a thread from one core to another core
     is called migration.
     The cores do not necessarily need to be on the same chip, nor do they need
-    to be in the same machine.
+    to be in the same machine. Only the thread is migrated, cached data remains
+    on the old core.
 
   \item[\Gls{smt}] \gls{smt} is a technique to multiplex several hardware
     threads on the same physical core.
-    Thus, sharing all the cores resources (ALU, FP units, caches, prefetcher,
-    etc.) among the core's hardware threads.
+    Thus, sharing all the cores resources -- ALU, FP units, caches, prefetcher,
+    etc. -- among the core's hardware threads.
     The goal is to improve the utilization of the execution units by increasing
     the number of instructions available to them.
     \gls{smt} transforms thread level parallelism to instruction level
@@ -85,15 +89,14 @@ description={Intel\textregistered{} Corp.} }
   \item[\Gls{ht}] \gls{ht} is the \gls{intel} specific implementation of the
     \gls{smt}-concept.
 
-  \item[\Gls{cmp}] \gls{cmp} is a category of processor architectures, where
-    the CPU consists of two equal CPU chips soldered together on one die.
-    As a result the \gls{llc} is not shared among all cores.
-    Consider a quad-core CPU build out of two dual-core CPUs.
-    Hence, cores 0 \& 1 share their \gls{llc} and cores 2 \& 3, respectively.
-
-  \item[\Gls{smp}] \gls{smp} is a category of processor architectures, where
-    all cores are equal and the \gls{llc} is either shared among all of them or
-    each core has its own \gls{llc}.
+  \item[\Gls{cmp}  \& \Gls{smp}] Regarding cache coherence, \gls{cmp} and
+    \gls{smp} architectures equal.
+    However, \gls{cmp} style CPU consists of several CPU chips soldered on one
+    die.
+    This leads to physically separated caches, limiting the amount of cache
+    available to a single thread.
+    In constrast, modern \gls{smp} architectures share the \gls{llc} among all
+    cores on one die.
 
   \item[\Gls{isa}]\gls{isa} describes the set of hardware instructions executed
     by a processor.
@@ -105,8 +108,8 @@ description={Intel\textregistered{} Corp.} }
     update interval -- 1ms?;
     security risks?
 
-  \item[Job] In scheduling theory a job is a specific unit of work. Normally,
-    the execution time of a job is known beforehand.
+  \item[Job] In scheduling theory a job is a specific unit of work.
+    In real-time systems, the execution time of a job is known beforehand.
     \todo{difference between jobs and threads?}
 
   \item[Turnaround time] Time between submission of a job and its completion.
