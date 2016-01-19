@@ -1,220 +1,47 @@
 % vim:set ft=tex
-\section{SMT}
+\section{SMT/\gls{ht}}
 \label{design:smt}
 
-\paragraph{co-schedule}
-As introduced in \ref{state:related} a co-schedule describes two threads running
-in parallel on the same physical core, but in different \gls{smt}-threads.
-A good co-schedule has the least performance degradation,
-compared to executing each application without a co-runner.
-Physical hardware resources are shared between co-runners, hence, two threads with
-different resource needs are expected to impair each other the least, as they
-compete little on the same resource.
-So the main criteria for a good co-schedule is little conflict potential
-between co-runners.
+\newacronym{eu}{EU}{execution units}
 
-\paragraph{performance measurement \& expectation}
-But what describes the performance of a co-schedule.
-\citeauthor{snavely_symbiotic_2000} measured conflicts in shared
-resources and weighted speedup (see \ref{state:related}).
-\citeauthor{eyerman_revisiting_2015} criticized this measure, as it measures
-the work done in a fixed period of time, which depends on the execution period
-of the thread measured.
-They proposed weighted instructions, as the amount of cycles per instruction
-varies.
-But both approaches require either each thread to be scheduled alone on a core,
-to derive a reference measure, or knowledge about the instructions executed.
-Both is infeasible for this work.
+The performance gains of \gls{ht} stems from the conversion of thread level
+parallelism to instruction level parallelism, by providing more instructions to
+the \gls{eu} to fill their pipelines.
+But if two threads issue the same group of instructions, no performance gain is
+possible, as the number of \gls{eu} has not increased.
+Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 
-The argument for weighted instructions is also an argument against all measures
-that use instruction per cycle (IPC) without a weight.
-Naturally, threads executing more memory bound work will have less IPC than
-threads executing CPU bound work.
+The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
+threads running at the same time on two corresponding logical cores.
+The two big question for this work are: how can the performance of a co-schedule be
+measured? And: it such a measurement comparable to previous ones?
 
-All these variables, lead to the conclusion, that IPC alone is not a good
-measure for co-schedule performance.
-\\
+From a hardware perspective the question is: How high is the \gls{eu}
+utilization of a co-schedule.
+A performance counter observing all executed
+micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
+But it is still questionable, if this measure reflects the performance
+degradation each thread suffers due to sharing execution resources.
+To get the degradation percentage, knowledge about solo execution is necessary,
+which is either gained offline beforehand, or by scheduling each thread alone
+for some time and extrapolating the measurement to the threads lifetime.
+The former is excluded due to the scope of this thesis, the latter harms
+overall system performance and is imprecise, if the thread workload changes
+heavily, which is unknown.
 
-More issues arise, if each physical core consisting of two logical cores,
-executes more than two threads during an measurement interval.
-If three threads \alpha{}, \beta{}, \gamma{} are executed on one physical core,
-the following assignments to the two logical cores are possible:
-(\alpha{}, \beta{}\gamma{}), (\beta{}, \alpha{}\gamma{}), (\gamma{}, \alpha\beta).
-Where each logical core executes at least one thread.
-Each combination has to be executed and measured, to determine which
-combination has the best co-schedule performance for the whole group.
+Besides fine granular performance measure and relying on estimations a third
+problem with rating \gls{ht} performance is the length of a balancing interval
+and the possibility of running more than two threads during this interval on a
+pair of logical cores.
+If more than two threads are running during an interval, the load balancer can
+only rate the group performance, because it is impossible to deduce which
+of the possible co-schedules ran for which amount of time.
+Consequently, the group rating describes the performance of a physical core.
 
-For example, \gamma{} executes mainly floating-point operations and
-\alpha{} and \beta{} execute mainly integer operations.
-The third distribution has the least conflict potential.
-But the kind of operations a thread executes is unknown at runtime.
-Hence, all combinations must be executed before a concise statement regarding
-the best co-schedule can be made.
+The same applies to performance comparison between hyper-threads. As the
+performance of a single threads is influenced by its co-runner, it cannot be
+compared to logical cores of different physical cores.
 
-The number of possible assignments for a number of threads to two cores is
-a known problem in combinatorics and solved via the
-\emph{Stirling numbers of the second kind}: $S_{n,k}$.
-The Stirling numbers of the second kind describe the number of ways to
-partition a set of $n$ objects into $k$ non-empty subsets.
-\todo{Wikipedia, can I find a different formulation}
-Let $k=2$ the number of cores and $n>0$ the number of threads.
-$k=2$ is a special case for the Stirling numbers of the second kind:
-\todo{Source other than wikipedia}
-%
-$$S_{n,2} = 2^{n-1}-1$$
-%
-Therefore, to formulate a concise statement for the best possible performance
-for a group of threads on a physical core containing two logical cores,
-seven combinations must already be evaluated, when running only four threads.
-If five threads are running the number increases to fifteen combinations.
-
-Measurement of all possible combinations is infeasible for more than four
-threads.
-But still, thread behaviour is not necessarily consistent throughout the whole
-measurement process.
-And additionally, the above example is simplified, as the target CPU contains a
-shared \gls{llc}, which was not considered.
-Due to the connection through the \gls{llc}, one cache heavy thread can impair
-threads on all other cores, by evicting large amounts of cache lines in the
-\gls{llc}.
-
-To summarize: Neither is there a precise performance measure,
-nor is it possible to execute and compare all assignment combinations for two
-corresponding logical cores,
-nor is the measurement free of influences from other cores.
-
-After establishing, that a precise performance statement is impossible to do
-exclusively online, is it sufficient to work with an approximation?
-\todo{Is 'impossible' a to definitive statement?}
-Obviously, IPC serves as an approximation.
-Other performance approximations will be discussed in the remainder of this
-chapter.
-How well these approximations perform will be discussed in the evaluation
-chapter \ref{sec:evaluation}.
-\todo{Thread groups, comparison and migration missing}
-\\
-
-Should I mention cache usage as approximation? Isn't this behaviour analysis,
-isn't this all behaviour analysis?
-Should I stop here and mention this again in later chapters, e.g.
-Implementation. Maybe a good place will show up, once I have written more.
-
-\todo{does this discussion bark at the wrong tree?}
-
-
-\begin{comment}
-\paragraph{performance expectation}
-But how can a performance expectation be formulated, without offline
-measurements or a separate online measurement phase?
-If a thread is scheduled the first time, no performance or resource information
-is available.
-The thread can be placed on the core with the least threads or with the lowest
-cache weight. \todo{did I explain cache weight already?}
-At the next interval boundary, the thread is measured and a performance
-prediction is formulated.
-Based on this prediction the thread can be placed by the chosen scheme,
-e.g. cache weight.
-
-\paragraph{performance measurement}
-But does this measurement at interval boundaries actually describe the
-performance of the co-schedule?
-Three cases must be considered during an interval:
-(A) a thread runs solo on a physical core,
-(B) a thread runs together with one other thread on a physical core and each
-thread executes on one logical core, and
-(C) more than two threads run on the same physical core.
-In case (A), the measurement describes the solo execution performance and
-resource usage.
-Case (B)'s measurement actually provides the co-schedule performance for both
-threads.
-And case (C) provides no reliable information at all.
-If three threads are present, two of them, say \alpha{} and \beta{}, are assumed to
-execute in parallel at each point in time.
-During the interval the combination will change, so \alpha{} and \gamma{} will be
-co-scheduled for some time and likewise \beta{} and \gamma{} and \alpha{} and
-\beta{}.
-The measurement takes place at the end of an interval, with no information
-about how long which thread combination was executing together. So no
-co-schedule performance statement for each pair of threads can be made.
-
-This example is simplified to ease the argumentation, in reality two additional
-problems must be considered.
-First, the \gls{llc} of the target hardare is shared among all four physical cores,
-hence the performance of each core local co-schedule is influenced by
-co-schedules on other cores, too.
-Second, the possible thread combinations are either (\alpha, \beta) and
-(\gamma, \beta), (\alpha, \beta) and (\alpha, \gamma), or (\alpha, \gamma) and
-(\beta, \gamma), because no scheduling decisions take place during an interval.
-\todo{make it clear, that each combination is the result of the last
-assignment?}
-So one of the three threads can execute for the whole interval and the other
-two execute for half an interval each.
-
-But the following three questions are still unanswered:
-Which information regarding the performance of a group of threads on two
-corresponding logical cores can be derived at the end of an interval?
-How can this measurement be compared to other groups?
-What measures need to be taken after the comparison to improve performance?
-
-Instruction per cycle seems to be a good measure to rate the performance of a
-co-schedule group.
-\todo{ is it clear to the reader what a co-schedule group is, or do I need to
-define this  explicitly}
-If the co-runners at a point in time have a high conflict
-rate on shared resources, the amount of instructions executed per cycle will
-suffer.
-For example, if two co-runners execute integer operations, the number of
-instructions per cycle, will be the number of integer units physically available.
-However, if one co-runner executes integer and the other floating point
-operations, this number will change to the number of integer units plus
-the number of floating point units, leading to a higher number of instructions
-per cycle.
-
-But is this number representative? No. Consider three threads, one executing
-floating point operations and two executing integer operations. Obviously, the
-one executing floating point operations should run alone on one logical core.
-But these properties are
-unknown at runtime and cannot be derived from the measurements.
-Hence, all three different combinations must be executed, before a concise
-statement regarding the best possible performance achievable for this 
-co-schedule group can be made.
-
-The number of possible combinations for a number of threads to two cores is
-a known problem in combinatorics and solved via the
-\emph{Stirling numbers of the second kind}.
-The Stirling numbers of the second kind describes the number of ways to
-partition a set of $n$ objects into $k$ non-empty subsets.
-\todo{Wikipedia, can I find a different formulation}
-Let $k=2$ the number of cores and $n>0$ the number of threads.
-$k=2$ is a special case for the Stirling numbers of the second kind:
-\todo{Source}
-%
-$$S_{n,2} = 2^{n-1}-1$$
-%
-Therefore, to formulate a concise statement for the best possible performance
-for a group of threads on a physical core containing two logical cores,
-3, 7, 15, 31, \ldots{} combinations must be scheduled for group sizes of
-3, 4, 5, 6, \ldots.
-
-So assuming each group of threads on each physical core, was executed
-$S(_{n,2})$ times, where $n$ is the group size.
-The best performance for each group was measured and can be compared across
-all groups.
-
-Is it now possible to compare the measurements?
-No.
-
-\end{comment}
-
-\paragraph{Abstraction}
-Due to the nature of SMT, it is impossible to compare the performance of SMT
-cores, without taking the performance of the companion core into account.
-Therefore, it feels natural to combine the corresponding cores and abstract
-from SMT, and \gls{ht}, respectively.
-
-Then the physical core performance is compared to other physical
-cores, which contain the same execution units.
-The performance of a specific SMT assignment is part of the core specific
-abstraction instance, easing decisions on a higher level.
-Also, if no SMT is available, the abstraction is the only affected module of
-the load balancer.
+All this necessitates an abstraction from logical cores.
+This abstraction allows to compare physical core performance and allows the
+load balancer to act independently of the presence of \gls{ht}.
