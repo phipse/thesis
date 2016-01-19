@@ -169,7 +169,7 @@ The processor does not support \gls{smt}.
 Hence, the performance gains stem not from symbiosis, but rather from
 congestion awareness.
 \\
-\todo{transition is a bit short}
+% todo transition is a bit short
 
 Becoming aware of and reducing cache congestion is also topic of
 \cite{knauerhase_using_2008}.
@@ -399,11 +399,18 @@ If a cache line was used by other processes the data is gone and it takes
 longer to reload it from memory.
 
 The attack utilises the inclusiveness property of the CPU cache, to observe
-changes in core local L1 and L2 caches in the \gls{llc}.
+changes in core local L1 and L2 caches through the \gls{llc}.
 Each cache line of the L1 caches is present in L2 and each line present in L2
-is present in the L3 cache.
-\todo{picture about inclusive caches}
-Therefore the eviction set must cover the cache lines in the \gls{llc} that
+is present in the L3 cache as displayed in figure \ref{state:fig:inclusive}.
+%
+\begin{figure}[h!]
+  \includegraphics[width=0.7\textwidth]{images/inclusive_caches}
+  \caption{Caches of \gls{intel} Haswell generation processores are inclusive.
+Each core contains 32KB D-, 32KB I-, 256KB L2, and 1.5MB L3 cache}
+  \label{state:fig:inclusive}
+\end{figure}
+
+Therefore, the eviction set must cover the cache lines in the \gls{llc} that
 correspond to the core local caches.
 Hence, the core running the application under attack must be known.
 
