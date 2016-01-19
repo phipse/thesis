@@ -11,14 +11,14 @@ information static and dynamically.
 
 \paragraph{Communication types}
 Two types of communication exist.
-\citeauthor{hofmeyr_load_2010} assumed a program running several threads which
+\citeauthor{hofmeyr_load_2010} assumed a program running several threads, which
 compute a chunk of work and then communicate their results to each other.
-This cycle repeats until all work is executed, where the time executed is the
-major part of the cycle and only a small part is used for communication.
+This cycle repeats until all work is executed, where the time spend executing
+is the major part of the cycle and only a small part is used for communication.
 Nevertheless, the overall program performance is best, if each thread reaches
 the communication synchronisation at the same time to spend as little time as
 possible waiting for others.
-This connection was also note in \cite{hofmeyr_load_2010}.
+This connection is note in \cite{hofmeyr_load_2010}.
 The compute-communicate pattern is typical for distributed systems and is named
 distributed communication in the following.
 
@@ -43,7 +43,7 @@ to context switch overhead.
 
 The same argumentation applies, if the server has a high number of clients from
 different tasks.
-To execute all clients on the server's core, would be a waste of resources.
+Executing all clients on the server's core, would be a waste of resources.
 Hence, the distribution of the tasks threads to different cores takes priority
 over low communication latencies.
 
@@ -52,7 +52,7 @@ over low communication latencies.
 Naturally, acquiring information at kernel level is easier, as more information
 context is available.
 But leakage of kernel information to user land must be pondered carefully.
-Hence, the following approaches are marked as debug feature.
+Hence, the following approaches can only be debug features.
 
 
 \paragraph{Communication Matrix}
@@ -68,7 +68,7 @@ and communication between two threads uses the counter in field
 The upper bound for the memory requirement is $1/2 * (\#threads)^2$.
 As not all threads will communicate with each other, usage of a sparse matrix
 will further lower the memory requirement.
-A sparse matrix allocates only memory for fields, which are actually used.
+%A sparse matrix allocates only memory for fields, which are actually used.
 
 \paragraph{Map}
 Another approach can be a thread local map, which contains the global
@@ -93,27 +93,26 @@ the thread ID row.
 At user level, information gathering is much more complicated.
 The strong isolation guarantees make it infeasible to work with global
 identifiers across all threads.
-But comparable capabilities already provide an identifier.
+But it is already possible to ask the kernel if two capabilities point to the
+same object.
 
 \paragraph{Cooperative communication capabilities}
 To communicate with a partner, a thread needs a capability in its own
-capability table, pointing to the receiver.
+capability table, pointing to a channel to the receiver.
 Together with a counter value, this capability can be passed to the load
 balancer and the load balancer can then identify communication partners
 by comparing this received capability, with the capabilities of the threads
-it balances.
-The kernel provides a system call which tells, if two passed capabilities point
-to the same object.
-The load balance can then build a relationship graph between threads and adapt
+it manages.
+The load balancer can then build a relationship graph between threads and adapt
 its assignment.
 
 This approach requires changes to the scheduler interface in L4Re and
-cooperating threads.
+thread cooperation.
 But it has the benefit, that each thread can decide on its own, if the
 communication relationship is intense enough to benefit from increased
 locality.
 Unfortunately, this requires changes to each thread managed by the balancer and
-regular intensity updates, which itself adds communication overhead.
+regular intensity updates.
 Together with the interface changes, this dynamic approach is deemed infeasible
 for this project.
 
@@ -127,10 +126,10 @@ introduced in \ref{design:isolation}.
 
 This approach requires careful system design, but no change of program source
 code or thread cooperation.
+\\
 
-\paragraph{Implementation}
 The two communication types are named \texttt{DISTR} and \texttt{CLSVR}.
-A group is identified via \texttt{<name>} and either distributed or clustered.
+A group is identified by \texttt{<name>} and either distributed or clustered.
 To identify the server in the client-server relationship, the server task's
 group name is assigned the \texttt{\_S} postfix.
 Client tasks use the \texttt{\_C} postfix.
@@ -139,6 +138,3 @@ Client tasks use the \texttt{\_C} postfix.
   distr = <Name>
   clsvr = <Name>_{C|S}
 \end{lstlisting}
-
-These parameters are optional and are used in the startup script interpreted by
-Ned.
