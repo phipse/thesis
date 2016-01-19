@@ -5,10 +5,10 @@
 Energy consumption is important in modern systems, as battery powered devices
 become more popular.
 But observing energy consumption is not part of this thesis.
-However, based on a energy consumption model, an energy efficient load
-balancing strategy is designed.
-This model is derived from related work presented in section
-\ref{state:related}.
+However, I will derive a model for energy consumption on x86 from work presented
+in section \ref{state:energy} and design an energy efficient load balancing
+strategy, based on this model.
+\\
 
 The critical question for an energy model is:
 When is least energy consumed?
@@ -25,15 +25,14 @@ So it is highly application specific to find the right frequency for the
 running application.
 The complexity increases, if more than one application is present in the
 system.
-Furthermore, it is not the job of the load balancer to decide on core
-frequencies.
+Furthermore, a load balancer cannot decide on core frequencies.
 
 \citeauthor{le_sueur_slow_2011} noted that turbo boost -- raising the frequency
 of one core above standard, if other cores are idle -- should be avoided at
 all cost, as the performance gain is little compared to the increased energy
 consumption.
 Usage of turbo boost can be avoided, if all cores are loaded, so the
-prerequisites are not met, or by disabling it in the BIOS.
+prerequisites are not met, or by completely disabling it.
 
 Another relevant observation in \cite{le_sueur_slow_2011} was, that the usage
 of deep sleep states and the related restart costs only slightly increase the
@@ -51,8 +50,21 @@ The target hardware for this work is a Haswell generation processor, so the
 race to idle model looks promising.
 \\
 
-It is assumed, that a good energy efficient model makes use of race to idle on all
-cores, avoiding turbo boost and maximizing the time for deep sleep states.
+The difference in energy consumption between low frequency and normal
+frequency, however, is little compared to a deep sleep state, due to the
+already high base power.
+So following \cite{imes_poet_2015}, it is best to increase sleep time and use
+the normal frequency to execute the arising work quickly.
+
+The model parameters for best energy efficiency are:
+No turbo boost, either execute at normal frequency or sleep, and use as many
+cores as possible, to reduce cache misses and consequently execution time.
+
+A reduction in runtime leads to larger sleep times or more throughput, which is
+the goal of a load balancer all along.
+Therefore, a algorithm maximizing throughput also increases energy efficiency
+on the x86 architecture.
+
 
 % todo Can POET be used in conjunction with a load balancer? Do they benefit each
 % other?
