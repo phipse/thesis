@@ -2,8 +2,8 @@
 \label{state:term}
 
 The following makes the reader familiar with the terminology of the field.
-Advanced readers may skip this section and use it as reference, if a term
-used in later sections is ambiguous unknown.
+Readers may continue with section \label{state:related} and use this section
+as reference, if a term is ambiguous or unknown.
 
 % list of glossary entries
 %\newacronym{intel}{}{INTEL\textregistered{}}
@@ -24,7 +24,7 @@ description={Intel\textregistered{} Corp.} }
 \newacronym{instpc}{IPC}{instructions per cycle}
 \newacronym{isa}{ISA}{Instruction Set Architecture}
 
-\todo{Item sorting}
+% todo Item sorting
 
 \begin{description}
   \item[\Gls{utcb}] A \gls{utcb} is an user-level memory section containing
@@ -34,11 +34,11 @@ description={Intel\textregistered{} Corp.} }
   \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
     of a priority level, execution time, and remaining execution time.
 
-  \item[Thread] A thread is a unit of execution, consisting of a \gls{utcb}
-    and a \gls{sc}.
+  \item[Thread] A thread is a unit of execution, consisting of a kernel and
+    user thread control block, a \gls{sc}, and further interfaces.
 
   \item[Task] A task is a unit of isolation. It manages different address
-    spaces; for example memory, capabilities, and ioports.
+    spaces; for example memory, capability, and ioport spaces.
     A task runs at least one thread.
 
   \item[\Gls{ipc}] \Gls{ipc} is one way for threads in L4Re/Fiasco.OC
@@ -56,7 +56,7 @@ description={Intel\textregistered{} Corp.} }
   \item[\Gls{instpc}] \Gls{instpc} describe the number of instructions executed
     per processor cycle.
 
-  \todo{Make context specific description lists?}
+% todo Make context specific description lists?
 
   \item[Core] A physical CPU core is referred to as core.
 
@@ -68,7 +68,7 @@ description={Intel\textregistered{} Corp.} }
     three levels are common.
     If data is evicted from the highest level of the hierarchy, it is written
     back to memory.
-    \todo{Write-through and write-back cache?}
+% todo Write-through and write-back cache?
 
   \item[Migration] The process of moving a thread from one core to another core
     is called migration.
