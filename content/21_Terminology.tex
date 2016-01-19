@@ -61,7 +61,7 @@ description={Intel\textregistered{} Corp.} }
   \item[Core] A physical CPU core is referred to as core.
 
   \item[Cache] Generally, a cache is used to store frequently accessed data
-    in the CPU core to reduce access times.
+    close to the CPU core to reduce access times.
     As a cache has size restriction, depending on the type of cache different
     evocation policies can be applied, e.g. \gls{fifo} or \gls{lru}.
     There are multiple levels of caches in modern CPUs, creating a hierarchy;
@@ -90,12 +90,12 @@ description={Intel\textregistered{} Corp.} }
     \gls{smt}-concept.
 
   \item[\Gls{cmp}  \& \Gls{smp}] Regarding cache coherence, \gls{cmp} and
-    \gls{smp} architectures equal.
-    However, \gls{cmp} style CPU consists of several CPU chips soldered on one
+    \gls{smp} architectures are equal.
+    However, \gls{cmp} style CPUs consists of several CPU chips soldered on one
     die.
     This leads to physically separated caches, limiting the amount of cache
     available to a single thread.
-    In constrast, modern \gls{smp} architectures share the \gls{llc} among all
+    In contrast, modern \gls{smp} architectures share the \gls{llc} among all
     cores on one die.
 
   \item[\Gls{isa}]\gls{isa} describes the set of hardware instructions executed
@@ -103,14 +103,9 @@ description={Intel\textregistered{} Corp.} }
 
   \item[Intervall] Describes a pre-defined number of clock ticks.
 
-  \item[Hardware Performance Counters] \todo{newacronym?} granularity: (per
-    cpu, per core, per logical core);
-    update interval -- 1ms?;
-    security risks?
-
-  \item[Job] In scheduling theory a job is a specific unit of work.
-    In real-time systems, the execution time of a job is known beforehand.
-    \todo{difference between jobs and threads?}
+%  \item[Job] In scheduling theory a job is a specific unit of work.
+%    In real-time systems, the execution time of a job is normally known beforehand.
+%    \todo{difference between jobs and threads?}
 
   \item[Turnaround time] Time between submission of a job and its completion.
 
