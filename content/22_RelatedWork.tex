@@ -8,16 +8,13 @@ the target architecture is a single \gls{isa}, partly symmetric homogeneous
 multicore.
 Partly symmetric means the target architecture supports \gls{smt},
 but besides this, it is a \gls{smp} architecture.
-Hence, research proposing hardware changes, e.g. \cite{cruz_dynamic_2014},
-is out of scope.
-Also, research focusing on heterogeneous or multi-\gls{isa} architectures, e.g.
-\cite{sarma_smartbalance_2015}, is not part of the review.
-
-%One restriction applies to this review: mechanism proposing hardware changes
-%are not in the focus of this work.
-%This restriction excludes interesting ideas to gather behavioural information,
-%e.g. observation of cache coherency traffic proposed in
-%\cite{cruz_dynamic_2014}.
+Hence, research proposing hardware changes is out of scope; such as
+\cite{cruz_dynamic_2014}, where cache coherence messages are monitored to
+increase a hardware communication counter.
+Also, research focusing on heterogeneous or multi-\gls{isa} architectures is
+not part of this review; for example in \cite{sarma_smartbalance_2015}
+the authors compare different core categories regarding expected performance of
+the current workload.
 
 % todo: write overview over topic, first smt, second  goodness, third
 % congestion, fourth communication, fifth energy, sixth security.
@@ -329,7 +326,7 @@ point improves overall application performance.
 
 \paragraph{Energy efficiency}
 Performance is not a one dimensional value anymore.
-Performance/watt is the important measure on battery supported devices like
+Performance per watt is the important measure on battery supported devices like
 notebooks or smartphones, and also in datacenters, as less watts mean less
 energy cost for running and cooling the datacenter.
 In \cite{imes_poet_2015} the authors compare a mobile \gls{intel} Haswell and a
@@ -425,9 +422,6 @@ proving its practicality in a real world scenario.
 Separating security critical applications on architectures, with shared
 \gls{llc} raises the difficulty of an attack, but does not mitigate it.
 Only a physical spearation of the caches prevents a PRIME+PROBE attack.
-
-
-\todo{linux cfs scheduler?}
 
 
 % -----------------------------------------------------------------------------
