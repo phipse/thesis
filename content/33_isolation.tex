@@ -5,29 +5,31 @@
 Fiasco.OC provides strong isolation and also real-time guarantees.
 A requirement aware thread to core mapping can support these guarantees.
 The following discusses security and real-time needs of applications and how to
-manage these.
+manage these with a load balancer.
 
 \paragraph{Security}
 As presented in section \ref{state:related} even in virtualized environments
-CPU cache is a valid side channel to attack secret information.
+the CPU cache is a valid side channel to attack secret information.
 To reduce the channel's throughput, security critical applications should share
 as little cache as possible with untrusted applications.
-In Haswell's inclusive cache hierarchy, the \gls{llc} is shared among all
-cores, but the L1 and L2 caches are core local.
-However, their cache lines are included in the shared \gls{llc}.
+In Haswell's inclusive cache hierarchy, the \gls{llc} contains the lines
+present in the core local L1 and L2 caches, and is shared among all cores of a
+chip.
 
 As shown in \cite{inci_seriously_2015} and \cite{liu_last-level_2015}
 the impact of placing security critical tasks on a seprate core is limited.
 Still, a security core increases the difficulty for PRIME+PROBE attacks.
 To completely mitigate this channel, no caches can be shared between the
 security task and the attacker.
+Nowadays, only a multi-socket system can enforce this.
 \\
 
-The security requirement of a task is defined by the system design.
+The security requirements of a task are known at system design.
 Therefore, a way to provide this static information to the load balancing
 service is necessary.
 It is also preferable to define specific security groups to separate different
-security critical tasks or to place a group of related security tasks.
+security critical tasks or to create a group of related, equally trusted
+security tasks.
 Hence, the configuration scheme must allow to define groups and identify the
 same group in the configurations of different tasks.
 
@@ -38,9 +40,12 @@ different groups by name.
 \paragraph{Real-Time}
 A similar isolation guarantee is necessary for real-time tasks.
 Real-time tasks need predictable execution times.
-Through and exclusive core and cache, real-time tasks are not disturbed by best
+Through and exclusive core and cache, real-time tasks are less disturbed by best
 effort workloads.
-How many cores should be assigned to a real-time task group, depends on its
+Due to the inclusive cache design, evictions from the \gls{llc} require
+evicting the cache line in the core local caches, too.
+Hence, this approach limits the disturbance, but does not diminish them.
+Also, several cores can be assigned to a real-time task group, depending on its
 requirements.
 
 As this is also known before runtime a static configuration can be used.
