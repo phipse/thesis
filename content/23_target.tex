@@ -1,8 +1,8 @@
 % vim:set ft=tex:
 \section{Fiasco.OC \& L4Re}
 \label{state:env}
-The related research presented in section \ref{state:related} states
-requirements of kernel features:
+The related research presented in section \ref{state:related} states the
+following feature requirements:
 hardware performance counters, assignment of threads to specific
 cores, and the ability to overrule the kernel scheduler.
 
@@ -11,34 +11,47 @@ only implement mechanisms in the kernel and no policies.
 For performance reasons the scheduling policy is the only policy implemented in
 the kernel.
 The scheduling parameters in a scheduling request from user land consist of
-a priority level, a time slice size request and a descriptor on which cores the
-thread wants to be scheduled.
-The kernel selects the first available core from the descriptor to schedule the
-thread on, checks if the priority level is in a valid range, and assigns a time
+a priority level, a time slice size request and a descriptor stating on which
+cores the thread wants to be scheduled.
+The kernel schedules the thread on the first available core in the descriptor,
+checks if the priority level is in a valid range, and assigns a time
 quantum.
 It does neither balance the amount of threads per core, nor prevent
-oversubscription of one core.
+oversubscription.
 However, it provides the mechanism to design a more sophisticated load
 distribution scheme as an user level service.
+
+OC in Fiasco.OC stands for object capability, a system providing a thread local
+namespace for references to other objects; for example the scheduler, object
+factory, and memory management.
+A new thread inherits a set of capabilities from its parent to be able to
+interact with the system.
+This set is completely independent of its parent capability namespace; parent
+and child can replace capabilities in its capability space without affecting
+the other.
+This property enables the use of proxies, implementing the same interface, but
+a different policy on top of the base service.
+An object registers the new service in its capability space.
+So different services can be implemented on top of each other providing
+different policies for subhierarchies of the object space.
+
+
+The L4 Runtime environment provides a scheduling service skeleton, which
+defines the kernel and user interface.
+Using this skeleton and the capability namespace property, a scheduling service
+can replace the default L4Re scheduler and implement further analysis of each
+thread.
+This skeleton also enables thread specific proxies with an individual
+configuration.
+\\
 
 Regarding hardware performance counters, the kernel provides neither a system
 call interface to read or configure them, nor per thread accounting of
 configured counters.
-Access to hardware performance counters is critical for this project, so a
-mechanism has to be provided for an user level service.
+Access to hardware performance counters is critical for this project, so I need
+to implement a mechanism to provide this for an user level service.
 
-The L4 Runtime environment provides a scheduling service skeleton, which
-defines the kernel and user interface.
-Using this skeleton the service can replace the default L4Re scheduler and do
-more analysis of each thread.
-This skeleton also enables thread specific proxies with an individual
-configuration.
 
-\todo{More details? Or better in architecture and implementation?}
-% todo why did I chose fiasco? what makes it special?
-% capability system, local naming scheme,
-% proxies can be used for a subhierarchy of tasks implementing functionality
-% differently, different policies.
 
 \begin{comment}
 \textbf{Fiasco.OC}
