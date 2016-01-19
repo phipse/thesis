@@ -5,8 +5,8 @@
 
 Since Linux 2.6.23 the \gls{cfs} runs Linux.
 It is completely fair, in regard to execution time provided to each task.
-Therefore, it measures so called virtual runtime of each task and selects the
-task with the lowest account to run next.
+To achieve fairness, it measures so called virtual runtime of each task and
+selects the task with the lowest account to run next.
 Internally, \gls{cfs} uses a red-black tree to sort the tasks regarding virtual
 runtime, where the leftmost task in the tree is the one with the least virtual
 runtime.
@@ -14,10 +14,10 @@ runtime.
 \gls{cfs} also supports group scheduling to provide fairness between tasks with one
 thread and tasks with many threads.
 If a task spawns many threads, they all execute on the account of the main
-task, preventing one task to gain more execution time than others.
+task, preventing one task to acquire more execution time than others.
 
 Conceptually, \gls{cfs} runs the currently selected task until the virtual runtime is
-higher than the vruntime of any other task.
+higher than the virtual runtime of any other task.
 Then a task switch occurs.
 As this would lead to constant task switching, two measures are used to counter
 act this: Target scheduling latency and minimum task runtime granularity.
@@ -33,32 +33,22 @@ minimum amount of time, a task needs to execute.
 As the number of tasks grow, the TSL increases to be able to schedule each
 runnable task once for the minimum task runtime.
 
-Priorities are accommodated by weight the virtual runtime accounted to each
+Priorities are accommodated by weighting the virtual runtime accounted to each
 task depending on the priority level.
-The vruntime of a high priority task increases slower than the vruntime of a
-low priority task, leading to more actual execution time for the high priority
-task.
+The virtual runtime of a high priority task increases slower than the virtual
+runtime of a low priority task, leading to more actual execution time for the
+high priority task.
 
 \paragraph{Domains, Groups, \& load balancing}
-A domain is a part of the physical hardware.
-Each physical core is a domain and at a higher level, each die is a domain.
-On NUMA systems each socket is a domain, consisting of a domain for each core.
+A domain is a unit of physical hardware.
+A physical core is a domain and the two hyper-threads running inside are each a
+group within this domain.
+Therefore, a group is a set of domains in the same level of the hierarchy.
+Each group within a domain is comparable to other groups in the same domain.
 
-A group is a set of domains in the same level of the hierarchy.
-Each domain in a group is comparable to the other domains in the same group.
-
-\gls{cfs} does active load balancing only between domains of the same group.
+\gls{cfs} does active load balancing only groups in the same domain.
 Their load is compared and if imbalances are found, \gls{cfs} tries to migrate a task
 from one group to another to establish balance again.
 Thereby, a cache affinity flag indicates, if the task ran recently and might
 still have valid cache lines.
-However, this flag is set and cleared depending on the time passed since the
-task was scheduled the last time.
-It is an estimator and no live knowledge.
 If the cache affinity flag is set, the task is not considered for migration.
-
-Also, \gls{cfs} rates the performance of a group of cores as group power.
-This measure indicates, if the cores in a group are physical or logical cores.
-Two physical cores have a group power of two, two \gls{ht}-cores have
-a group power of approximately 1.1.
-% todo relevance for load and balance?
