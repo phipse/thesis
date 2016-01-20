@@ -7,7 +7,8 @@ class ParseFormat_
   end
   
   def isText?( line )
-    line.match(/[[:alpha:]]/) != nil
+    line.match(/[[:alpha:]]/) != nil || line.match('%') != nil
+
   end
   
   def isNumber?( line )
@@ -48,9 +49,9 @@ if __FILE__ == $0
 
   File.open(ARGV[0]) do |f|
     while( line = f.gets)
-#      puts line
       
       if pf.isText?(line) 
+      #puts line
 	comment = pf.makeComment(line)
 	outFile.write(comment)
       elsif pf.isNumber?(line)
