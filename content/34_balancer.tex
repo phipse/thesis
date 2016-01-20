@@ -29,7 +29,7 @@ of trust of each balanced application, so both approaches are equally
 trustworthy.
 But the central component can react dynamically to changes in the workloads and
 shift the partition borders dynamically.
-Also if tasks with security properties, as discussed in section
+Also, if tasks with security properties, as discussed in section
 \ref{design:isolation}, enter or leave the system, the dynamic approach can
 repurpose a core.
 Redistribution of cores between hierarchical load balancer would require
@@ -40,20 +40,20 @@ with a central instance further up the hierarchy.
 The former weakens the isolation and increases overhead, the latter means more
 logic in a central instance.
 
-To decrease the overhead and due to the easier implementation a central load
-balancing component, I choose to implement the centralized service.
+Due to the easier implementation of a central load balancing component,
+I choose to implement the centralized service.
 \\
 
-Next to the load balancer, task specific proxy scheduler act as information
+Next to the load balancer, task specific proxy scheduler acts as information
 source.
 Each task can have isolation (\ref{design:isolation}) and communication
 properties (\ref{design:comm}).
 The task proxy stores this task specific configuration and provides it to the
 load balancer.
 
-A factory creates the load balancer as well as the task proxies and creates
-from the configuration parameters the configuration structure exchanged between
-proxies and balancer.
+The factory creating the load balancer and the task proxies, processes the
+configuration parameters and instantiates the configuration structure exchanged
+between proxies and balancer.
 The configuration structure comprises the priority band and a list of
 groups derived from the parameters.
 
