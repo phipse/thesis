@@ -4,24 +4,23 @@
 
 All the techniques introduced in the previous sections of this chapter
 are now united into the central load balancing component.
-The section describes the components the load balancer is build of and relies
-upon.
-\todo{chapter structure}
+The section describes the components the load balancer is build of.
+% todo chapter structure
 
 
 \paragraph{Load Balancer \& Task Proxies}
 To achieve good load balancing performance, the load balancer needs information
 about the underlying hardware, as well as the amount of work in the system.
 Thereby, it is also possible to build hierarchical load balancing, where
-only a partial view on the hardware and only a subset of tasks runs on this
-specific load balancer.
-However, while leading to isolation between different subsets of the system,
+only a partial view on the hardware is available and only a subset of tasks run
+on this specific load balancer.
+However, while leading to isolation between different subhierarchies,
 the overall performance can suffer, as the system is effectively partitioned.
 A surplus of computing resources in one partition is unusable by another
 partition leading to wasted resources.
-The partition size can only be adapted at core granularity, so meeting the
+The partition size is only adaptable at core granularity, so meeting the
 precise resource needs may not be possible, leading to overprovisioning and
-additional resource waste.
+consequently, resource waste.
 
 Isolation between parts of the system can also be provided by a central load
 balancing component.
@@ -34,7 +33,7 @@ Also if tasks with security properties, as discussed in section
 \ref{design:isolation}, enter or leave the system, the dynamic approach can
 repurpose a core.
 Redistribution of cores between hierarchical load balancer would require
-additional reasoning which load balancer the free core is assigned to, or which
+additional reasoning, which load balancer the free core is assigned to, or which
 load balancer must release a core.
 Either the load balancer must communicate their reasoning between each other or
 with a central instance further up the hierarchy.
@@ -42,7 +41,8 @@ The former weakens the isolation and increases overhead, the latter means more
 logic in a central instance.
 
 To decrease the overhead and due to the easier implementation a central load
-balancing component is chosen.
+balancing component, I choose to implement the centralized service.
+\\
 
 Next to the load balancer, task specific proxy scheduler act as information
 source.
@@ -54,37 +54,39 @@ load balancer.
 A factory creates the load balancer as well as the task proxies and creates
 from the configuration parameters the configuration structure exchanged between
 proxies and balancer.
-The configuration structure comprises of the priority band and a list of
-the groups derived from the configuration.
+The configuration structure comprises the priority band and a list of
+groups derived from the parameters.
 
 
 \paragraph{Thread Management}
-The main management component inside the load balancer is the thread
-management.
-It creates a internal administration class for each thread and identifies the
+All threads known to the load balancer are managed by the thread management.
+It creates a internal administration class for each thread and identifies a
 thread via its capability.
-The configuration passed by the task proxy is evaluated and if isolation or
-communication groups are given, the thread is assigned to these groups.
-The management provides a consistent view on all managed, grouped, and not grouped
-threads for other components and also cleans up left threads.
+The load balancer evaluates the configuration passed by the task proxy and
+if isolation or communication groups are set, the thread is assigned to these
+groups.
+The management provides a consistent view on all managed, grouped, and not
+grouped threads for other components and is also in charge of cleanup.
 
 
 \paragraph{CPU Topology \& Accounting}
-Besides the management of threads, the load balancer must also know the load on
-each core and the topology of the underlying hardware.
-The topology is generated via the topology enumeration capability of CPUID.
-Each socket is described as a package consisting of physical cores.
-If \gls{ht} is present and enabled, each physical core contains two logical
-cores.
+Besides the management of threads, the load balancer must also know the
+topology of the underlying hardware.
+The topology scanner analyses topology via CPUID and stores it in a tree like
+data structure.
+A package describes all physical cores of one socket.
+If \gls{ht} is present, each physical core contains data structures for
+two logical cores.
 
 Each physical core is associated with an accounting object.
-It stores all assigned threads and computes the accumulated load on its core.
+Core accounting stores all assigned threads and computes the accumulated
+load on its assigned core.
 Additionally, it provides information on which thread to migrate in case of an
 imbalance.
-The accounting object connects topology, physical cores and threads, therefore,
+The accounting object connects topology, physical cores, and threads, therefore,
 it is the place for the SMT abstraction introduced in \ref{design:smt}.
 Each thread assigned to the physical core, is distributed to its hyper-threads
-by some algorithm, e.g. round robin, \gls{llc} weight, or IPC.
+by an algorithm, e.g. round robin, \gls{llc} weight, IPC, or load.
 If no \gls{ht} is available, no further assignment is necessary.
 The availability of \gls{ht} is deduced from the topology enumeration results.
 
@@ -112,7 +114,7 @@ Together with the topology information and the accounting values for each core
 from last interval, the decision module checks, if the system is still balanced.
 If not, selected threads must be migrated to establish balance again.
 After deciding which threads must be migrated, the enforce module applies the
-migrations by modifying each thread's affinity and informs the kernel.
+migrations by modifying each thread's affinity and informing the kernel.
 
 These steps repeat every interval. A high interval duration reduces the
 load balancing overhead, but also leaves the system longer in a bad state, when
@@ -120,7 +122,7 @@ thread behaviour changes or threads enter and leave the system.
 A short interval duration increases the measurement overhead and may increase
 the amount of migrations.
 The ideal interval size increases system performance to outweigh the interval's
-own balancing overhead.
+own runtime overhead.
 \\
 
 The benefit of dividing the interval cycle into four separate components lies
