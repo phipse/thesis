@@ -39,7 +39,7 @@
   \node(pred) [defaultRec, right of=center, anchor=west] {Predict};
   \node(deci) [defaultRec, below of=center, anchor=north] {Decide};
   \node(enf)  [defaultRec, left of=center, anchor=east] {Enforce};
-  \node(place) [defaultRec, below of=deci, anchor=north] {Placement Generator};
+  \node(place) [defaultRec, below of=deci, anchor=north, node distance=1cm] {Placement Generator};
 
   \node(help) [node distance=1cm,below of=place] {};
   \node(topo) [defaultRec, left of=help, anchor=east,xshift=3mm] {HW-Topology};

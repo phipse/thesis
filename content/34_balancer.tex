@@ -104,6 +104,14 @@ measurement, prediction, decision, and enforcement.
 Each balancing interval, they run once and adapt the thread to core
 assignment to the current circumstances.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/statusvortrag/arch_interval_cycle}
+  \caption{Sequential exectuion of the main components inside the load
+  balancer.}
+  \label{arch:fig:intervalcycle}
+\end{figure}
+
 First, the information about the current situation is updated by gathering
 performance counter and execution time values of the last interval for each
 thread.
