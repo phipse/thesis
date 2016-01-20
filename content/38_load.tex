@@ -1,0 +1,104 @@
+\section{Load and Balance}
+\label{design:load}
+
+\newacronym{mpc}{MPC}{misses per cycle}
+
+What is load? 
+And depending on the answer to this question: What is balance?
+
+\gls{cfs} defines load as amount of execution time used by threads.
+But a core's load can also be defined as
+the cache and memory usage, the sum of \gls{instpc}, or simply as the number of
+assigned threads.
+Using a mix of the above as load measure is also imaginable.
+
+The answer to the question: What is balance? -- depends on the definition of
+load.
+Assuming the \gls{cfs} definition, a system is balanced, if the groups within a
+domain carry an even amount of load.
+If this assumption holds for each level in the domain hierarchy, the system is
+in balance.
+But load only displays consumed computation time, it balances time and
+disregards space.
+
+The opposite approach measures only \gls{mpc} and ignores computation
+resources.
+So the load of a domain is the sum of \gls{mpc} of all assigned threads and a
+system is in balance, if the number is equal.
+Or better, if no assignment of threads to cores reduces the load imbalances 
+between cores.
+But this measure suffers because of its disregard for remaining execution time.
+While memory intense threads may perform better, computation intense threads
+suffer due to migration and possibly high thread count imbalances between
+cores.
+For example, if one threads produces a high number of \gls{mpc} it is assigned a
+core alone, to meet its cache needs.
+If four other threads are computation intense and the sum of their \gls{mpc} is
+still lower than the high \gls{mpc} threads, they will be sharing one core.
+This system is in balance regarding \gls{mpc} but is perceived as heavily
+imbalanced.
+
+A third measure is \gls{instpc}.
+It shows, how much instructions a thread was able to perform during its
+runtime.
+But as with \gls{mpc} this number is different for each thread.
+CPU bound workloads tend to have a high number of \gls{instpc},
+but memory bound workloads tend to have a much lower number, due to cache
+misses.
+Also, instructions are not equally costly, which leads
+\citeauthor{snavely_symbiotic_2000} to their weighted instruction measure.
+But at runtime it is not possible to pinpoint the weight of the current
+instruction.
+
+Balancing only by IPC, will lead to a similarly unfair distribution of threads
+to cores, like balancing by \gls{mpc}.
+The disregard for cache usage, will likely decrease the number of instructions
+a cache sensitive threads is able to execute, as more cache misses are
+generated.
+
+The number of threads assigned to a core, also impacts the progress of other
+assigned threads.
+But only, if the newly assigned thread is really executing and not a service,
+which mostly idles and executes only on request.
+Thread count ignores load, \gls{instpc}, and \gls{mpc} and is therefore
+useless.
+
+A mix of execution time, \gls{instpc}, and \gls{mpc} looks promising.
+The main drawback of execution time is the ignorance towards cache usage.
+Extending the balancing measure with \gls{mpc} knowledge should improve this.
+A second approach can combine \gls{instpc} and \gls{mpc} measures: I assume
+\gls{instpc} and \gls{mpc} to be two orthogonal measures, hence running a
+high \gls{mpc} on the same core as a high \gls{instpc} thread should perform
+well.
+\\
+
+% todo merit flaw table as summary
+
+After discussion load and balance, it is also necessary to decide on a
+threshold, before actively migrating threads.
+The cost of a migration must not necessarily be paid to have a perfectly
+balanced system.
+Slight imbalances decrease the performance compared to a perfectly balanced
+system, but as long as this decrease is less than the cost of a migration,
+it is practicable to tolerate the imbalance.
+
+Cache heavy threads, determined by last level cache misses per cycle can have
+two reasons for a high miss count: first, they reuse little memory and use new
+memory in a not prefetchable manner, otherwise the prefetcher would not miss;
+second, the cache working set is large and parts of the working set were
+evicted during the runtime of other programs.
+Migrating the former does not hurt the program much, migrating the latter
+however is costly and should be avoided.
+
+While it is generally, a bad idea to migrate high \gls{mpc} threads, a
+clustering of high \gls{mpc} threads is worse.
+
+So the balancing should take place in time and in space, while in space takes
+priority over time and time balancing evens out imbalances afterwards.
+The space balancing should act, if high imbalances regarding accumulated
+\gls{mpc} per core arise, or if the difference of \gls{mpc} heavy threads per
+core rises above one or two.
+
+Regarding time imbalances, is there a thread that would even out imbalances if
+migrated? When does the load balancer start searching for such a thread?
+I assume 5\% is a good compromise between migrating to much and to little.
