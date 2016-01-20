@@ -46,11 +46,11 @@ class SumMinMax
     if @cnt != 0
       precision = 6
       #mus2s()
-      avg = (@sum/@cnt)/@musFactor
+      avg = (@sum/@cnt)
       name2 = name + "1"
-      rmins = (avg-@mins).round(precision)
-      rmaxs = (avg-@maxs).round(precision).abs
-      rmax2s = (avg-@max2s).round(precision).abs
+      rmins = (avg-@min).round(precision)
+      rmaxs = (avg-@max).round(precision).abs
+      rmax2s = (avg-@max2).round(precision).abs
 
       return "% Format: name, avg, median, min, max, Elements\n\
 name avg median min max Elements\n\
@@ -188,7 +188,7 @@ if __FILE__ == $0
 	# remove trailing newline, but no character: chomp
 	arr = line.split(',').map! {|s| s.lstrip.chomp}
 #	puts line
-#	puts arr
+	#puts arr[0]
 #	puts arr.length
 
 	avg.summinmax(arr[0].to_f)
