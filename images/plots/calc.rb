@@ -32,6 +32,10 @@ class SumMinMax
     (@arr.sort.at((@arr.length/2.0).round).last)/@musFactor
   end
 
+  def getAvgInS
+    return (@sum/@cnt)
+  end
+
   def mus2s
     @mins = @min/@musFactor
     @maxs = @max/@musFactor
@@ -41,7 +45,7 @@ class SumMinMax
   def printResults(name)
     if @cnt != 0
       precision = 6
-      mus2s()
+      #mus2s()
       avg = (@sum/@cnt)/@musFactor
       name2 = name + "1"
       rmins = (avg-@mins).round(precision)
@@ -65,6 +69,10 @@ class PlotterGen
     @max = 0
     @avg = 0
     @filename = ""
+  end
+
+  def setAvg(avg)
+    @avg =avg
   end
 
   def minMaxString(str)
@@ -174,19 +182,26 @@ if __FILE__ == $0
       # test for comment line
       if( line.lstrip.start_with?('%') ) 
 	plot.parseMinMax(line)
+      else
+
+	# strip all left white spaces: lstrip
+	# remove trailing newline, but no character: chomp
+	arr = line.split(',').map! {|s| s.lstrip.chomp}
+#	puts line
+#	puts arr
+#	puts arr.length
+
+	avg.summinmax(arr[0].to_f)
+#	arr.each {|num| avg.summinmax(num.to_f)}
       end
-
-      # strip all left white spaces: lstrip
-      # remove trailing newline, but no character: chomp
-      arr = line.split(',').map! {|s| s.lstrip.chomp}
-
-      arr.each {|num| avg.summinmax(num.to_i)}
     end
   end
   
   # write to file
   fn = ARGV[0] + "_result"
   texfile = ARGV[0] + "_plot.tex"
+
+  plot.setAvg(avg.getAvgInS())
 
   plot.writeTex(ARGV[0], texfile)
 
