@@ -18,24 +18,24 @@ However, while leading to isolation between different subhierarchies,
 the overall performance can suffer, as the system is effectively partitioned.
 A surplus of computing resources in one partition is unusable by another
 partition leading to wasted resources.
-The partition size is only adaptable at core granularity, so meeting the
+The size of the partition is only adaptable at core granularity, so meeting the
 precise resource needs may not be possible, leading to overprovisioning and
 consequently, resource waste.
 
 Isolation between parts of the system can also be provided by a central load
 balancing component.
-A central load balancer as well as a hierarchical approach is part of the chain
+A central load balancer as well as a hierarchical approach are part of the chain
 of trust of each balanced application, so both approaches are equally
 trustworthy.
 But the central component can react dynamically to changes in the workloads and
-shift the partition borders dynamically.
+shift the partition borders as needed.
 Also, if tasks with security properties, as discussed in section
 \ref{design:isolation}, enter or leave the system, the dynamic approach can
 repurpose a core.
-Redistribution of cores between hierarchical load balancer would require
-additional reasoning, which load balancer the free core is assigned to, or which
+Redistribution of cores between hierarchical load balancer, would require
+additional reasoning which load balancer the free core is assigned to, or which
 load balancer must release a core.
-Either the load balancer must communicate their reasoning between each other or
+The load balancers must communicate their reasoning either with each other, or
 with a central instance further up the hierarchy.
 The former weakens the isolation and increases overhead, the latter means more
 logic in a central instance.
@@ -44,14 +44,14 @@ Due to the easier implementation of a central load balancing component,
 I choose to implement the centralized service.
 \\
 
-Next to the load balancer, task specific proxy scheduler acts as information
+Next to the load balancer, a task-specific proxy scheduler acts as information
 source.
 Each task can have isolation (\ref{design:isolation}) and communication
 properties (\ref{design:comm}).
 The task proxy stores this task specific configuration and provides it to the
 load balancer.
 
-The factory creating the load balancer and the task proxies, processes the
+The factory creating the load balancer and the task proxies processes the
 configuration parameters and instantiates the configuration structure exchanged
 between proxies and balancer.
 The configuration structure comprises the priority band and a list of
@@ -65,15 +65,15 @@ thread via its capability.
 The load balancer evaluates the configuration passed by the task proxy and
 if isolation or communication groups are set, the thread is assigned to these
 groups.
-The management provides a consistent view on all managed, grouped, and not
-grouped threads for other components and is also in charge of cleanup.
+The management provides a consistent view on all managed, grouped, and threads
+not assigned to a group for other components and is also in charge of cleanup.
 
 
 \paragraph{CPU Topology \& Accounting}
 Besides the management of threads, the load balancer must also know the
 topology of the underlying hardware.
-The topology scanner analyses topology via CPUID and stores it in a tree like
-data structure.
+The topology scanner analyses topology via CPUID and stores it in a
+hierarchical data structure.
 A package describes all physical cores of one socket.
 If \gls{ht} is present, each physical core contains data structures for
 two logical cores.
@@ -85,7 +85,7 @@ Additionally, it provides information on which thread to migrate in case of an
 imbalance.
 The accounting object connects topology, physical cores, and threads, therefore,
 it is the place for the SMT abstraction introduced in \ref{design:smt}.
-Each thread assigned to the physical core, is distributed to its hyper-threads
+Each thread assigned to the physical core is distributed to its hyper-threads
 by an algorithm, e.g. round robin, \gls{llc} weight, IPC, or load.
 If no \gls{ht} is available, no further assignment is necessary.
 The availability of \gls{ht} is deduced from the topology enumeration results.
@@ -101,7 +101,7 @@ The availability of \gls{ht} is deduced from the topology enumeration results.
 % enforce: configure the core affinity for each thread and inform the kernel
 The logic of the load balancer is partitioned into four consecutive modules:
 measurement, prediction, decision, and enforcement.
-Each balancing interval, they run once and adapt the thread to core
+Each balancing interval, they run once and adapt the thread-to-core
 assignment to the current circumstances.
 
 \begin{figure}[h]
@@ -119,14 +119,14 @@ Based on these measurements, the prediction module generates a forecast for
 each thread's resource needs.
 This forecast forms the input for the decision module.
 Together with the topology information and the accounting values for each core
-from last interval, the decision module checks, if the system is still balanced.
+from last interval, the decision module checks if the system is still balanced.
 If not, selected threads must be migrated to establish balance again.
 After deciding which threads must be migrated, the enforce module applies the
 migrations by modifying each thread's affinity and informing the kernel.
 
 These steps repeat every interval. A high interval duration reduces the
-load balancing overhead, but also leaves the system longer in a bad state, when
-thread behaviour changes or threads enter and leave the system.
+load balancing overhead, but also leaves the system in a bad state for a longer
+time, when thread behaviour changes or threads enter and leave the system.
 A short interval duration increases the measurement overhead and may increase
 the amount of migrations.
 The ideal interval size increases system performance to outweigh the interval's
@@ -138,13 +138,13 @@ in its flexibility.
 If other information sources should be used, the measurement component is the
 place to add them.
 If different performance prediction algorithms should be tested, only the
-prediction component must be changed.
+prediction component changes.
 The decision component allows to easily test balancing and placement algorithms
 and also incorporating multi socket systems is neatly encapsulated in it.
 
 Of course if information sources arise, changes down the line are necessary.
 But this approach provides a concise description of the different components.
-Also extending the load balancer to heterogeneous architectures is assumed to
+Also, extending the load balancer to heterogeneous architectures is assumed to
 work well, as the design is similar to the approach in
 \cite{sarma_smartbalance_2015}.
 

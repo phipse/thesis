@@ -1,3 +1,4 @@
+% vim:set ft=tex:
 \section{Load and Balance}
 \label{design:load}
 
@@ -23,10 +24,10 @@ disregards space.
 
 The opposite approach measures only \gls{mpc} and ignores computation
 resources.
-So the load of a domain is the sum of \gls{mpc} of all assigned threads and a
-system is in balance, if the number is equal.
-Or better, if no assignment of threads to cores reduces the load imbalances
-between cores.
+So the load of a domain is the sum of \gls{mpc} of all assigned threads.
+A system is in balance, if each group within a domain has an equal number of
+\gls{mpc}.
+Or better, if no thread-to-core assignment reduces the imbalances between cores.
 But this measure suffers because of its disregard for remaining execution time.
 While memory intense threads may perform better, computation intense threads
 suffer due to migration and possibly high thread count imbalances between
@@ -50,13 +51,13 @@ Also, instructions are not equally costly, which leads
 But at runtime it is not possible to pinpoint the weight of the current
 instruction.
 
-Balancing only by IPC, will lead to a similarly unfair distribution of threads
-to cores, like balancing by \gls{mpc}.
-The disregard for cache usage, will likely decrease the number of instructions
+Balancing only by \gls{instpc} will lead to a similarly unfair distribution of
+threads to cores like balancing by \gls{mpc}.
+The disregard for cache usage will likely decrease the number of instructions
 a cache sensitive threads is able to execute, as more cache misses are
 generated.
 
-The number of threads assigned to a core, also impacts the progress of other
+The number of threads assigned to a core also impacts the progress of other
 assigned threads.
 But only, if the newly assigned thread is really executing and not a service,
 which mostly idles and executes only on request.
@@ -74,7 +75,7 @@ well.
 
 % todo merit flaw table as summary
 
-After discussion load and balance, it is also necessary to decide on a
+After discussing load and balance, it is also necessary to decide on a
 threshold, before actively migrating threads.
 The cost of a migration must not necessarily be paid to have a perfectly
 balanced system.
@@ -82,23 +83,25 @@ Slight imbalances decrease the performance compared to a perfectly balanced
 system, but as long as this decrease is less than the cost of a migration,
 it is practicable to tolerate the imbalance.
 
-Cache heavy threads, determined by last level cache misses per cycle can have
+Cache-heavy threads, determined by last level cache misses per cycle, can have
 two reasons for a high miss count: first, they reuse little memory and use new
 memory in a not prefetchable manner, otherwise the prefetcher would not miss;
 second, the cache working set is large and parts of the working set were
 evicted during the runtime of other programs.
-Migrating the former does not hurt the program much, migrating the latter
-however is costly and should be avoided.
+Migrating the former kind does not hurt the program much, migrating the latter
+kind however is costly and should be avoided.
 
-While it is generally, a bad idea to migrate high \gls{mpc} threads, a
+While it is generally a bad idea to migrate high \gls{mpc} threads, a
 clustering of high \gls{mpc} threads is worse.
 
-So the balancing should take place in time and in space, while in space takes
-priority over time and time balancing evens out imbalances afterwards.
+So the balancing should take place in time and in space.
+While balancing in space takes priority over balancing in time and time 
+balancing evens out imbalances.
 The space balancing should act, if high imbalances regarding accumulated
 \gls{mpc} per core arise, or if the difference of \gls{mpc} heavy threads per
-core rises above one or two.
+core rises above one or two high \gls{mpc} threads per core.
 
-Regarding time imbalances, is there a thread that would even out imbalances if
-migrated? When does the load balancer start searching for such a thread?
-I assume 5\% is a good compromise between migrating to much and to little.
+Regarding time imbalances, the questions are: is there a thread that would even
+out imbalances if migrated? And: When does the load balancer start searching
+for such a thread?
+In the evaluation section I search for a good threshold value.

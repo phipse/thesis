@@ -19,8 +19,8 @@ task, preventing one task to acquire more execution time than others.
 Conceptually, \gls{cfs} runs the currently selected task until the virtual runtime is
 higher than the virtual runtime of any other task.
 Then a task switch occurs.
-As this would lead to constant task switching, two measures are used to counter
-act this: Target scheduling latency and minimum task runtime granularity.
+As this would lead to constant task switching, two measures are used to
+counteract this: Target scheduling latency and minimum task runtime granularity.
 
 The target scheduling latency (TSL) describes an amount of time shared between a
 number of tasks.
@@ -28,8 +28,8 @@ If two tasks are runnable, and the TSL is 20ms, then each task runs for 10ms.
 However, if more tasks become runnable, the amount of time per task shrinks and
 eventually the switching overhead is higher than the time a task spends
 executing.
-To prevent this situation the minimum task runtime granularity defines a
-minimum amount of time, a task needs to execute.
+To prevent this situation, the minimum task runtime granularity defines a
+minimum amount of time a task needs to execute.
 As the number of tasks grow, the TSL increases to be able to schedule each
 runnable task once for the minimum task runtime.
 
@@ -40,15 +40,16 @@ runtime of a low priority task, leading to more actual execution time for the
 high priority task.
 
 \paragraph{Domains, Groups, \& load balancing}
-A domain is a unit of physical hardware.
-A physical core is a domain and the two hyper-threads running inside are each a
-group within this domain.
-Therefore, a group is a set of domains in the same level of the hierarchy.
+A domain is a unit of physical hardware;
+for example, a physical core is a domain and the two hyper-threads running
+inside each constitute a group within this domain.
+On each level of the hierarchy, the current level is the domain and the lower
+hierarchy levels are groups.
 Each group within a domain is comparable to other groups in the same domain.
 
-\gls{cfs} does active load balancing only groups in the same domain.
-Their load is compared and if imbalances are found, \gls{cfs} tries to migrate a task
-from one group to another to establish balance again.
+\gls{cfs} does active load balancing only between groups in the same domain.
+Their load is compared and if imbalances are found, \gls{cfs} tries to migrate
+a task from one group to another to establish balance again.
 Thereby, a cache affinity flag indicates, if the task ran recently and might
 still have valid cache lines.
 If the cache affinity flag is set, the task is not considered for migration.

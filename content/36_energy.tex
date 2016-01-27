@@ -4,50 +4,52 @@
 
 Energy consumption is important in modern systems, as battery powered devices
 become more popular.
-But observing energy consumption is not part of this thesis.
+Measuring energy consumption is not part of this thesis.
 However, I will derive a model for energy consumption on x86 from work presented
-in section \ref{state:energy} and design an energy efficient load balancing
+in section \ref{state:related} and design an energy efficient load balancing
 strategy, based on this model.
 \\
 
 The critical question for an energy model is:
 When is least energy consumed?
-If the work is done fast and the cores sleep for a longer time or if the work
-is done at lower frequencies for a longer time.
+In a scenario where work is done fast and the cores sleep for a longer time or
+if the work is done at lower frequencies for a longer time.
 
 Assume the system is only at half utilization at the lowest possible frequency.
-In \cite{le_sueur_slow_2011} it is assumed, that quality of service is
-maintained, even at low frequencies.
-They showed, for their three applications that the energy efficiency is best
-for low frequencies, but depending on the application, at the cost of
-throughput.
-So it is highly application specific to find the right frequency for the
+\cite{le_sueur_slow_2011} assumes that quality of service is maintained, even
+at low frequencies.
+\citeauthor{le_sueur_slow_2011} show for their three applications that the
+energy efficiency is best for low frequencies, but depending on the
+application, at the cost of throughput.
+So it is highly application-specific to find the right frequency for the
 running application.
 The complexity increases, if more than one application is present in the
 system.
 Furthermore, a load balancer cannot decide on core frequencies.
 
-\citeauthor{le_sueur_slow_2011} noted that turbo boost -- raising the frequency
+\citeauthor{le_sueur_slow_2011} note that turbo boost -- raising the frequency
 of one core above standard, if other cores are idle -- should be avoided at
 all cost, as the performance gain is little compared to the increased energy
 consumption.
-Usage of turbo boost can be avoided, if all cores are loaded, so the
-prerequisites are not met, or by completely disabling it.
+The hardware does not use turbo boost as long as all cores are loaded, as the
+energy budget does not allow it.
+Also, it is possible to disable the feature completely.
 
-Another relevant observation in \cite{le_sueur_slow_2011} was, that the usage
+
+Another relevant observation in \cite{le_sueur_slow_2011} is, that the usage
 of deep sleep states and the related restart costs only slightly increase the
 system load.
-If deep sleep states are used, the system load is low anyway, so the additional
-load poses no problem.
+If a core goes into a deep sleep state, the system load is low anyway, so the
+additional wakeup-load poses no problem.
 \\
 
 \cite{imes_poet_2015} states that different models are necessary for different
 platforms.
-A mobile Haswell generation processor consumes least energy, if the race to
+A mobile Haswell generation processor consumes least energy if the race to
 idle scheme is used, whereas an embedded Exynos5 generation CPU is designed for
 constant low frequency operation.
 The target hardware for this work is a Haswell generation processor, so the
-race to idle model looks promising.
+race to idle model seems promising.
 \\
 
 The difference in energy consumption between low frequency and normal
@@ -62,7 +64,7 @@ cores as possible, to reduce cache misses and consequently execution time.
 
 A reduction in runtime leads to larger sleep times or more throughput, which is
 the goal of a load balancer all along.
-Therefore, a algorithm maximizing throughput also increases energy efficiency
+Therefore, an algorithm maximizing throughput also increases energy efficiency
 on the x86 architecture.
 
 

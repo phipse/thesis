@@ -6,23 +6,24 @@ A less attended behaviour property of threads is communication.
 It is difficult to observe which threads are communicating with each other and
 how often.
 This section explores kernel and user land approaches to acquire this
-information static and dynamically.
+information statically and dynamically.
 
 
-\paragraph{Communication types}
-Two types of communication exist.
+\paragraph{Communication patterns}
+I present two patterns of communication: compute-communicate and client-server.
+
 \citeauthor{hofmeyr_load_2010} assumed a program running several threads, which
 compute a chunk of work and then communicate their results to each other.
-This cycle repeats until all work is executed, where the time spend executing
+This cycle repeats until all work is executed, whereas the time spent executing
 is the major part of the cycle and only a small part is used for communication.
 Nevertheless, the overall program performance is best, if each thread reaches
 the communication synchronisation at the same time to spend as little time as
 possible waiting for others.
-This connection is note in \cite{hofmeyr_load_2010}.
+\cite{hofmeyr_load_2010} notes this connection.
 The compute-communicate pattern is typical for distributed systems and is named
 distributed communication in the following.
 
-The other type is client-server communication.
+The other pattern describes client-server communication.
 To achieve the best possible performance, the communication latency, meaning
 the time difference between sending and receiving the message, must be minimal.
 The latency is minimal, if both communication partners are on the same core.
@@ -33,31 +34,31 @@ server typically has long idle times.
 Therefore, it is preferable to execute both communication partners on the same
 core.
 
-But this conclusion is wrong, if there are several clients of the same task.
+But this conclusion is wrong, if there are several clients from the same task.
 If the task runs several threads, then it most likely wants these threads to
 execute in parallel.
-Running all threads close to the server on the same core, would heavily impact
+Running all threads close to the server on the same core would heavily impact
 their performance.
 In the worst case, the performance drops below single threaded performance, due
 to context switch overhead.
 
 The same argumentation applies, if the server has a high number of clients from
 different tasks.
-Executing all clients on the server's core, would be a waste of resources.
-Hence, the distribution of the tasks threads to different cores takes priority
+Executing all clients on the server's core would be a waste of resources.
+Hence, the distribution of the task's threads to different cores takes priority
 over low communication latencies.
 
 
 \subsection{Kernel}
 Naturally, acquiring information at kernel level is easier, as more information
 context is available.
-But leakage of kernel information to user land must be pondered carefully.
+But leakage of kernel information to the user land must be pondered carefully.
 Hence, the following approaches can only be debug features.
 
 
 \paragraph{Communication Matrix}
-Of interest are communication partners and the rate of communication during a
-time frame.
+Communication partners as well as the rate of communication during a time
+frame, are of interest.
 It is important to reduce the latency of intense connections.
 To model the communication relationships, each thread is assigned a global
 identifier and a matrix is created, where each field contains a counter,
@@ -76,7 +77,7 @@ identifier of the communication partner and a counter.
 Each communication attempt increases the counter by one.
 Similar to the sparse matrix, this approach only allocates memory for used
 counters.
-Also, the used memory is directly accounted to the threads which needs it.
+Also, the used memory is directly accounted to the threads which need it.
 However, as this is a thread local solution, both communication partners will
 maintain their separate counters.
 \\
@@ -101,14 +102,14 @@ To communicate with a partner, a thread needs a capability in its own
 capability table, pointing to a channel to the receiver.
 Together with a counter value, this capability can be passed to the load
 balancer and the load balancer can then identify communication partners
-by comparing this received capability, with the capabilities of the threads
+by comparing this received capability with the capabilities of the threads
 it manages.
 The load balancer can then build a relationship graph between threads and adapt
-its assignment.
+the thread-to-core assignment.
 
 This approach requires changes to the scheduler interface in L4Re and
 thread cooperation.
-But it has the benefit, that each thread can decide on its own, if the
+But it has the benefit that each thread can decide on its own if the
 communication relationship is intense enough to benefit from increased
 locality.
 Unfortunately, this requires changes to each thread managed by the balancer and
@@ -118,7 +119,7 @@ for this project.
 
 \paragraph{Configuration parameter}
 Less invasive, but static, is the usage of task specific configuration parameters.
-The two communication types yield two configuration parameters to represent the
+The two communication patterns yield two configuration parameters to represent the
 different behaviours.
 Together with an identifier thread groups can be configured.
 This extends the set of isolation parameters for the thread configuration
@@ -128,7 +129,7 @@ This approach requires careful system design, but no change of program source
 code or thread cooperation.
 \\
 
-The two communication types are named \texttt{DISTR} and \texttt{CLSVR}.
+The two communication patterns are named \texttt{distr} and \texttt{clsvr}.
 A group is identified by \texttt{<name>} and either distributed or clustered.
 To identify the server in the client-server relationship, the server task's
 group name is assigned the \texttt{\_S} postfix.
