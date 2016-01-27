@@ -1,17 +1,18 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \section{Internal Data Management}
 \label{impl:internal}
 
-\paragraph{Thread representation \& management}
+%\paragraph{Thread representation \& management}
 If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)} passing
 a capability on itself and its scheduling parameters, the proxy scheduler
-receives the call and forwards it to the central load balancer and adds the
-task's configuration: \texttt{run\_thread(cap, sched\_params, config)}.
+receives the call.
+After adding the task's configuration, the proxy forwards the run call to the
+central load balancer by invoking \texttt{run\_thread(cap, sched\_params, config)}.
 The load balancer then ask the thread management to look up the capability in
 its list of known threads.
-If none is found, a new internal thread object of type \texttt{Thread\_t} is
-created, encapsulating the capability, the scheduling parameters, and the
-configuration.
+If the thread is unknown, a new internal thread object of type
+\texttt{Thread\_t} is created, encapsulating the capability, the scheduling
+parameters, and the configuration.
 Besides these three values, \texttt{Thread\_t} stores previous and current
 performance values and execution times.
 
@@ -26,27 +27,33 @@ groups, before the object is destroyed.
 
 \paragraph{Interval Cycle}
 The interval cycle design introduced in section \ref{design:balancer} is
-implemented as designed.
+implemented as follows:
 Measurements and prediction are stored in the threads \texttt{Thread\_t}
 instance.
-Decision writes there the adapted scheduling parameters, too, and enforcement
-uses the capability and updated parameters to call the kernel.
+The decision component evaluates the balance of the system and selects threads
+to migrate.
+The new scheduling parameters are also stored in the threads \texttt{Thread\_t}
+instance.
+If the scheduling parameters changed, the enforce component informs the kernel.
 \texttt{Thread\_t} is the central structure connecting all these components.
 
 Threads in groups have the benefit to be placed separately, maintaining their
 group properties.
 Also, when the system is unbalanced, threads without group associations are
 considered first for migration.
-Distr type group threads are placed by first last placement using the \gls{llc}
-weight metric.
-Clsvr type group threads are placed on the core with the least \gls{llc} weight
-and several clients from the same task are distributed by first last placement,
-also using \gls{llc} weight.
+Isolation groups are not considered here, as their core assignment is static.
+Then \texttt{distr} groups threads are distributed to all cores, before
+\texttt{clsvr} type groups are placed.
+The client-server groups are placed on the core with the least \gls{mpc}.
+If a task provides several threads to the group, its threads are evenly
+distributed to each core.
 
-The threads without group association are distributed by first last placement
-using IPC as metric.
-Execution time of the different threads is not considered at the moment, but
-could be a good indicator, if the group cluster can be extended or should be
-reduced.
+Afterwards, the load balancer assigns the threads without group affiliation.
+First, the cache-heavy threads are distributed to each cache, depending on
+\gls{mpc}; they are balanced in space.
+Second, the remaining threads balance the system in time.
+The load balancer tries to even out all remaining imbalances regarding
+computation time between the cores.
+The following section describes this in more detail.
 
-The algorithms are presented in the following section.
+% todo normally, after a fwd reference a topic switch

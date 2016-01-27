@@ -1,4 +1,4 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \chapter{Implementation}
 \label{sec:implementation}
 
@@ -21,9 +21,13 @@
 % nichts zu suchen, auch nicht im Anhang, sondern gehören auf Rechner,
 % auf denen man sie sich ansehen kann.
 
-\ldots implementation \ldots
-
-\todo{write implementation}
+This chapter explains implementation details of the load balancer.
+It starts with the description of the kernel implementation of the performance
+counter, together with the user land interface to querry said counters.
+Then, I describe the task configuration and processing of the configuration by
+the load balancer.
+It follows a description of internal data management during a balancing cycle,
+before I present the load balancing algorithms in the last section.
 
 \input{content/42_kernel.tex}
 \input{content/44_config.tex}

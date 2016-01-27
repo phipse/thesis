@@ -1,11 +1,19 @@
-% vim:set ft=tex
+% vim:set ft=tex:
+\pagebreak
 \section{Task Configuration}
 \label{impl:config}
 
-\paragraph{configuration parameters}
-The following configuration parameters are implemented:
+In sections \ref{design:isolation} and \ref{design:comm}, I discussed
+task properties relevant to a load balancer.
+The result of these discussions was to provide the load balancer with a static
+configuration of a task's properties.
+The following section shows how the configuration is used and implemented.
 
-\begin{lstlisting}[language={[5.2]Lua}]
+\paragraph{Configuration Parameters}
+Listing \ref{impl:config:parameters} shows the implemented parameters.
+
+\begin{lstlisting}[language={[5.2]Lua}, caption={Implemented set of
+configuration parameters.},label={impl:config:parameters}]
 min_prio  = <number>
 max_prio  = <number>
 sec       = <name>
@@ -19,42 +27,54 @@ a task at the same time.
 Either a task is in a security or in a real-time group, never in both.
 The same goes for \texttt{clsvr\_C} and \texttt{clsvr\_S}:
 A task cannot be client and server in the same group.
-Also, distr and clsvr may not be combined, as the distr property is assumed
-if a client task runs more than one thread.
+Also, \texttt{distr} and \texttt{clsvr} may not be combined, as the
+\texttt{distr} property is assumed if a client task runs more than one thread.
 Additionally, the system designer may not define more real-time and security
 groups than physical cores available.
 As mentioned in \ref{design:isolation} a real-time group could have more than
 one core assigned, but this is currently not implemented.
 In the future the name could be followed by a core count, to state the number
-of necessary cores.
+of cores necessary.
+Then a combination of \texttt{clsvr} and \texttt{rt} makes sense, which is not
+the case at the current state.
 
 To configure the task a create call to the factory service of the load
 balancer must be issued, containing the scheduler protocol as first parameter
 and then a comma separated list of strings stating the configuration
 parameters.
-The factory will then return a capability on an proxy scheduler encapsulating
-the task configuration.
+The factory will then return a capability on a channel to its proxy scheduler
+encapsulating the task configuration.
+\begin{comment}
+Listing \ref{impl:config:proxy} shows an example for the described create call.
 
-\begin{lstlisting}[language={[5.2]Lua}]
+\begin{lstlisting}[language={[5.2]Lua},caption={Create call to the load
+balancer factory containing protocol, priority band, and a client-server
+group.},label={impl:config:proxy}]
 tmFactory:create(
   L4.Proto.Scheduler,
-  ``min_prio = 0'',
-  ``max_prio = 5'',
-  ``clsvr = A_S'')
+  "min_prio = 0",
+  "max_prio = 5",
+  "clsvr = A_S")
 \end{lstlisting}
+\end{comment}
 
-This proxy scheduler replaces the task environment's default scheduler and is
-then accessible via the common \texttt{L4Re::Env::env()->scheduler()} invocation.
+The capability received from the above create call replaces replaces the
+inherited scheduler in the task's environment.
+As the scheduler interface has not changed, the task accesses the scheduler via
+\texttt{L4Re::Env::env()->scheduler()}.
+Listing \ref{impl:config:taskcreation} displays a complete task creation in
+the Ned configuration script.
 
-\begin{lstlisting}[language={[5.2]Lua}]
+\begin{lstlisting}[language={[5.2]Lua},caption={Task creation with replaced
+scheduler in Ned startup script.},label={impl:config:taskcreation}]
 L4.default_loader:start(
   {
     caps = {},
     scheduler = tmFactory:create(
       L4.Proto.Scheduler,
-      ``min_prio = 0'', ``max_prio = 5'', ``distr = A'')
+      "min_prio = 0", "max_prio = 5", "distr = A")
   },
-  ``rom/app_matrixmul''
+  "rom/app_matrixmul"
 )
 \end{lstlisting}
 
@@ -67,17 +87,19 @@ The load balancing service is completely transparent to the application.
 configuration}, label={config:ned_full}]{app_restart_mmul_parallel.cfg}
 
 
-\paragraph{configuration groups}
+\paragraph{Configuration Groups}
 
 The configuration arguments stated in the startup script are parsed by the
 factory service and stored in a \texttt{config\_t} type
 (listing \ref{config:config_t}).
 The parser strips all white spaces from the configuration string and splits it
 in two parts: before and after the equality sign.
-The front part evaluates to minimum or maximum priority, or group type and the
-rear part evaluates to either an integer or a string identifier for the group.
+The front part evaluates to priority or group type, whereas the rear part
+evaluates to either an integer or string.
+%The front part evaluates to minimum or maximum priority, or group type and the
+%rear part evaluates to either an integer or a string identifier for the group.
 If the group type is a client-server type, the last character is matched
-against \texttt{C} or \texttt{S} to recognize clients and server tasks.
+against \texttt{C} or \texttt{S} to recognize client and server tasks.
 
 Note, this configuration is per task, hence all threads of this task possess
 the same configuration.
@@ -85,6 +107,8 @@ A configuration group must not necessarily span across several tasks.
 The \texttt{distr} parameter, for example, can group all threads of one task
 and ensures, that all threads of this task will be assigned to the maximal
 number of available cores.
+\\
+\newline
 
 \lstinputlisting[language=c++, caption={Configuration Type},
 label={config:config_t}]{codeSamples/config.cc}

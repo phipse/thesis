@@ -1,21 +1,40 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \section{Algorithms}
 \label{impl:algos}
 
-The first last placement and group placement algorithms are used in the
-placement generator.
-The balancing need algorithm is used in the decision component to see if the
-current performance values bring the system out of balance.
-SMT distribution algorithms are part of the core accounting, as the SMT
-abstraction is implemented there.
-The ready queue balancing serves as baseline to show the benefit of behaviour
-analysis.
+% SMT assignment algorithm
+% core assignment algorithm
+  % in space and in time
+% group placement algorithms
+% simple load distribution
+% missing shared memory
+
+The load balancer uses different algorithms for SMT placement, assignment of
+groups and balancing of threads without group affiliation.
+I present algorithms for these three places and also a simple behaviour unaware
+load balancing algorithm.
+The simple load distribution algorithm serves as baseline to show the benefit of
+behaviour analysis.
+
+\paragraph{SMT distribution}
+After the physical core assignment is done, each physical core internally
+distributes its set of assigned threads to the hyper-threads.
+Different options arise: simple round robin, by \gls{mpc}, by \gls{instpc}, or
+by load.
+
+Or one core get the highest \gls{llc} weight threads and the other the threads
+with high \gls{instpc}.
+I assume this leads to a good symbiosis, as the high \gls{instpc} threads compute,
+while the \gls{mpc} heavy threads wait for memory.
+
+Superiority of one above the others must be empirically evaluated.
+
 
 \paragraph{Two dimensional balance}
-This test takes the most effort to develop, because it depends on several
-factors: isolation groups reduce the core count; communication groups are
-excluded from load balancing; only threads without further attachments are
-considered for migration.
+What is balance? This question takes the most effort to answer, because it
+depends on several factors: isolation groups reduce the core count;
+communication groups are excluded from load balancing;
+only threads without further attachments are considered for migration.
 So balancing works on top of the placement of communication groups, which are
 possibly already imbalanced.
 The load balancer must even out these imbalances and be aware of cache usage of
@@ -58,76 +77,54 @@ If no such thread is found, the thread generating next higher load value is
 migrated.
 
 
-\paragraph{First Last Placement}
-The list of threads is sorted by a metric.
-As long as the number of threads is larger than the number of cores times two,
-the first and last element of the sorted list are assigned to the core with the
-lowest metric value.
-If less threads are available, they are assigned one by one to the core with
-the least threads.
-If ties between core accounts are detected, the next thread or thread pair is
-assigned to the core with the least assigned threads.
-By assigning the first and last thread a first average is generated and the
-number of iterations to assign all threads is nearly halved.
-Also the imbalance regarding thread count per core, is smaller.
+\paragraph{MPC-IPC-Placement}
+The list of threads is sorted once by \gls{mpc} and once by \gls{instpc}.
+Then the two lists are processed item by item and the current item in one list,
+is deleted from the other, until both list are disjoint.
 
-Let $x$ be the number of threads and $c$ the number of cores.
-The number of placement iterations $i$ after sorting is
-$i = x / (2*c) + x \% (2*c)$.
+As long as both list contain more threads the cores are available, each core
+is assigned one thread from each list.
+If there are less threads, the remaining threads are assigned to the core with
+the least \gls{mpc} and \gls{instpc}, respectively.
+
+I assume, this works rather well for SMT, as each physical core gets a mixed
+workload.
+However, this approach does not account for execution time.
+A possible improvement is to assign the remaining threads by
+exexcution time instead of \gls{instpc} and \gls{mpc}.
 
 
 \paragraph{Group placements}
+% todo on what basis is first last placement used?
 If the group is of type \texttt{distr} first last placement is used for its
 members.
 
 \texttt{Clsvr} type groups are handled in two ways: First it is checked, which
 group members belong to the same tasks.
 Of each task one thread is assigned to the same core as the server thread.
+% todo on what basis? why not by load? would make more sense.
 The others threads are distributed by first last placement.
 
 \texttt{Sec} and \texttt{rt} type groups get their private physical core, hence
 all threads of these groups are assigned to the same core.
 
-\texttt{Sec} and \texttt{rt} are of linear complexity to the number of threads,
-\texttt{distr} has the complexity of first last placement.
-For \texttt{clsvr} the complexity estimation is dependent on the number of client
-threads from different tasks and from the same task.
-If only single threaded clients are in the group the complexity is linear, if
-only multi threaded clients are present, the complexity is the number of
-client tasks plus the server plus the complexity of first last placement for
-the additional threads.
-\todo{formal complexity analysis?}
 
-
-\paragraph{SMT distribution}
-After the physical core assignment is done, each physical core internally
-distributes its set of assigned threads to the hyper-threads.
-Different options arise: simple round robin or round robin after sorting the
-threads by \gls{llc} weight or by IPC.
-
-Or one core get the highest \gls{llc} weight threads and the other the threads
-with high IPC.
-It is assumed, this leads to a good symbiosis, as the high IPC threads compute,
-while the high \gls{llc} weight threads wait for memory.
-
-Superiority of one above the others must be empirically evaluated.
-
-
-\paragraph{Simple Logic Distribution}
+\paragraph{Simple Load Distribution}
 The algorithm assigns incoming threads to the core with the least load.
 If several cores have the same load, e.g. in an overload scenario, the
 algorithm assigns the thread to the core with the least threads.
 
 A core's load is determined by the amount of idle time since the last
 placement.
-When threads leave, the system becomes unbalanced, but not extra balancing
+When threads leave, the system becomes unbalanced, but no extra balancing
 actions are taken.
 
-To prove that behaviour analysis brings any benefit, it has to clearly beat
+To prove that behaviour analysis brings any benefit, it has to beat
 this simple algorithm.
 
 
 \paragraph{Missing logic for shared memory}
+\todo{where is a better place for this?}
 Tasks running several threads which use shared memory to communicate will have
 a worse performance using these algorithms.
 No communication parameter tells the load balancer, that these tasks should be

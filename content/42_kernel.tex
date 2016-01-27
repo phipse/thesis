@@ -1,63 +1,67 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \section{Kernel Performance Counter}
 \label{impl:perfcounter}
 
 \gls{intel} provides hardware performance counter for various CPU
 architectures.
-Software developers should be enabled to observe the behaviour of their
-software and examine bottlenecks or performance hotspots.
+Their intention is to enable software developers to observe the behaviour of
+their software and examine bottlenecks or performance hotspots.
 
-The performance monitoring capabilities of the targeted Haswell architecture
-were presented in section \ref{state:haswell}.
+I presented the performance monitoring capabilities of the targeted Haswell
+architecture in section \ref{state:haswell}.
 
 The present kernel implementation for architectural performance monitoring is
 extended to use the fixed-function counters for unhalted core cycles and
 instructions retired.
 Additionally, a general purpose counter for \gls{llc} misses is used,
-leaving three counters for future use.
+leaving three general purpose counters per logical core for future use.
 
-\paragraph{Configuring \& starting the counters}
+\paragraph{Configuration \& Start}
 Each general purpose performance counter consists of a counter register and a
 configuration register.
-The configuration register must be filled with the counter \texttt{UMask} and
-\texttt{Event Select} to specify the event which should be counted.
-Then user and operating system mode bits must be set, to count events happening
-in both, privileged and unprivileged mode.
+To specify the event the counter should observe, the \texttt{UMask} and
+\texttt{Event Select} fields in the configuration register must be filled.
+Additionally, user and operating system mode bits must be set, to count events
+happening in privileged and unprivileged mode.
 With the edge detect bit set, every new occurrence of the selected event is
 counted.
-If the event was present and happens again before it was counted, it counts as
-a single event.
-At last the enable bit must be set to start counting, but only if the counter
-is also enabled in the global control register.
+To start counting, two enable bits must be set.
+The first in the counter's configuration register and the second in the global
+control register.
+If one of these two bits is not set, the counter is not enabled.
+\\
 
-Fixed-function counters consist of a counter and a shared control register to
-en- and disable each one.
-
-But both counter types only start counting, if they are enabled in the global
-performance monitoring control register.
-This register contains a bit for each counter, which must also be set to enable
-the counter.
+Fixed-function counters are a bit different.
+They consist of one counter register and one control register shared among all
+fixed-function counters, to en- and disable each one.
+Like general purpose counters, the fixed-function counters must also be enabled
+in the global control register.
 
 Fiasco.OC already contains the boot parameter \texttt{-loadcnt} enabling the
 unhalted core cycle counter on each core.
 Although a fixed-function counter is available for this event, the
 implementation still used a general purpose counter.
-Using this flag, all mentioned events are configured and enabled on each core.
+Using this flag, each core's performance counter are configured and enabled to
+count unhalted core cycles, instructions retired, and \gls{llc} misses.
 
-\paragraph{Accounting per thread}
+\paragraph{Per Thread Accounting}
 % todo find out, where and when thread perf counting is enabled?
-After performance counting is enabled for a thread,
-Fiasco.OC adds the counter values on each context switch to the thread's
-account and resets the hardware counter to zero.
+The \texttt{-loadcnt} flag only enables the hardware counters.
+The accounting must be enabled for each thread separately, by calling
+\texttt{l4\_thread\_perf\_reset}, which also resets the counter value to zero.
+Only then, Fiasco.OC adds the counter values on each context switch to the
+thread's account and resets the hardware counter to zero for the next thread.
 
+\texttt{perf\_read} provides the interface to retrieve a thread's current
+account.
+A \texttt{perf\_counter\_read\_t} struct must be passed by reference, which
+is filled with the values provided by the kernel.
 
-\paragraph{user land interface}
-Two new thread operations are introduced: \texttt{perf\_read} and
-\texttt{perf\_reset}.
-\texttt{Perf\_read} fills a passed struct with the values passed from the
-kernel, whereas \texttt{perf\_reset} tells the kernel to set all counters to zero.
+Listing \ref{impl:lst:perfcntrinterface} shows the user land implementation of
+this interface.
 
-\begin{lstlisting}[language=c++]
+\begin{lstlisting}[language=c++,caption={User land interface for retrieving and
+resetting a thread's performance counter},label={impl:lst:perfcntrinterface}]
 enum L4_thread_ops {
   ...
   L4_THREAD_PERF_READ_OP	      = 10UL,
