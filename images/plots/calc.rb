@@ -29,7 +29,7 @@ class SumMinMax
   end
 
   def median
-    (@arr.sort.at((@arr.length/2.0).round).last)/@musFactor
+    (@arr.sort.at((@arr.length/2.0).round).last)
   end
 
   def getAvgInS
@@ -40,6 +40,10 @@ class SumMinMax
     @mins = @min/@musFactor
     @maxs = @max/@musFactor
     @max2s = @max2/@musFactor
+  end
+
+  def getMinMax
+    return @min, @max
   end
   
   def printResults(name)
@@ -148,6 +152,11 @@ class PlotterGen
     return filename.split(".").last.eql?("tex")
   end
 
+  def setMinMax(min, max)
+    @min = min
+    @max = max
+  end
+
   def writeTex(datafile, outputfile)
 #    if isTex == false then return end
 
@@ -202,6 +211,8 @@ if __FILE__ == $0
   texfile = ARGV[0] + "_plot.tex"
 
   plot.setAvg(avg.getAvgInS())
+  min, max = avg.getMinMax()
+  plot.setMinMax(min, max)
 
   plot.writeTex(ARGV[0], texfile)
 
