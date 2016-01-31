@@ -3,12 +3,12 @@
 \label{impl:internal}
 
 %\paragraph{Thread representation \& management}
-If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)} passing
+If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)}, passing
 a capability on itself and its scheduling parameters, the proxy scheduler
 receives the call.
 After adding the task's configuration, the proxy forwards the run call to the
 central load balancer by invoking \texttt{run\_thread(cap, sched\_params, config)}.
-The load balancer then ask the thread management to look up the capability in
+The load balancer then asks the thread management to look up the capability in
 its list of known threads.
 If the thread is unknown, a new internal thread object of type
 \texttt{Thread\_t} is created, encapsulating the capability, the scheduling
@@ -28,11 +28,11 @@ groups, before the object is destroyed.
 \paragraph{Interval Cycle}
 The interval cycle design introduced in section \ref{design:balancer} is
 implemented as follows:
-Measurements and prediction are stored in the threads \texttt{Thread\_t}
+Measurements and prediction are stored in the thread's \texttt{Thread\_t}
 instance.
 The decision component evaluates the balance of the system and selects threads
 to migrate.
-The new scheduling parameters are also stored in the threads \texttt{Thread\_t}
+The new scheduling parameters are also stored in the thread's \texttt{Thread\_t}
 instance.
 If the scheduling parameters changed, the enforce component informs the kernel.
 \texttt{Thread\_t} is the central structure connecting all these components.
@@ -42,7 +42,7 @@ group properties.
 Also, when the system is unbalanced, threads without group associations are
 considered first for migration.
 Isolation groups are not considered here, as their core assignment is static.
-Then \texttt{distr} groups threads are distributed to all cores, before
+Then the threads of each \texttt{distr} group are distributed to all cores, before
 \texttt{clsvr} type groups are placed.
 The client-server groups are placed on the core with the least \gls{mpc}.
 If a task provides several threads to the group, its threads are evenly

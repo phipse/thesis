@@ -2,7 +2,7 @@
 \section{Kernel Performance Counter}
 \label{impl:perfcounter}
 
-\gls{intel} provides hardware performance counter for various CPU
+\gls{intel} provides hardware performance counters for various CPU
 architectures.
 Their intention is to enable software developers to observe the behaviour of
 their software and examine bottlenecks or performance hotspots.
@@ -41,7 +41,7 @@ Fiasco.OC already contains the boot parameter \texttt{-loadcnt} enabling the
 unhalted core cycle counter on each core.
 Although a fixed-function counter is available for this event, the
 implementation still used a general purpose counter.
-Using this flag, each core's performance counter are configured and enabled to
+Using this flag, each core's performance counters are configured and enabled to
 count unhalted core cycles, instructions retired, and \gls{llc} misses.
 
 \paragraph{Per Thread Accounting}
@@ -60,8 +60,10 @@ is filled with the values provided by the kernel.
 Listing \ref{impl:lst:perfcntrinterface} shows the user land implementation of
 this interface.
 
-\begin{lstlisting}[language=c++,caption={User land interface for retrieving and
-resetting a thread's performance counter},label={impl:lst:perfcntrinterface}]
+\begin{lstlisting}[language=c++,
+  caption={User land interface for retrieving and resetting a thread's
+    performance counters},
+  label={impl:lst:perfcntrinterface}]
 enum L4_thread_ops {
   ...
   L4_THREAD_PERF_READ_OP	      = 10UL,

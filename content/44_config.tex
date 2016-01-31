@@ -23,15 +23,15 @@ clsvr     = <name>_{C|S}
 \end{lstlisting}
 
 The system designer needs not to define orthogonal parameters for
-a task at the same time.
+a single task.
 Either a task is in a security or in a real-time group, never in both.
 The same goes for \texttt{clsvr\_C} and \texttt{clsvr\_S}:
-A task cannot be client and server in the same group.
+A task cannot be client and server within the same group.
 Also, \texttt{distr} and \texttt{clsvr} may not be combined, as the
 \texttt{distr} property is assumed if a client task runs more than one thread.
 Additionally, the system designer may not define more real-time and security
 groups than physical cores available.
-As mentioned in \ref{design:isolation} a real-time group could have more than
+As mentioned in \ref{design:isolation}, a real-time group could have more than
 one core assigned, but this is currently not implemented.
 In the future the name could be followed by a core count, to state the number
 of cores necessary.
@@ -58,7 +58,7 @@ tmFactory:create(
 \end{lstlisting}
 \end{comment}
 
-The capability received from the above create call replaces replaces the
+The capability received from the above create call replaces the
 inherited scheduler in the task's environment.
 As the scheduler interface has not changed, the task accesses the scheduler via
 \texttt{L4Re::Env::env()->scheduler()}.
@@ -78,13 +78,13 @@ L4.default_loader:start(
 )
 \end{lstlisting}
 
-Therefore, the only change necessary to the application are the configuration
+Therefore, the only changes necessary to the application are the configuration
 parameters, which are encapsulated in the Ned startup script, shown in listing
 \ref{config:ned_full}.
 The load balancing service is completely transparent to the application.
 
 \lstinputlisting[language={[5.2]Lua}, firstline=3, caption={Complete Benchmark
-configuration}, label={config:ned_full}]{app_restart_mmul_parallel.cfg}
+configuration.}, label={config:ned_full}]{app_restart_mmul_parallel.cfg}
 
 
 \paragraph{Configuration Groups}
@@ -105,7 +105,7 @@ Note, this configuration is per task, hence all threads of this task possess
 the same configuration.
 A configuration group must not necessarily span across several tasks.
 The \texttt{distr} parameter, for example, can group all threads of one task
-and ensures, that all threads of this task will be assigned to the maximal
+and ensures that all threads of this task will be assigned to the maximal
 number of available cores.
 \\
 \newline
