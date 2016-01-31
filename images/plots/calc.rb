@@ -8,7 +8,7 @@ class SumMinMax
     @max2 = max
     @sum = sum
     @cnt = cnt
-    @arr = {}
+    @arr = []
     @musFactor = 1000 * 1000.0
   end
 
@@ -29,7 +29,7 @@ class SumMinMax
   end
 
   def median
-    (@arr.sort.at((@arr.length/2.0).round).last)
+    (@arr.sort.at((@arr.length/2.0).round))
   end
 
   def getAvgInS
@@ -58,8 +58,8 @@ class SumMinMax
 
       return "% Format: name, avg, median, min, max, Elements\n\
 name avg median min max Elements\n\
-#{name} #{avg} #{median} #{rmins} #{rmaxs} #{@cnt}\n\
-#{name2} #{avg} #{median} #{rmins} #{rmax2s} #{@cnt-1}\n"
+#{name} #{avg} #{median} #{rmins} #{rmaxs} #{@cnt}\n"
+# #{name2} #{avg} #{median} #{rmins} #{rmax2s} #{@cnt-1}\n"
     end
   end
 end
@@ -153,8 +153,8 @@ class PlotterGen
   end
 
   def setMinMax(min, max)
-    @min = min
-    @max = max
+    @min = round_down(min,1)
+    @max = round_up(max,1)
   end
 
   def writeTex(datafile, outputfile)
