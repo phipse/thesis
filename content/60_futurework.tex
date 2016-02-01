@@ -1,16 +1,67 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \chapter{Future Work}
 \label{sec:futurework}
 
-\ldots future work \ldots
-
-\todo{write future work}
+After evaluating the benefits and constraints of behaviour-aware load
+balancing, I present different opportunities for improvements.
+This thesis provides a basis for further experiments, be it to improve SMT
+utilization, better isolation between task groups, or specialized load
+balancing algorithms.
+The modular structure allows to change specific parts and accommodate changes.
 
 \paragraph{Precise Event Based Sampling}
-\paragraph{Intel hardware cache partitioning}
+PEBS allows the user to register an interrupt coupled to a specific counter.
+If the counter is increased by an event or overflows, the interrupt triggers
+and allows to read the hardware state from a prespecified memory region.
+This feature helps a developer to pinpoint for example memory accesses which
+resulted in a cache miss.
+
+PEBS overflow interrupt could eliminate the overflow check in the thread
+accounting code path of the kernel.
+The interrupt handler must then increase the account of the currently running
+thread.
+
+\paragraph{\gls{intel} Cache Allocation Technology (CAT)}
+The most promising improvement is CAT.
+It allows the user to partition the \gls{llc} or more precisely to decide
+which share of the \gls{llc} corresponds to which core.
+This allows to provide security or latency critical applications to run on a
+specific core with an exclusive share of the \gls{llc}.
+Processes running concurrently on other cores cannot write to exclusive
+cache areas of other cores, hence the cache lines residing in the cores share
+are only evicted, if the application running on the core does so.
+
+I expect this feature to eliminate the cache as a side-channel, even if the
+attacker application runs on the same processor with the same \gls{llc}.
+The load balancer presented in  this thesis, can now not only provide temporal
+separation, with the help of CAT is can also provide spatial isolation on
+shared hardware.
+This hardware feature is present in Broadwell or later generation CPUs.
+
 \paragraph{Multi socket systems}
-\paragraph{Test of different algorithms in different components}
-\paragraph{behaviour history?}
+Besides CAT, usage of multi socket systems can also prevent PRIME+PROBE attacks
+or provide a real-time task group with an environment with less interferences.
+Currently, the load balancer does not support multiple sockets.
+First, the CPUID based topology analysis must be extended to support multiple
+packages and second, the CoreAccounting must be adapted to use this new
+topology.
+
+\paragraph{Workload-aware balancing}
+The modular approach allows to quickly replace and test different algorithms in
+different components.
+If very specific workloads run on the system, tuned balancing algorithms for
+this specific workload can be used to increase the performance of the system.
+
+
+\paragraph{Behaviour Categories}
+An approach I did not explore during this work are behaviour categories.
+Consider four categories: very high \gls{mpc}, high \gls{mpc}, low \gls{mpc},
+very low \gls{mpc}.
+Each thread belongs to one category and the algorithm selects threads of
+different categories to run together on one core.
+The assignment of threads to categories could also take a behaviour history
+into account and categorize the thread regarding its general behaviour.
+
 
 \cleardoublepage
 
