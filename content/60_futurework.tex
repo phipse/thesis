@@ -2,6 +2,9 @@
 \chapter{Future Work}
 \label{sec:futurework}
 
+\newglossaryentry{arm}{name=ARM\textregistered{},
+description={ARM\textregistered{}} }
+
 After evaluating the benefits and constraints of behaviour-aware load
 balancing, I present different opportunities for improvements.
 This thesis provides a basis for further experiments, be it to improve SMT
@@ -13,7 +16,7 @@ The modular structure allows to change specific parts and accommodate changes.
 PEBS allows the user to register an interrupt coupled to a specific counter.
 If the counter is increased by an event or overflows, the interrupt triggers
 and allows to read the hardware state from a prespecified memory region.
-This feature helps a developer to pinpoint for example memory accesses which
+This feature helps a developer to pinpoint, for example, memory accesses which
 resulted in a cache miss.
 
 PEBS overflow interrupt could eliminate the overflow check in the thread
@@ -22,35 +25,63 @@ The interrupt handler must then increase the account of the currently running
 thread.
 
 \paragraph{\gls{intel} Cache Allocation Technology (CAT)}
-The most promising improvement is CAT.
+The most promising improvement is CAT\footnote{
+  \url{http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/cache-allocation-technology-white-paper.pdf}}.
 It allows the user to partition the \gls{llc} or more precisely to decide
-which share of the \gls{llc} corresponds to which core.
-This allows to provide security or latency critical applications to run on a
-specific core with an exclusive share of the \gls{llc}.
-Processes running concurrently on other cores cannot write to exclusive
-cache areas of other cores, hence the cache lines residing in the cores share
-are only evicted, if the application running on the core does so.
+which core is able to write to which cache lines in the \gls{llc}.
+However, a cache hit can also be happen outside of this area.
+This feature allows to configure the system, such that security or latency
+critical applications run on a exclusive core, which uses a portion of the
+\gls{llc} no other core has write access to.
+Only the core with write access to this memory area can evict cache lines.
 
-I expect this feature to eliminate the cache as a side-channel, even if the
-attacker application runs on the same processor with the same \gls{llc}.
-The load balancer presented in  this thesis, can now not only provide temporal
-separation, with the help of CAT is can also provide spatial isolation on
+I expect this feature to eliminate the cache as a side-channel for PRIME+PROBE
+attacks.
+Even if the attacker application runs on the same processor and shares the same
+\gls{llc}, it cannot write to the attacked memory.
+Also, real-time applications can now rely on a set of cache lines being
+present, if the application does not evict the lines itself.
+
+The load balancer presented in  this thesis can now not only provide temporal
+separation, with the help of CAT it can also provide spatial isolation on
 shared hardware.
 This hardware feature is present in Broadwell or later generation CPUs.
 
-\paragraph{Multi socket systems}
-Besides CAT, usage of multi socket systems can also prevent PRIME+PROBE attacks
+\paragraph{Multi-socket systems}
+Besides CAT, usage of multi-socket systems can also prevent PRIME+PROBE attacks
 or provide a real-time task group with an environment with less interferences.
 Currently, the load balancer does not support multiple sockets.
 First, the CPUID based topology analysis must be extended to support multiple
 packages and second, the CoreAccounting must be adapted to use this new
 topology.
 
-\paragraph{Workload-aware balancing}
-The modular approach allows to quickly replace and test different algorithms in
-different components.
-If very specific workloads run on the system, tuned balancing algorithms for
-this specific workload can be used to increase the performance of the system.
+\paragraph{Heterogeneous Architectures}
+A more complex extension is the support for heterogeneous architectures, like
+\gls{arm} big.LITTLE.
+\citeauthor{sarma_smartbalance_2015} use a predefined matrix to predict the
+performance change to an application, if it is migrated to another core type.
+But they do not consider communication or isolation groups.
+How should isolation groups be placed on a heterogeneous architecture?
+Does a group only get one big or little core?
+Does a group get one core of each type?
+When the group is dynamically migrated depending on its needs, how fast can a
+core be cleared for this group?
+How large is the performance impact the other applications suffer from such a
+clear operation?
+
+%todo revise this paragraph
+How are communication groups distributed?
+When a client is migrated to a big core, is the server migrated, too?
+Should \texttt{distr} groups only use big cores?
+
+The energy consumption is also very different compared to a x86 system.
+If performance per watt is important, \texttt{distr} groups should maybe be
+prevented from using big cores.
+
+In this discussion I focus on a heterogneous architecture with two different
+core sizes, but the questions regarding isolation and communication groups
+already become difficult to answer.
+
 
 
 \paragraph{Behaviour Categories}
@@ -61,6 +92,16 @@ Each thread belongs to one category and the algorithm selects threads of
 different categories to run together on one core.
 The assignment of threads to categories could also take a behaviour history
 into account and categorize the thread regarding its general behaviour.
+
+I also expect behaviour categories to help decide on difficult questions
+arising from heterogeneous architectures.
+
+
+\paragraph{Workload-aware balancing}
+The modular approach allows quick replacement and testing of different
+algorithms in the various components.
+If very specific workloads run on the system, tuned balancing algorithms for
+this specific workload can be used to increase the performance of the system.
 
 
 \cleardoublepage
