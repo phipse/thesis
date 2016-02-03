@@ -73,7 +73,49 @@ there is only one client per task.
 If a task spawn several threads, the balancer distributes the additional
 threads to other cores.
 
+% todo  distr group benchmark: mmul-omp
 
+
+\paragraph{64bit issue}
+64bit raises an issue in the memory subsystem of L4Re.
+Memory allocation and deallocation increases the runtime of 403.gcc by several
+seconds for each repetition, when it runs alone.
+Thereby, it is irrelevant if a simple load distribution, space-time-balancing,
+or no load balancing runs the benchmark.
+The task is run to completion and then restarted, so I expect each allocated
+page to be free after completion.
+The L4Re internal memory management should now merge free chunks of memory.
+However, the size of the list of free memory areas increases constantly and
+shows allocated pages in between, preventing compaction.
+I suspect the time spent to search for possible merges and to iterate through
+the list to be the cause for the increase in runtime.
+
+The other SPEC benchmarks behave differently.
+This issue does not affect the runtime of 416.games.
+I suspect this is due to the little amount of \gls{llc}-misses, which points to
+low memory usage, hence the memory subsystem is not stressed.
+429.mcf shows slight but constant increase with each run.
+429.mcf allocates all memory at the beginning of the benchmark, so the memory
+subsystem is not used constantly, as is the case for 403.gcc.
+
+470.lbm  TOBEMEASURED!
+
+
+When 416.gamess, 429.mcf, and 470.lbm run together on L4Re the runtimes
+increase occasionally between 2.5 and 4 times.
+This increase cannot solely be explained by bad load balancing decisions.
+Also, the average runtime for the first 50 iterations of 470.lbm is 60s lower
+than the average runtime of the second 50 iterations.
+Minimum, maximum and median runtime show a similar difference.
+As 470.lbm is memory-bound, this suggest an issue with memory management
+in L4Re.
+
+Providing a different memory allocator to each task created via the ned script,
+did not work.
+
+As this issue did not present itself for 32bit and a analysis of L4Re's memory
+management is not possible due to time constraints, all benchmarks are executed
+in a 32bit environment.
 
 
 \paragraph{Comparison}
