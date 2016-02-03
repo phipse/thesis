@@ -14,18 +14,17 @@ The critical question for an energy model is:
 When is least energy consumed?
 In a scenario where work is done fast and the cores sleep for a longer time or
 if the work is done at lower frequencies for a longer time.
-
-Assume the system is only at half utilization at the lowest possible frequency.
-\cite{le_sueur_slow_2011} assumes that quality of service is maintained, even
-at low frequencies.
-\citeauthor{le_sueur_slow_2011} show for their three applications that the
+In \cite{le_sueur_slow_2011} \citeauthor{le_sueur_slow_2011} assume that
+quality of service is maintained, even at low frequencies.
+They show for their three applications that the
 energy efficiency is best for low frequencies, but depending on the
 application, at the cost of throughput.
 So it is highly application-specific to find the right frequency for the
 running application.
 The complexity increases, if more than one application is present in the
 system.
-Furthermore, a load balancer cannot decide on core frequencies.
+Furthermore, a load balancer cannot decide on core frequencies, because its
+view on the system is not necessarily complete.
 
 \citeauthor{le_sueur_slow_2011} note that turbo boost -- raising the frequency
 of one core above standard, if other cores are idle -- should be avoided at

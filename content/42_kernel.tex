@@ -33,7 +33,7 @@ If one of these two bits is not set, the counter is not enabled.
 
 Fixed-function counters are a bit different.
 They consist of one counter register and one control register shared among all
-fixed-function counters, to en- and disable each one.
+fixed-function counters, to enable and disable each one.
 Like general purpose counters, the fixed-function counters must also be enabled
 in the global control register.
 
@@ -52,17 +52,19 @@ The accounting must be enabled for each thread separately, by calling
 Only then, Fiasco.OC adds the counter values on each context switch to the
 thread's account and resets the hardware counter to zero for the next thread.
 
+I extended the \texttt{L4::Thread} interface to access the thread's performance
+account.
 \texttt{perf\_read} provides the interface to retrieve a thread's current
 account.
 A \texttt{perf\_counter\_read\_t} struct must be passed by reference, which
 is filled with the values provided by the kernel.
 
-Listing \ref{impl:lst:perfcntrinterface} shows the user land implementation of
+Listing \ref{impl:lst:perfcntrinterface} shows the user-land implementation of
 this interface.
 
 \begin{lstlisting}[language=c++,
   caption={User land interface for retrieving and resetting a thread's
-    performance counters},
+    performance counters; UTCB-pointer left out for brevity.},
   label={impl:lst:perfcntrinterface}]
 enum L4_thread_ops {
   ...

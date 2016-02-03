@@ -24,8 +24,8 @@ distribution scheme as an user level service.
 OC in Fiasco.OC stands for object capability, a system providing a thread local
 namespace for references to other objects, such as the scheduler, object
 factory, and memory management.
-A new thread inherits a set of capabilities from its parent to be able to
-interact with the system.
+A new task populates its capability space with a set of capabilities inherited
+from its parent to be able to interact with the system.
 This set is completely independent of its parent capability namespace; parent
 and child can replace capabilities in their capability space without affecting
 the other.
@@ -41,8 +41,9 @@ defines the kernel and user interface.
 Using this skeleton and the capability namespace property, a scheduling service
 can replace the default L4Re scheduler and implement further analysis of each
 thread.
-This skeleton also enables thread-specific proxies with an individual
+The skeleton also enables thread-specific proxies with an individual
 configuration.
+This mechanism will be used in this work.
 \\
 
 Regarding hardware performance counters, the kernel provides neither a system

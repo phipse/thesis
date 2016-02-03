@@ -93,7 +93,7 @@ If there are less threads than available cores, the algorithm assigns the
 remaining thread to the core with the least \gls{mpc} and \gls{instpc},
 respectively.
 
-I assume, this works rather well for SMT, as each physical core gets a mixed
+I assume this works rather well for SMT, as each physical core gets a mixed
 workload.
 However, this approach does not account for execution time.
 A possible improvement is to assign the remaining threads by
@@ -146,7 +146,7 @@ Consider two threads with shared memory on two separated cores.
 The only connection is the \gls{llc}.
 The cache line holding the shared memory will bounce back and forth between
 the two cores, as one writes and invalidates the cache of the other.
-This means additional L1 and L2 cache miss costs, each time they communicate.
+This means additional L1 and L2 cache-miss costs, each time they communicate.
 
 If the number of threads is equal to the number of cores, the cache line will
 bounce between four different L1 and L2 caches, impairing the overall

@@ -19,7 +19,7 @@ description={Intel\textregistered{} Corp.} }
 \newacronym{sc}{SC}{scheduling context}
 \newacronym{fifo}{FIFO}{First-in-First-out}
 \newacronym{lru}{LRU}{least-recently-used}
-\newacronym{llc}{LLC}{last-level-cache}
+\newacronym{llc}{LLC}{last-level cache}
 \newacronym{ipc}{L4-IPC}{L4 inter-process communication}
 \newacronym{instpc}{IPC}{instructions per cycle}
 \newacronym{isa}{ISA}{Instruction Set Architecture}
@@ -39,7 +39,7 @@ description={Intel\textregistered{} Corp.} }
 
   \item[Task] A task is a unit of isolation. It manages different address
     spaces; for example memory, capability, and ioport spaces.
-    A task runs at least one thread.
+    Threads run within tasks, but tasks do not necessarily contain a thread.
 
   \item[\Gls{ipc}] \Gls{ipc} is one way for threads in L4Re/Fiasco.OC
     to communicate with one another.
@@ -68,7 +68,7 @@ description={Intel\textregistered{} Corp.} }
     three levels are common.
     If data is evicted from the highest level of the hierarchy, it is written
     back to memory.
-% todo Write-through and write-back cache?
+% todo device memory caches: fully-cached, not-cached, buffered
 
   \item[Migration] The process of moving a thread from one core to another core
     is called migration.
@@ -78,8 +78,8 @@ description={Intel\textregistered{} Corp.} }
 
   \item[\Gls{smt}] \gls{smt} is a technique to multiplex several hardware
     threads on the same physical core.
-    Thus, sharing all the cores resources -- ALU, FP units, caches, prefetcher,
-    etc. -- among the core's hardware threads.
+    Thus, sharing all the cores resources -- integer and floating point units,
+    caches, prefetcher, etc. -- among the core's hardware threads.
     The goal is to improve the utilization of the execution units by increasing
     the number of instructions available to them.
     \gls{smt} transforms thread level parallelism to instruction level
@@ -109,7 +109,7 @@ description={Intel\textregistered{} Corp.} }
 
   \item[Turnaround time] Time between submission of a job and its completion.
 
-  \item[Makespan] Time to execute a set of jobs from beginning to end.
+%  \item[Makespan] Time to execute a set of jobs from beginning to end.
 
 
 

@@ -44,23 +44,24 @@ Due to the easier implementation of a central load balancing component,
 I choose to implement the centralized service.
 \\
 
-Next to the load balancer, a task-specific proxy scheduler acts as information
-source.
+Internally, the load balancer uses task-specific proxy scheduler to store the
+task's configuration information.
 Each task can have isolation (\ref{design:isolation}) and communication
 properties (\ref{design:comm}).
-The task proxy stores this task specific configuration and provides it to the
-load balancer.
+The task's proxy scheduler stores the configuration and provides it to the
+central load balancer.
 
-The factory creating the load balancer and the task proxies processes the
-configuration parameters and instantiates the configuration structure exchanged
-between proxies and balancer.
-The configuration structure comprises the priority band and a list of
+A factory creates the central load balancer and processes the configuration
+parameters for each client task.
+The client's proxy scheduler stores the configuration structure and provides it
+to the central load balancer.
+The configuration structure comprises the priority range and a list of
 groups derived from the parameters.
 
 
 \paragraph{Thread Management}
 All threads known to the load balancer are managed by the thread management.
-It creates a internal administration class for each thread and identifies a
+It creates an internal administration class for each thread and identifies a
 thread via its capability.
 The load balancer evaluates the configuration passed by the task proxy and
 if isolation or communication groups are set, the thread is assigned to these

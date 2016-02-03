@@ -4,7 +4,7 @@
 
 %\paragraph{Thread representation \& management}
 If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)}, passing
-a capability on itself and its scheduling parameters, the proxy scheduler
+a capability and its scheduling parameters, the proxy scheduler
 receives the call.
 After adding the task's configuration, the proxy forwards the run call to the
 central load balancer by invoking \texttt{run\_thread(cap, sched\_params, config)}.

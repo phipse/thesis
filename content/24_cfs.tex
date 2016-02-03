@@ -1,10 +1,11 @@
+% vim:set ft=tex:
 \section{Linux Completely Fair Scheduler}
 \label{state:cfs}
 
 \newacronym{cfs}{CFS}{Completely Fair Scheduler}
 
-Since Linux 2.6.23 the \gls{cfs} runs Linux.
-It is completely fair, in regard to execution time provided to each task.
+Since Linux version 2.6.23, Linux uses the \gls{cfs}.
+It aims at complete fairness, in regard to execution time provided to each task.
 To achieve fairness, it measures so called virtual runtime of each task and
 selects the task with the lowest account to run next.
 Internally, \gls{cfs} uses a red-black tree to sort the tasks regarding virtual
@@ -40,7 +41,7 @@ runtime of a low priority task, leading to more actual execution time for the
 high priority task.
 
 \paragraph{Domains, Groups, \& load balancing}
-A domain is a unit of physical hardware;
+In \gls{cfs} a domain represents a unit of physical hardware;
 for example, a physical core is a domain and the two hyper-threads running
 inside each constitute a group within this domain.
 On each level of the hierarchy, the current level is the domain and the lower

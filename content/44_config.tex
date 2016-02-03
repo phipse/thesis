@@ -22,7 +22,7 @@ distr     = <name>
 clsvr     = <name>_{C|S}
 \end{lstlisting}
 
-The system designer needs not to define orthogonal parameters for
+The system designer must not define orthogonal parameters for
 a single task.
 Either a task is in a security or in a real-time group, never in both.
 The same goes for \texttt{clsvr\_C} and \texttt{clsvr\_S}:
@@ -78,9 +78,9 @@ L4.default_loader:start(
 )
 \end{lstlisting}
 
-Therefore, the only changes necessary to the application are the configuration
-parameters, which are encapsulated in the Ned startup script, shown in listing
-\ref{config:ned_full}.
+Therefore, it is only necessary to change the the application startup
+configuration parameters, which are encapsulated in the Ned startup script,
+shown in listing \ref{config:ned_full}.
 The load balancing service is completely transparent to the application.
 
 \lstinputlisting[language={[5.2]Lua}, firstline=3, caption={Complete Benchmark

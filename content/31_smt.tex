@@ -1,10 +1,14 @@
-% vim:set ft=tex
-\section{SMT/\gls{ht}}
+% vim:set ft=tex:
+\section{\gls{smt}/\gls{ht}}
 \label{design:smt}
 
 \newacronym{eu}{EU}{execution units}
 
-The performance gains of \gls{ht} stems from the conversion of thread level
+At the lowest level, a load balancer must balance the work of two corresponding
+\gls{ht} cores.
+% todo improve connection
+
+The performance gains of \gls{ht} stem from the conversion of thread level
 parallelism to instruction level parallelism, by providing more instructions to
 the \gls{eu} to fill their pipelines.
 But if two threads issue the same group of instructions, no performance gain is
@@ -13,7 +17,7 @@ Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 
 The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
 threads running at the same time on two corresponding logical cores.
-The two big questions for this work are: how can the performance of a co-schedule be
+Two big questions for this work are: how can the performance of a co-schedule be
 measured? And: is such a measurement comparable to previous ones?
 
 From a hardware perspective the question is: How high is the \gls{eu}
@@ -23,10 +27,10 @@ micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
 But it is still questionable, if this measure reflects the performance
 degradation each thread suffers due to sharing execution resources.
 To get the degradation percentage, knowledge about solo execution is necessary,
-which is either gained offline beforehand, or by scheduling each thread alone
+which is either gathered offline beforehand, or by scheduling each thread alone
 for some time and extrapolating the measurement to the thread's lifetime.
 The former is excluded due to the scope of this thesis, the latter harms
-overall system performance and is imprecise, if the thread workload changes
+overall system performance and is imprecise, if the thread's behaviour changes
 heavily.
 
 Besides fine granular performance measure and relying on estimations, a third
@@ -39,8 +43,8 @@ of the possible co-schedules ran for which amount of time.
 Consequently, the group rating describes the performance of a physical core.
 
 The same applies to performance comparison between hyper-threads. As the
-performance of a single thread is influenced by its co-runner, it cannot be
-compared to logical cores of different physical cores.
+performance of a single hyper-thread is influenced by its co-runner, it cannot
+be compared to logical cores of different physical cores.
 
 All this necessitates an abstraction from logical cores.
 This abstraction allows for the comparison of physical core performance and

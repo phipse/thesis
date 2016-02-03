@@ -1,18 +1,18 @@
-% vim:set ft=tex
+% vim:set ft=tex:
 \section{Communication}
 \label{design:comm}
 
 A less attended behaviour property of threads is communication.
-It is difficult to observe which threads are communicating with each other and
+It is expensive to observe which threads are communicating with each other and
 how often.
-This section explores kernel and user land approaches to acquire this
+This section explores kernel and user-land approaches to acquire this
 information statically and dynamically.
 
 
 \paragraph{Communication patterns}
 I present two patterns of communication: compute-communicate and client-server.
 
-\citeauthor{hofmeyr_load_2010} assumed a program running several threads, which
+\citeauthor{hofmeyr_load_2010} (\cite{hofmeyr_load_2010}) assumed a program running several threads, which
 compute a chunk of work and then communicate their results to each other.
 This cycle repeats until all work is executed, whereas the time spent executing
 is the major part of the cycle and only a small part is used for communication.
@@ -26,9 +26,9 @@ distributed communication in the following.
 The other pattern describes client-server communication.
 To achieve the best possible performance, the communication latency, meaning
 the time difference between sending and receiving the message, must be minimal.
-The latency is minimal, if both communication partners are on the same core.
+The latency is minimal if both communication partners are on the same core.
 Additionally, time slice donation, where the server executes on the time slice
-of the client, is only possible if both execute on the same core.
+of the client, is only possible in Fiasco.OC if both execute on the same core.
 Furthermore, the server will not execute unless it has a client request, so a
 server typically has long idle times.
 Therefore, it is preferable to execute both communication partners on the same
@@ -50,10 +50,12 @@ over low communication latencies.
 
 
 \subsection{Kernel}
-Naturally, acquiring information at kernel level is easier, as more information
-context is available.
-But leakage of kernel information to the user land must be pondered carefully.
-Hence, the following approaches can only be debug features.
+Naturally, acquiring communication information at kernel level is easier, as
+more information context is available.
+But access to kernel information from the user land must be pondered carefully.
+As the following two approaches rely on global object ids, which are a debugging
+feature, I consider the approaches debugging features, too.
+% todo improve debugging feature argument. because of global ids are df,
 
 
 \paragraph{Communication Matrix}
@@ -82,7 +84,7 @@ However, as this is a thread local solution, both communication partners will
 maintain their separate counters.
 \\
 
-The user land load balancer can use the system call interface to query
+The user-land load balancer can use the system call interface to query
 and reset these counters.
 The answer can contain an array of all counters for this thread, to reduce the
 system call overhead.
@@ -100,9 +102,9 @@ same object.
 \paragraph{Cooperative communication capabilities}
 To communicate with a partner, a thread needs a capability in its own
 capability table, pointing to a channel to the receiver.
-Together with a counter value, this capability can be passed to the load
-balancer and the load balancer can then identify communication partners
-by comparing this received capability with the capabilities of the threads
+Together with a counter value, this capability of the \gls{ipc}-gate can be
+passed to the load balancer, which can then identify communication partners by
+comparing this received capability with the capabilities of the threads
 it manages.
 The load balancer can then build a relationship graph between threads and adapt
 the thread-to-core assignment.
