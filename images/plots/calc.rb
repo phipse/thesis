@@ -52,13 +52,15 @@ class SumMinMax
       #mus2s()
       avg = (@sum/@cnt)
       name2 = name + "1"
-      rmins = (avg-@min).round(precision)
-      rmaxs = (avg-@max).round(precision).abs
-      rmax2s = (avg-@max2).round(precision).abs
+      rminsAvg = (avg-@min).round(precision)
+      rmaxsAvg = (@max-avg).round(precision)
+      median = median()
+      rminsMed = (median-@min).round(precision)
+      rmaxsMed = (@max-median).round(precision)
 
-      return "% Format: name, avg, median, min, max, Elements\n\
-name avg median min max Elements\n\
-#{name} #{avg} #{median} #{rmins} #{rmaxs} #{@cnt}\n"
+      return "% Format: name, avg, median, minAvg, maxAvg, minMed, maxMed, Elements\n\
+name avg median minAvg maxAvg minMed maxMed Elements\n\
+#{name} #{avg} #{median} #{rminsAvg} #{rmaxsAvg} #{rminsMed} #{rmaxsMed} #{@cnt}\n"
 # #{name2} #{avg} #{median} #{rmins} #{rmax2s} #{@cnt-1}\n"
     end
   end
