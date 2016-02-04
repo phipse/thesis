@@ -9,11 +9,11 @@ manage these with a load balancer.
 
 \paragraph{Security}
 As presented in section \ref{state:related} even in virtualized environments
-the CPU cache is a valid side channel to attack secret information.
-To reduce the channel's throughput, security critical applications should share
+the CPU cache is a valid side-channel to attack secret information.
+To reduce the channel's throughput, security-critical applications should share
 as little cache as possible with untrusted applications.
 In Haswell's inclusive cache hierarchy, the \gls{llc} contains the lines
-present in the core local L1 and L2 caches, and is shared among all cores of a
+present in the core local L1 and L2 caches and is shared among all cores of a
 chip.
 
 As shown in \cite{inci_seriously_2015} and \cite{liu_last-level_2015},
@@ -21,7 +21,8 @@ the impact of placing security critical tasks on a seprate core is limited.
 Still, a security core increases the difficulty for PRIME+PROBE attacks.
 To completely mitigate this channel, no caches can be shared between the
 security task and the attacker.
-Nowadays, only a multi-socket system can enforce this.
+Nowadays, only a multi-socket system or \gls{intel}'s Cache Allocation
+Technology can enforce this.
 \\
 
 The security requirements of a task are known at system design.
@@ -40,8 +41,8 @@ different groups by name.
 \paragraph{Real-Time}
 A similar isolation guarantee is necessary for real-time tasks.
 Real-time tasks need predictable execution times.
-By using an exclusive core and cache, real-time tasks are less disturbed by best
-effort workloads.
+By using an exclusive core and cache, real-time tasks are less influenced by
+best effort workloads.
 Due to the inclusive cache design, evictions from the \gls{llc} require
 evicting the cache line in the core local caches, too.
 Hence, this approach limits the disturbance, but does not eliminate them.
@@ -52,19 +53,3 @@ As the requirements of real-time tasks are also known before runtime, a static
 configuration can be used.
 The configuration parameter must identify different groups by name
 and display the physical core requirements.
-
-
-\paragraph{Configuration}
-% move to implementation?
-The configuration parameters for security and real-time tasks are the
-following:
-\begin{lstlisting}
-  sec = <Name>
-  rt  = <Name>_<number_of_cores>
-\end{lstlisting}
-
-Multicore support for real-time tasks is not provided at the current state of
-the implementation.
-If the number of \texttt{rt} and \texttt{sec} groups is higher than the number
-of physical cores the system will inform the user via an error message and shut
-down.

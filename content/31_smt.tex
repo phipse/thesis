@@ -17,14 +17,14 @@ Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 
 The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
 threads running at the same time on two corresponding logical cores.
-Two big questions for this work are: how can the performance of a co-schedule be
+Two questions for this work are: how can the performance of a co-schedule be
 measured? And: is such a measurement comparable to previous ones?
 
 From a hardware perspective the question is: How high is the \gls{eu}
 utilization of a co-schedule?
 A performance counter observing all executed
 micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
-But it is still questionable, if this measure reflects the performance
+But it is questionable, if this measure reflects the performance
 degradation each thread suffers due to sharing execution resources.
 To get the degradation percentage, knowledge about solo execution is necessary,
 which is either gathered offline beforehand, or by scheduling each thread alone
@@ -39,7 +39,10 @@ and the possibility of running more than two threads during this interval on a
 pair of logical cores.
 If more than two threads are running during an interval, the load balancer can
 only rate the group performance, because it is impossible to deduce which
-of the possible co-schedules ran for which amount of time.
+of the
+$2^n-1$\footnote{Stirling numbers of the second kind: S(n,k), n = \#objects, k =
+\#partitions;\\special case for k = 2: $S(n,2) = 2^n-1$}
+possible co-schedules ran for which amount of time.
 Consequently, the group rating describes the performance of a physical core.
 
 The same applies to performance comparison between hyper-threads. As the
@@ -48,4 +51,4 @@ be compared to logical cores of different physical cores.
 
 All this necessitates an abstraction from logical cores.
 This abstraction allows for the comparison of physical core performance and
-lets the load balancer to act independently of the presence of \gls{ht}.
+lets the load balancer act independently of the presence of \gls{ht}.

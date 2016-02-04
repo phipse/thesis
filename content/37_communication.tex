@@ -2,6 +2,8 @@
 \section{Communication}
 \label{design:comm}
 
+\newacronym{bsp}{BSP}{bulk synchronous parallel programming}
+
 A less attended behaviour property of threads is communication.
 It is expensive to observe which threads are communicating with each other and
 how often.
@@ -20,8 +22,8 @@ Nevertheless, the overall program performance is best, if each thread reaches
 the communication synchronisation at the same time to spend as little time as
 possible waiting for others.
 \cite{hofmeyr_load_2010} notes this connection.
-The compute-communicate pattern is typical for distributed systems and is named
-distributed communication in the following.
+The compute-communicate pattern is typical for distributed systems and is
+called \gls{bsp} in high performance computing.
 
 The other pattern describes client-server communication.
 To achieve the best possible performance, the communication latency, meaning
@@ -34,11 +36,12 @@ server typically has long idle times.
 Therefore, it is preferable to execute both communication partners on the same
 core.
 
-But this conclusion is wrong, if there are several clients from the same task.
+However, this conclusion is wrong, if the server has several clients from the
+same task.
 If the task runs several threads, then it most likely wants these threads to
 execute in parallel.
-Running all threads close to the server on the same core would heavily impact
-their performance.
+Running all threads close to the server on the same core would contradict this
+intention and heavily impact their performance.
 In the worst case, the performance drops below single threaded performance, due
 to context switch overhead.
 
@@ -123,21 +126,9 @@ for this project.
 Less invasive, but static, is the usage of task specific configuration parameters.
 The two communication patterns yield two configuration parameters to represent the
 different behaviours.
-Together with an identifier thread groups can be configured.
+Together with an identifier they define thread groups.
 This extends the set of isolation parameters for the thread configuration
 introduced in \ref{design:isolation}.
 
 This approach requires careful system design, but no change of program source
 code or thread cooperation.
-\\
-
-The two communication patterns are named \texttt{distr} and \texttt{clsvr}.
-A group is identified by \texttt{<name>} and either distributed or clustered.
-To identify the server in the client-server relationship, the server task's
-group name is assigned the \texttt{\_S} postfix.
-Client tasks use the \texttt{\_C} postfix.
-
-\begin{lstlisting}
-  distr = <Name>
-  clsvr = <Name>_{C|S}
-\end{lstlisting}

@@ -18,18 +18,17 @@
 % wohl mindestens 8 Seiten haben, mehr als 20 können ein Hinweis darauf
 % sein, daß das Abstraktionsniveau verfehlt wurde.
 
-\todo{write design}
 
 This chapter describes the problems that need to be solved to achieve the
 overall goal of a behaviour-aware load balancer on the Fiasco.OC microkernel.
 
-In general a load balancer assign the currently running set of thread to the
+In general a load balancer assigns the currently running set of threads to the
 available cores.
 Therefore, it observers the execution time requirements of all threads and
 distributes the threads to all cores, such that each core processes an equal
 share of the overall work.
 If the amount of work processed per core is out of balance, the load balancer
-needs to reestablish balance again by selecting a thread to migrate from an
+needs to reestablish balance by selecting a thread to migrate from an
 overloaded core to a less loaded core.
 Thereby, the load balancer must care for the underlying architecture, as
 the performance improvement when migrating a thread from one \gls{smt} core to
@@ -38,16 +37,16 @@ its compagnion core, is likely smaller than migrating it to another physical cor
 Besides execution time, cache affinity is also relevant to the load balancer.
 Migrating a thread which has a lot of present cache lines will hurt its
 performance, because the thread must load the necessary memory into the new
-cores cache again, before it can continue execution.
+core's cache, before it can continue execution.
 
-In case of an inbalance the load balancer selects threads to migrate, after
+In case of an imbalance the load balancer selects threads to migrate, after
 considering cache affinity and execution time requirements.
 A load balancing interval is usually much larger than a scheduling interval.
 
 From chapter \ref{sec:state} four relevant areas for a behvaiour-aware load
 balancer can be deduced:
 \gls{smt}, isolation, communication and energy.
-After discussing these four ares, the design of the load balancer service
+After discussing these four areas, the design of the load balancer service
 follows,
 before a discussion about load and balance finishes this chapter.
 

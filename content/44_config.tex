@@ -10,7 +10,11 @@ configuration of a task's properties.
 The following section shows how the configuration is used and implemented.
 
 \paragraph{Configuration Parameters}
-Listing \ref{impl:config:parameters} shows the implemented parameters.
+Listing \ref{impl:config:parameters} shows the implemented parameters:
+\texttt{sec} and \texttt{rt} define security and real-time groups,
+\texttt{distr} and \texttt{clsvr} configure \gls{bsp} and client-server
+communication groups.
+The \texttt{\_C} or \texttt{\_S} flag marks a task as client or server.
 
 \begin{lstlisting}[language={[5.2]Lua}, caption={Implemented set of
 configuration parameters.},label={impl:config:parameters}]
