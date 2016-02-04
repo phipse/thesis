@@ -75,30 +75,19 @@ topology.
 \paragraph{Heterogeneous Architectures}
 A more complex extension is the support for heterogeneous architectures, like
 \gls{arm} big.LITTLE.
-\citeauthor{sarma_smartbalance_2015} use a predefined matrix to predict the
-performance change to an application, if it is migrated to another core type.
-But they do not consider communication or isolation groups.
-How should isolation groups be placed on a heterogeneous architecture?
-Does a group only get one big or little core?
-Does a group get one core of each type?
-When the group is dynamically migrated depending on its needs, how fast can a
-core be cleared for this group?
-How large is the performance impact the other applications suffer from such a
-clear operation?
-
-%todo revise this paragraph
-How are communication groups distributed?
-When a client is migrated to a big core, is the server migrated, too?
-Should \texttt{distr} groups only use big cores?
+\citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a 
+predefined matrix to predict the performance change to an application,
+if it is migrated to another core type.
+But the authors do not consider communication or isolation realtionships.
+These groups raise numerous questions: Which core type do isolation groups
+need?
+If an isolation group is migrated to another core type, how large is the impact
+to the rest of the system?
+Which core type uses a server with multiple distributed clients?
 
 The energy consumption is also very different compared to a x86 system.
-If performance per watt is important, \texttt{distr} groups should maybe be
-prevented from using big cores.
-
-In this discussion I focus on a heterogneous architecture with two different
-core sizes, but the questions regarding isolation and communication groups
-already become difficult to answer.
-
+If performance per watt is important, is it better to run \texttt{distr} groups
+on the small core type?
 
 
 \paragraph{Behaviour Categories}
@@ -124,7 +113,7 @@ However, the logic in the central component does not allow to implement a
 balancer on top of it, which follows different balancing policies.
 Currently, all those decisions would be overruled.
 A future project can explore designs allowing a hierarchy of balancers and
-their performance impact.
+their performance.
 
 \begin{comment}
 \paragraph{Workload-aware balancing}
