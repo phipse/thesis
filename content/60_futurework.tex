@@ -7,16 +7,15 @@ description={ARM\textregistered{}} }
 
 After evaluating the benefits and constraints of behaviour-aware load
 balancing, I present different opportunities for improvements.
-This thesis provides a basis for further experiments, be it to improve SMT
-utilization, better isolation between task groups, or specialized load
-balancing algorithms.
-The modular structure allows to change specific parts and accommodate changes.
+This thesis provides a basis for further experiments, be it to improve
+isolation between task groups, expansion to multi-socket systems, or
+heterogeneous architectures.
 
 \paragraph{Precise Event Based Sampling}
 PEBS allows the user to register an interrupt coupled to a specific counter.
 If the counter is increased by an event or overflows, the interrupt triggers
 and allows to read the hardware state from a prespecified memory region.
-This feature helps a developer to pinpoint, for example, memory accesses which
+This feature helps a developer to pinpoint, for example memory accesses which
 resulted in a cache miss.
 
 PEBS overflow interrupt could eliminate the overflow check in the thread
@@ -27,9 +26,9 @@ thread.
 \paragraph{\gls{intel} Cache Allocation Technology (CAT)}
 The most promising improvement is CAT\footnote{
   \url{http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/cache-allocation-technology-white-paper.pdf}}.
-It allows the user to partition the \gls{llc} or more precisely to decide
+It allows the user to partition the \gls{llc} or, more precisely to decide
 which core is able to write to which cache lines in the \gls{llc}.
-However, a cache hit can also be happen outside of this area.
+However, the core can still read the whole cache.
 This feature allows to configure the system, such that security or latency
 critical applications run on a exclusive core, which uses a portion of the
 \gls{llc} no other core has write access to.
@@ -57,7 +56,7 @@ virtual machines by using a resource monitoring ID (RMID)
 It monitors the cache usage of the all object with the same RMID and provides
 the values via control and data MSRs.
 As this feature measures actual cache usage, I expect it to provide better
-information for spatial balancing than \gls{llc}-misses, but they still
+information for spatial balancing than \gls{llc} misses, but they still
 indicate the load on prefetchers and memory interface, which is not covered by
 CMT.
 
@@ -75,7 +74,7 @@ topology.
 \paragraph{Heterogeneous Architectures}
 A more complex extension is the support for heterogeneous architectures, like
 \gls{arm} big.LITTLE.
-\citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a 
+\citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a
 predefined matrix to predict the performance change to an application,
 if it is migrated to another core type.
 But the authors do not consider communication or isolation realtionships.
