@@ -31,15 +31,22 @@
 % (oder das Schwerste weil erste).
 
 
-This chapter provides an overview over terminology and techniques used in this
-thesis.
-Section \ref{state:term} defines terms used;
-section \ref{state:related} presents work on performance optimizations
-through behaviour awareness, and communication relationships;
-following is an overview over Linux scheduler in section \ref{state:cfs};
-benefits and drawbacks of Fiasco.OC and L4Re for this work in section
-\ref{state:env};
-and section \ref{state:haswell} introduces the target CPU architecture.
+This chapter provides an overview over terminology and techniques I use in this
+thesis. It begins with an introduction to basic terminology in section
+\ref{state:term}.
+
+Different information sources can enhance load balancing decisions regarding
+\gls{smt} performance, resource usage, and communication relationships.
+Besides these three performance oriented topics, a load balancer can also
+improve isolation for security critical tasks and consider overall energy
+usage.
+Section \ref{state:related} presents research from these areas.
+
+Section \ref{state:cfs} gives an overview over Linux's completely fair
+scheduler.
+Benefits and drawbacks of Fiasco.OC and L4Re are discussed in section
+\ref{state:env}, before section \ref{state:haswell} introduces the targeted
+CPU architecture.
 
 
 \input{content/21_Terminology.tex}
