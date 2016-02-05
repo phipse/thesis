@@ -1,2 +1,37 @@
+% vim:set ft=tex:
 \section{Summary}
 \label{design:summary}
+
+During this chapter I discuss the difficulties with determining the
+performance of corresponding hyper-thread cores without offline knowledge about
+the running threads.
+The \gls{ht} abstraction achieves two things: the load balancer compares the
+performance of physically equal units of hardware, and it becomes independent
+of the actual presence of \gls{ht}.
+
+The load balancing service provides isolation for application with real-time
+or security needs.
+Also, I present different approaches to gain knowledge about communication
+relationships within a task or between a group of tasks.
+
+The discussion about an energy model leads to the conclusion, that on x86
+processors a race-to-idle scheme without usage of turbo-boost features is the
+most promising model.
+A reduction in computation time leads to larger idle periods for the different
+cores, which in turn leads to more time spent in deep sleep states, where
+energy usage is minimal.
+
+Subsequently, I present my design of the central load balancing service and its
+modules.
+Measurement and prediction of thread behaviour provides the knowledge to decide
+on balancing options and to enforce this decision.
+
+The chapter finishes with a discussion about different definitions for load
+and depending on the character of the load, which system state is considered to
+be in balance.
+\\
+
+The following chapter presents changes to the Fiasco.OC kernel to provide
+access to hardware performance counters; how a system designer informs the load
+balancer about isolation and communication groups; and discusses different
+algorithms to decide on thread placement.
