@@ -1,6 +1,66 @@
 \section{Summary}
 \label{state:summary}
-\todo{do summary of chapter}
+
+\begin{comment}
+After I introduce the reader to relevant terminology, I present related
+research about symbiotic \gls{smt} co-schedules and the problem of accurately
+measuring the performance of a specific co-schedule.
+The prime are of application for load balancing is resource congestion. Research by
+\citeauthor{knauerhase_using_2008}, \citeauthor{banikazemi_pam_2008}, and
+\citeauthor{zhuravlev_addressing_2012} shows that separating application
+competing for cache and memory decreases and stabilises their execution times.
+The research presents \gls{llc} misses of an application as indicator for
+memory usage and stress put on the memory subsystem.
+
+\cite{hofmeyr_load_2010} balances a single application with several threads.
+When all threads reach a synchronization barrier and they communicate their
+results.
+Hence, the slowest thread lets all other threads wait.
+The authors develop a model to provide each thread with equal progress
+opportunity.
+The knowledge of this communication relationship determines the decision of
+the load balancer.
+
+Computations are reflected in cache usage of an application.
+PRIME+PROBE attacks analyse the usage of cache lines of the targeted
+application and can rebuild a cryptographic secret from the observations.
+Placing security critical tasks on other cores than possible attackers, reduces
+the amount of cache shared, hence raises the bar for an attack.
+\\
+
+In difference to the related work, the goal in this thesis is to design and
+implement a load balancer, which mainly uses online measurements to decide on a
+thread-to-core mapping.
+Also, it should consider communication relationships and security requirements.
+While previous research uses \gls{cmp} style processors, I use a \gls{smp} type
+processor.
+\Gls{cmp} is more similar to a multi-socket system, due to the separated
+\gls{llc} between two processors on one die.
+\end{comment}
+
+I present separate approaches to increase SMT performance through symbiotic
+co-schedules, to reduce congestion on shared caches through analysis of
+\gls{llc} misses, to improve application runtime through knowledge about the
+communication behaviour of its threads, and to determine cryptographic secrets
+through the cache side-channel attacks.
+
+The goal of this thesis is to unite all these topics in a load balancing
+service for Fiasco.OC/L4Re.
+The load balancer should: provide applications with security requirements with
+a separate core and cache, to reduce the attack surface for cache side-channel
+attacks;
+consider communication relationships to reduce communication latencies;
+determine memory usage through hardware performance counters and provide cache
+intense applications with as much cache as possible;
+achieve good co-schedule performance on two corresponding logical cores.
+
+I implement the prototype service for one specific architecture, an \gls{intel}
+Haswell Core i7-4660K.
+
+% todo not mentioned: energy, linux cfs, details about each single topic
+
+
+\begin{comment}
 
 \begin{itemize}
   \item introduction to relevant terminology
@@ -33,5 +93,6 @@
   \item Designated cores for security critical applications.
 \end{itemize}
 
+\end{comment}
 
 % -----------------------------------------------------------------------------
