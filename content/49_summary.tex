@@ -1,2 +1,26 @@
+% vim:set ft=tex:
 \section{Summary}
 \label{impl:summary}
+
+Implementation characteristics of the prototype load balancing service are the
+main topic of this chapter.
+The kernel provides per thread accounting on a set of predetermined hardware
+performance counters and defines an interface to access a threads account from
+user land.
+
+These measurements are a main information source for the load balancer.
+The other information source is the static task configuration defining
+isolation and communication groups.
+The system designer provides these information via the task startup script to
+the load balancer.
+
+This chapter finishes with a discussion about different algorithms for the
+\gls{smt} abstraction, group placement, and balancing in space and time.
+Also, I present a simple load distribution algorithm to provide a baseline for
+evaluation.
+\\
+
+The next chapter evaluates the prototype's performance by comparing it to the
+simple load distribution algorithm and Linux's \gls{cfs}.
+I also analyse the effect of group configurations for client-server and
+\gls{bsp} workloads.
