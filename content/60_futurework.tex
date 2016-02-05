@@ -41,24 +41,24 @@ Even if the attacker application runs on the same processor and shares the same
 Also, real-time applications can now rely on a set of cache lines being
 present, if the application does not evict the lines itself.
 
-The load balancer presented in  this thesis can now not only provide temporal
+The load balancer I present in  this thesis can now not only provide temporal
 separation, with the help of CAT it can also provide spatial isolation on
 shared hardware.
 
 However, this hardware feature is currently only present in Broadwell or later
 generation Xeon Server CPUs.
 
-\paragraph{Cache Monitoring Technology (CMT)}
+\paragraph{\gls{intel} Cache Monitoring Technology (CMT)}
 CMT allows the monitoring of individual or a group of threads, applications, or
 virtual machines by using a resource monitoring ID (RMID)
 \footnote{
   \url{https://software.intel.com/en-us/blogs/2014/12/11/intel-s-cache-monitoring-technology-software-visible-interfaces}}.
 It monitors the cache usage of the all object with the same RMID and provides
-the values via control and data MSRs.
+the values via control and data MSRs\footnote{Model Specific Register}.
 As this feature measures actual cache usage, I expect it to provide better
-information for spatial balancing than \gls{llc} misses, but they still
-indicate the load on prefetchers and memory interface, which is not covered by
-CMT.
+information for spatial balancing than \gls{llc} misses, but \gls{llc} misses still
+indicate the load on prefetchers and the memory interface, which is not
+displayed by CMT.
 
 However, this feature is only available in Haswell or later generation
 Xeon Server CPUs.
@@ -75,18 +75,18 @@ topology.
 A more complex extension is the support for heterogeneous architectures, like
 \gls{arm} big.LITTLE.
 \citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a
-predefined matrix to predict the performance change to an application,
+predefined matrix to predict the performance change of a thread,
 if it is migrated to another core type.
 But the authors do not consider communication or isolation realtionships.
 These groups raise numerous questions: Which core type do isolation groups
 need?
 If an isolation group is migrated to another core type, how large is the impact
 to the rest of the system?
-Which core type uses a server with multiple distributed clients?
+Which core type uses a server task with multiple distributed clients?
 
 The energy consumption is also very different compared to a x86 system.
 If performance per watt is important, is it better to run \texttt{distr} groups
-on the small core type?
+constantly on the little core type?
 
 
 \paragraph{Behaviour Categories}
@@ -102,17 +102,16 @@ I also expect behaviour categories to help decide on difficult questions
 arising from heterogeneous architectures.
 
 \paragraph{Hierarchy of Load Balancers}
-I discussed hierarchical load balancing in chapter \ref{design:balancer} and
+I discuss hierarchical load balancing in chapter \ref{design:balancer} and
 decided to implement a central component.
-The benefit of a central load balancing component is knowledge about more
-clients and the underlying hardware architecure.
-The additional knowledge allows to provide a better placement and make better
-use of available resources, for all clients without isolation requirements.
-However, the logic in the central component does not allow to implement a
+The logic in the central component does not allow to implement a
 balancer on top of it, which follows different balancing policies.
 Currently, all those decisions would be overruled.
+Therefore, the central load balancer approach contradicts the general L4Re
+idea, to implement different policies on top of each other.
 A future project can explore designs allowing a hierarchy of balancers and
-their performance.
+evaluate the performance differences compared to the central load balancing I
+present in this work.
 
 \begin{comment}
 \paragraph{Workload-aware balancing}
