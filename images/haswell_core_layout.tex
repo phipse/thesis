@@ -39,8 +39,8 @@
     \node(l1i)  [l1_cache_shape, right of=hi, anchor=west, node distance=0] {L1I--Cache};
     \node(l1d)  [l1_cache_shape, left of=hd, anchor=east, node distance=0] {L1D--Cache};
 
-    \node(t0)	[thread_shape, above of=l1i, anchor=south] {T 0};
-    \node(t1)	[thread_shape, above of=l1d, anchor=south] {T 1};
+    \node(t0)	[thread_shape, above of=l1i, anchor=south] {HT 0};
+    \node(t1)	[thread_shape, above of=l1d, anchor=south] {HT 1};
 
     \draw [transparent] (l2.south west) -- ++(-1mm,-1mm) node(swc) {};
     \draw [transparent] (l2.south east) -- ++(1mm,-1mm) node(sec) {};
@@ -87,8 +87,8 @@
     \node(1l1i)  [l1_cache_shape, right of=hi, anchor=west, node distance=0] {L1I--Cache};
     \node(1l1d)  [l1_cache_shape, left of=hd, anchor=east, node distance=0] {L1D--Cache};
 
-    \node(1t0)	[thread_shape, above of=1l1i, anchor=south] {T 2};
-    \node(1t1)	[thread_shape, above of=1l1d, anchor=south] {T 3};
+    \node(1t0)	[thread_shape, above of=1l1i, anchor=south] {HT 2};
+    \node(1t1)	[thread_shape, above of=1l1d, anchor=south] {HT 3};
 
     \draw [transparent] (1l2.south west) -- ++(-1mm,-1mm) node(1swc) {};
     \draw [transparent] (1l2.south east) -- ++(1mm,-1mm) node(1sec) {};
