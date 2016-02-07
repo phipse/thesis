@@ -124,11 +124,12 @@ This eases the lookup of cache lines in other cores on the same package.
 %\includegraphics[width=0.8\textwidth]{images/haswell_architecture_by_intel_large}
 
 \begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.7\textwidth]{images/haswell_core_layout}
-  \caption{Schematic layout of a Core i7-4660K quad-core.
+  \setcapindent*{1em}
+  \begin{captionbeside}[]{Schematic layout of a Core i7-4660K quad-core.
     Each physical core has two logical cores T0 and T1 sharing the cores L1I-,
     L1D-, and L2-cache.}
+  \includestandalone[mode=tex,width=0.65\textwidth]{images/haswell_core_layout}
+\end{captionbeside}
   \label{state:fig:core_layout}
 \end{figure}
 
