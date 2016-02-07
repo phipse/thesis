@@ -29,7 +29,10 @@ class SumMinMax
   end
 
   def median
-    (@arr.sort.at((@arr.length/2.0).round))
+    # compute n-tieth percentile
+    percentile = (9*@arr.length / 10.0).round
+    return @arr.sort.at(percentile)
+    #(@arr.sort.at((@arr.length/2.0).round))
   end
 
   def getAvgInS
