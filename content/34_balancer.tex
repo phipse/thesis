@@ -58,6 +58,16 @@ to the central load balancer.
 The configuration structure comprises the priority range and a list of
 groups derived from the parameters.
 
+\begin{figure}[h!]
+  \setcapindent*{1em}
+  \begin{captionbeside}[]{Load Balancer with one Task Proxy per client task.
+      The Task Proxy adds the task's configuration to the \texttt{run\_thread}
+    call.}
+  \includestandalone[width=0.65\textwidth]{images/threadMapper_layout}
+\end{captionbeside}
+  \label{state:figbalancer_proxy}
+\end{figure}
+
 
 \paragraph{Thread Management}
 All threads known to the load balancer are managed by the thread management.
@@ -106,10 +116,11 @@ Each balancing interval, they run once and adapt the thread-to-core
 assignment to the current circumstances.
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=0.5\textwidth]{images/statusvortrag/arch_interval_cycle}
-  \caption{Sequential exectuion of the main components inside the load
+  \setcapindent*{1em}
+  \begin{captionbeside}{Sequential exectuion of the main components inside the load
   balancer.}
+  \includegraphics[width=0.65\textwidth]{images/statusvortrag/arch_interval_cycle}
+  \end{captionbeside}
   \label{arch:fig:intervalcycle}
 \end{figure}
 
