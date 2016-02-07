@@ -25,6 +25,9 @@
   }
 }
 
+\def\files{
+}
+
 \begin{tikzpicture}
   \begin{axis}[
       tufte bar,
@@ -43,10 +46,21 @@
       /pgf/number format/precision=0,
     ]
 
-    \addplot +[draw=none] coordinates {(mcf, 155.83) (lbm, 165.25) (gamess, 87.28) (gcc,
-    64.20)};
-    
-    \legend{sld}
+    \foreach \filename in \files
+      \addplot +[draw=none,
+        error bars/.cd,
+        y dir=both,
+        y explicit,
+      ] table [
+        x=name,
+        y=median,
+        y error plus expr=\thisrow{maxMed},
+        y error minus expr=\thisrow{minMed},
+      ]
+      {\filename};
+
+
+    \legend{fixme,fixme,fixme}
   \end{axis}
 \end{tikzpicture}
 
