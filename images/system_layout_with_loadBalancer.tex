@@ -28,7 +28,7 @@
 
   \draw[black, thin] (0,0) -- (8,0);
   \node[defaultRec, anchor=south east] at (-1mm,1mm) {Userland};
-  \node(tm) [defaultRec, draw] at (4cm, 1.5cm) {ThreadMapper};
+  \node(tm) [defaultRec, draw] at (4cm, 1.5cm) {LoadBalancer};
   \node [defaultRec, draw] at (1.5cm,.5cm) {Ned};
   \node [defaultRec, draw] at (4cm, .5cm) {$\sigma{}0$};
   \node [defaultRec, draw] at (6.5cm,.5cm) {Moe};
@@ -37,7 +37,7 @@
   \node[defaultRec] at (4.2cm, -4mm) {PerfCounter};
   \node[defaultRec] at (6.5cm, -4mm) {ThreadStats};
 
-      \node(tp1) [tpRec, above left of=tm,xshift=-1cm] {ThreadProxy};
+      \node(tp1) [tpRec, above left of=tm,xshift=-1cm] {TaskProxy};
       \draw[transparent] (tp1.west) -- +(0,5mm) coordinate(helpWest);
       \node(t1.1) [threadRec, right of=helpWest,anchor=west,] {ThrA};
 
@@ -46,7 +46,7 @@
 
       \node(a1)	[tpRec, above of=tp1, node distance=1cm] {App};
 
-      \node(tp2) [tpRec, above right of=tm,xshift=1cm] {ThreadProxy};
+      \node(tp2) [tpRec, above right of=tm,xshift=1cm] {TaskProxy};
       \node(a2)	[tpRec, above of=tp2, node distance=5mm] {App};
 
       \draw [arrow] (tp1) to (tm);
