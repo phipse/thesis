@@ -12,11 +12,103 @@
 % den Rest der Arbeit. Meist braucht man mindestens 4 Seiten dafür, mehr
 % als 10 Seiten liest keiner.
 
-\todo{adopt title page}
+%todo adopt title page
 
-\todo{adopt disclaimer}
+The operating system manages all hardware resources of a computer.
+It makes these resources available to all tasks by assigning them an exclusive
+share for an amount of time.
+Thereby, it distinguishes between time and space shares.
+During the last centuries, the gap between execution speed and memory latency
+widened.
+The number of instruction a processor could execute while waiting for data
+from memory increased constantly.
+To reduce the number of waits, several levels of caches are present on the CPU
+nowadays, thus decreasing the impact of memory latency.
+The drawback of several layers of caches and increasing size of caches is the
+access latency and the additional cost for a cache miss, when the data
+requested is not in any cache layer.
+Each cache level adds the time it takes to search the whole cache level, to the
+time it takes to request the data from memory.
+Thus, three cache levels cost search time for the first, second, and third plus
+the memory latency.
+In short, larger caches decrease the miss probability, but increase the overall
+memory access latency.
 
-\todo{write introduction}
+Two hardware improvements minimize the time a CPU idles, while waiting for memory: out-of-order
+execution and simultaneous multi-threading.
+Out-of-order CPUs reorder instructions, such that the data request is issued
+before the CPU executes the instruction using this data.
+Whereas simultaneous multi-threading employs two or more hardware threads
+executing on the same physical hardware.
+If one hardware thread waits for memory or just uses a subset of all available
+execution units, the others can utilize the idle resources.
+
+Besides these hardware solutions, software can also reduce the number of cache
+misses it produces.
+Programmers of performance critical software invest time and effort to adjust
+their program's data to fit into cache lines and allow for efficient prefetching.
+However, besides time and money these custom adjustments are limited by the
+environment the software executes in.
+Two memory intensive threads sharing a processor will evict each others
+cache lines, thus decreasing each others performance as they need to fetch
+data from memory again.
+In the era of multi-cores, to decide if these two programs will run on
+the same core and cache is the job of the scheduler and load balancer.
+
+While Linux runs a scheduler which is also in charge of load balancing, these
+are two separate jobs.
+It is the scheduler's duty to provide an equal amount of CPU time to each
+running task, depending on the task's priority.
+To decide, which tasks runs on which core on the other hand,
+that is the responsibility of the load balancer.
+
+Thus, the load balancer is not necessarily part of the kernel.
+To allow for workload specific load balancers, Linux provides an interface to
+overrule kernel decisions.
+This is also the case for the Fiasco.OC microkernel and the L4Re user land
+environment.
+
+A specialized load balancer can take offline knowledge into account, not
+accessible by the kernel;
+for example offline analysis of a program's cache usage, or communication
+patterns between different parts of one or different applications,
+respectively.
+
+Such an specialized load balancer can improve the runtime of its clients by
+improving cache utilization through distribution or reduce communication latencies
+through co-location.
+A general-purpose load balancer most likely does not know its client tasks
+beforehand, thus limiting the amount of information available.
+
+Besides performance improvements, a load balancer can also satisfy isolation
+requirements of client applications; for example by assigning a security
+critical application an exclusive core to exacerbate side-channel attacks.
+Also real-time applications benefit from isolation, as an exclusive cache
+decreases runtime influences.
+
+This thesis explores possibilities to gather runtime information about the
+behaviour of a load balancer's clients, to improve each clients execution time.
+Besides execution time needs, the load balancer should care for cache usage,
+communication behaviour, and isolation requirements.
+I discuss different sources for these information with their merits and flaws and
+implement a prototype to show the benefits for client behaviour-aware load
+balancing.
+
+
+Chapter \ref{sec:state} defines terminology for this work and presents previous
+publications on simultaneous multi-threading (SMT), shared resource usage and
+congestion, and communication awareness.
+It also presents Linux's completely fair scheduler, Fiasco.OC and L4Re, and
+properties of the CPU architecture the prototype runs on.
+In chapter \ref{sec:design}, I discuss the building blocks for the load
+balancer: SMT, isolation needs, source for communication behaviour, an energy
+consumption model, and the architecture of the load balancer itself.
+Chapter \ref{sec:implementation} presents implementation details and
+implemented algorithms.
+Subsequently, chapter\ref{sec:evaluation} evaluates the prototype and answers
+the question, how beneficial the balancing is.
+Chapter \ref{sec:futurework} motivates future research on this topic and
+concludes this thesis.
 
 
 \cleardoublepage
