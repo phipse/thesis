@@ -3,12 +3,11 @@
 \label{design:isolation}
 
 Fiasco.OC provides strong isolation and also real-time guarantees.
-A requirement-aware thread-to-core mapping can support these guarantees.
-The following discusses security and real-time needs of applications and how to
-manage these with a load balancer.
+In the following, I show how a requirement-aware thread-to-core mapping of a
+load balancer can support these guarantees.
 
 \paragraph{Security}
-As presented in section \ref{state:related} even in virtualized environments
+As presented in section \ref{state:related}, even in virtualized environments
 the CPU cache is a valid side-channel to attack secret information.
 To reduce the channel's throughput, security-critical applications should share
 as little cache as possible with untrusted applications.
@@ -19,8 +18,8 @@ chip.
 As shown in \cite{inci_seriously_2015} and \cite{liu_last-level_2015},
 the impact of placing security critical tasks on a seprate core is limited.
 Still, a security core increases the difficulty for PRIME+PROBE attacks.
-To completely mitigate this channel, no caches can be shared between the
-security task and the attacker.
+To completely mitigate this channel, no caches may be shared between the
+security-critical task and the attacker.
 Nowadays, only a multi-socket system or \gls{intel}'s Cache Allocation
 Technology can enforce this.
 \\
@@ -41,11 +40,11 @@ different groups by name.
 \paragraph{Real-Time}
 A similar isolation guarantee is necessary for real-time tasks.
 Real-time tasks need predictable execution times.
-By using an exclusive core and cache, real-time tasks are less influenced by
-best effort workloads.
+By using an exclusive core and cache, real-time tasks are less affected by the
+influenced of best-effort workloads.
 Due to the inclusive cache design, evictions from the \gls{llc} require
-evicting the cache line in the core local caches, too.
-Hence, this approach limits the disturbance, but does not eliminate them.
+evicting the cache line in the core local caches as well.
+Hence, this approach limits the possible disturbance, but does not eliminate them.
 Also, several cores can be assigned to a real-time task group, depending on its
 requirements.
 

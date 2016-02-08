@@ -1,5 +1,5 @@
 % vim:set ft=tex:
-\section{\gls{smt}/\gls{ht}}
+\section{SMT/HT}
 \label{design:smt}
 
 \newacronym{eu}{EU}{execution units}
@@ -11,8 +11,8 @@ At the lowest level, a load balancer must balance the work of two corresponding
 The performance gains of \gls{ht} stem from the conversion of thread level
 parallelism to instruction level parallelism, by providing more instructions to
 the \gls{eu} to fill their pipelines.
-But if two threads issue the same group of instructions, no performance gain is
-possible, as the number of \gls{eu} has not increased.
+However, if two threads issue the same group of instructions, no performance gain is
+possible, as they conflict in the usage of the same EUs.
 Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 
 The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
@@ -24,7 +24,7 @@ From a hardware perspective the question is: How high is the \gls{eu}
 utilization of a co-schedule?
 A performance counter observing all executed
 micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
-But it is questionable, if this measure reflects the performance
+However, it is questionable, if this measure reflects the performance
 degradation each thread suffers due to sharing execution resources.
 To get the degradation percentage, knowledge about solo execution is necessary,
 which is either gathered offline beforehand, or by scheduling each thread alone
@@ -45,10 +45,10 @@ $2^n-1$\footnote{Stirling numbers of the second kind: S(n,k), n = \#objects, k =
 possible co-schedules ran for which amount of time.
 Consequently, the group rating describes the performance of a physical core.
 
-The same applies to performance comparison between hyper-threads. As the
+The same applies to any performance comparison between hyper-threads. As the
 performance of a single hyper-thread is influenced by its co-runner, it cannot
 be compared to logical cores of different physical cores.
 
-All this necessitates an abstraction from logical cores.
+All of this necessitates an abstraction from logical cores.
 This abstraction allows for the comparison of physical core performance and
 lets the load balancer act independently of the presence of \gls{ht}.

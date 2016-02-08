@@ -31,7 +31,7 @@ eventually the switching overhead is higher than the time a task spends
 executing.
 To prevent this situation, the minimum task runtime granularity defines a
 minimum amount of time a task needs to execute.
-As the number of tasks grow, the TSL increases to be able to schedule each
+As the number of tasks grows, the TSL increases to be able to schedule each
 runnable task once for the minimum task runtime.
 
 Priorities are accommodated by weighting the virtual runtime accounted to each
@@ -40,17 +40,17 @@ The virtual runtime of a high priority task increases slower than the virtual
 runtime of a low priority task, leading to more actual execution time for the
 high priority task.
 
-\paragraph{Domains, Groups, \& load balancing}
+\paragraph{Domains, Groups, \& Load Balancing}
 In \gls{cfs} a domain represents a unit of physical hardware;
 for example, a physical core is a domain and the two hyper-threads running
 inside each constitute a group within this domain.
 On each level of the hierarchy, the current level is the domain and the lower
 hierarchy levels are groups.
-Each group within a domain is comparable to other groups in the same domain.
+Each group within a domain is equivalent to other groups in the same domain.
 
 \gls{cfs} does active load balancing only between groups in the same domain.
 Their load is compared and if imbalances are found, \gls{cfs} tries to migrate
 a task from one group to another to establish balance again.
-Thereby, a cache affinity flag indicates, if the task ran recently and might
+A cache affinity flag indicates, if the task ran recently and might
 still have valid cache lines.
 If the cache affinity flag is set, the task is not considered for migration.

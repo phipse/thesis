@@ -19,20 +19,20 @@
 % sein, daß das Abstraktionsniveau verfehlt wurde.
 
 
-This chapter describes the problems that need to be solved to achieve the
+In this chapter, I describe the problems needing to be solved to achieve the
 overall goal of a behaviour-aware load balancer on the Fiasco.OC microkernel.
 
-In general a load balancer assigns the currently running set of threads to the
+In general, a load balancer assigns the currently running set of threads to the
 available cores.
-Therefore, it observers the execution time requirements of all threads and
+To that end, it observers the execution time requirements of all threads and
 distributes the threads to all cores, such that each core processes an equal
-share of the overall work.
-If the amount of work processed per core is out of balance, the load balancer
+share of the total work.
+If the amount of work processed per core is uneven, the load balancer
 needs to reestablish balance by selecting a thread to migrate from an
-overloaded core to a less loaded core.
-Thereby, the load balancer must care for the underlying architecture, as
+overloaded core to a less utilized core.
+The load balancer must account for the underlying architecture, as
 the performance improvement when migrating a thread from one \gls{smt} core to
-its compagnion core, is likely smaller than migrating it to another physical core.
+its companion core, is likely smaller than migrating it to another physical core.
 
 Besides execution time, cache affinity is also relevant to the load balancer.
 Migrating a thread which has a lot of present cache lines will hurt its
@@ -46,9 +46,8 @@ A load balancing interval is usually much larger than a scheduling interval.
 From chapter \ref{sec:state} four relevant areas for a behvaiour-aware load
 balancer can be deduced:
 \gls{smt}, isolation, communication and energy.
-After discussing these four areas, the design of the load balancer service
-follows,
-before a discussion about load and balance finishes this chapter.
+After discussing these four areas, I explain the design of the load balancer
+service, before I finish the chapter with a discussion about load and balance.
 
 \input{content/31_smt.tex}
 \input{content/33_isolation.tex}

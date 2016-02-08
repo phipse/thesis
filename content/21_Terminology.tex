@@ -5,25 +5,6 @@ The following makes the reader familiar with the terminology of the field.
 Readers may continue with section \ref{state:related} and use this section
 as reference, if a term is ambiguous or unknown.
 
-% list of glossary entries
-%\newacronym{intel}{}{INTEL\textregistered{}}
-\newglossaryentry{intel}{name=Intel\textregistered{},
-description={Intel\textregistered{} Corp.} }
-
-% list of acronyms
-\newacronym{ht}{HT}{hyper-threading}
-\newacronym{smt}{SMT}{simultaneous multi-threading}
-\newacronym{cmp}{CMP}{chip multiprocessor}
-\newacronym{smp}{SMP}{symmetric multiprocessor}
-\newacronym{utcb}{UTCB}{user thread control block}
-\newacronym{sc}{SC}{scheduling context}
-\newacronym{fifo}{FIFO}{First-in-First-out}
-\newacronym{lru}{LRU}{least-recently-used}
-\newacronym{llc}{LLC}{last-level cache}
-\newacronym{ipc}{L4-IPC}{L4 inter-process communication}
-\newacronym{instpc}{IPC}{instructions per cycle}
-\newacronym{isa}{ISA}{Instruction Set Architecture}
-
 % todo Item sorting
 
 \begin{description}
@@ -35,18 +16,24 @@ description={Intel\textregistered{} Corp.} }
     of a priority level, execution time, and remaining execution time.
 
   \item[Thread] A thread is a unit of execution, consisting of a kernel and
-    user thread control block, a \gls{sc}, and further interfaces.
+    \gls{utcb}, a \gls{sc}, and further interfaces.
 
   \item[Task] A task is a unit of isolation. It manages different address
-    spaces; for example memory, capability, and ioport spaces.
+    spaces; for example memory, capability, and I/O port spaces.
     Threads run within tasks, but tasks do not necessarily contain a thread.
+
+  \item[Capability] A capability is a rights management concept.
+    The system allows access to an object only if the caller provides a
+    capability containing appropriate rights.
+    It is orthogonal to access control lists, where the object knows, who may
+    access it.
 
   \item[\Gls{ipc}] \Gls{ipc} is one way for threads in L4Re/Fiasco.OC
     to communicate with one another.
     It is synchronous communication with the following modes of operation:
-    send, open wait, closed wait, reply \& open wait, call.
+    send, open wait, closed wait, reply \& open wait, and call.
     A thread initiating an open wait, waits for an arbitrary thread to contact
-    him, whereas a closed wait, expects a communication intend of a specific
+    him, whereas a closed wait, expects a communication intent of a specific
     thread.
     A call is normally used for communication with a service, where a reply is
     awaited, hence it combines a send and a closed wait operation.
@@ -62,12 +49,12 @@ description={Intel\textregistered{} Corp.} }
 
   \item[Cache] Generally, a CPU cache is used to store frequently accessed data
     close to the CPU core to reduce access times.
-    As a cache has size restriction, depending on the type of cache different
+    As a cache has size restrictions, depending on the type of cache different
     evocation policies can be applied, e.g. \gls{fifo} or \gls{lru}.
     There are multiple levels of caches in modern CPUs, creating a hierarchy;
     three levels are common.
-    If data is evicted from the highest level of the hierarchy, it is written
-    back to memory.
+    If modified data is evicted from the highest level of the hierarchy, it is
+    written back to memory.
 % todo device memory caches: fully-cached, not-cached, buffered
 
   \item[Migration] The process of moving a thread from one core to another core
@@ -76,15 +63,15 @@ description={Intel\textregistered{} Corp.} }
     to be in the same machine. Only the thread is migrated, cached data remains
     on the old core.
 
-  \item[\Gls{smt}] \gls{smt} is a technique to multiplex several hardware
+  \item[Simultaneous Muli-Threading (SMT)] \gls{smt} is a technique to multiplex several hardware
     threads on the same physical core.
-    Thus, sharing all the cores resources -- integer and floating point units,
+    Thus, sharing all the core's resources -- integer and floating point units,
     caches, prefetcher, etc. -- among the core's hardware threads.
     The goal is to improve the utilization of the execution units by increasing
     the number of instructions available to them.
     \gls{smt} transforms thread level parallelism to instruction level
     parallelism.
-    A \gls{smt}-thread is referenced as logical core or hardware thread.
+    A \gls{smt}-core is referenced as logical core or hardware thread.
 
   \item[\Gls{ht}] \gls{ht} is the \gls{intel} specific implementation of the
     \gls{smt}-concept.
@@ -101,7 +88,10 @@ description={Intel\textregistered{} Corp.} }
   \item[\Gls{isa}]\gls{isa} describes the set of hardware instructions executed
     by a processor.
 
-  \item[Intervall] Describes a pre-defined number of clock ticks.
+  \item[Intervall] Describes a pre-defined amount of time.
+  \item[Wall clock time] Describes the time passed in real life.
+  \item[Execution time] Describes the time a thread spends executing on a
+    core.
 
 %  \item[Job] In scheduling theory a job is a specific unit of work.
 %    In real-time systems, the execution time of a job is normally known beforehand.

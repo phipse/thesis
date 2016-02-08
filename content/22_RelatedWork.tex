@@ -5,9 +5,9 @@ This section presents prior work and emphasises the parts pertinent to
 this thesis.
 One assumption for this work is already in place:
 the target architecture is a single \gls{isa}, partly symmetric homogeneous
-multicore.
+multi-core.
 Partly symmetric means the target architecture supports \gls{smt},
-but besides this, it is a \gls{smp} architecture.
+but besides this, it is an \gls{smp} architecture.
 Hence, research proposing hardware changes is out of scope; such as
 \cite{cruz_dynamic_2014}, where cache coherence messages are monitored to
 increase a hardware communication counter.
@@ -28,31 +28,30 @@ and to make repeated execution more predictable.
 \citeauthor{snavely_symbiotic_2000} introduce the term \emph{symbiotic
 scheduling}, describing a scheduling technique
 for \gls{smt}-systems in \cite{snavely_symbiotic_2000}.
-They propose scheduling those two jobs on a shared core, which provide the best
+They propose scheduling those two threads on a shared core, which provide the best
 utilization of said core.
-The combination of two jobs on two corresponding \gls{smt}-cores is called a
+The combination of two threads on two corresponding \gls{smt}-cores is called a
 co-schedule.
-A co-schedule's performance is defined as the turnaround or response time:
-the time between the arrival of a job in the ready queue and its completion.
+A co-schedule's performance is defined as the turnaround.
 
-In their experiments they run independent jobs on a simulator modeling a Compaq
-Alpha 21264 out-of-order processor with hardware additions for multi-threading.
+In their experiments they run independent threads on a simulator modeling a Compaq
+Alpha 21264 out-of-order processor with hardware additions for \gls{smt}.
 This simulator model includes performance counters to ``capture dynamic execution
 information''(\autocite[236]{snavely_symbiotic_2000}).
 To determine a good schedule, the authors compute the weighted speedup \textit{WS} for
 a fixed time interval.
-For each job the change in instructions per cycle (IPC) compared to
+For each thread the change in instructions per cycle (IPC) compared to
 single-threaded execution is calculated.
-The sum of these values for all jobs is the weighted speedup of this
+The sum of these values for all threads is the weighted speedup of this
 schedule.
-$$ WS(t) = \sum_{i=1}^n (\text{realized IPC job}_i / \text{single-threaded IPC
-job}_i)$$
+$$ WS(t) = \sum_{i=1}^n (\text{realized IPC thread}_i / \text{single-threaded IPC
+thread}_i)$$
 Their developed scheduler consists of two phases: sampling and symbiosis.
-The sampling phase measures different job combinations and moves to the
+The sampling phase measures different thread combinations and moves to the
 symbiosis phase, when enough samples were gathered.
 During in the symbiosis phase, the scheduler selects the schedule, which
 promises the highest weighted speedup.
-As the job mix changes, the scheduler will move back and forth between these two
+As the thread mix changes, the scheduler will move back and forth between these two
 phases.
 
 A sampling phase measure describes the performance of the threads in a
@@ -64,10 +63,9 @@ data cache hit rate, floating point unit conflicts, and floating point queue
 conflicts.
 However, the best predictor in their study made a majority vote of all other
 predictors to determine the best schedule.
-\citeauthor{snavely_symbiotic_2000} conclude, that good job symbiosis depends
-not only on high IPC.
-%, but on a multitude of other factors, too, e.g. usage
-%conflicts in shared hardware resources or cache hit rates.
+\citeauthor{snavely_symbiotic_2000} conclude, that good thread symbiosis depends
+not only on high IPC, but also for examples usage conflicts in shared hardware
+resources or cache hit rates.
 \\
 
 \begin{comment}
@@ -114,12 +112,12 @@ first-come-first-serve scheduler.
 The authors explain the notable difference in \cite{eyerman_revisiting_2015} as
 different experimental views.
 \citeauthor{snavely_symbiotic_2000} study a fully loaded system with twice
-as much ready jobs as SMT-cores and observe the turnaround time.
-In this scenario, the time the job spends waiting in the ready queue causes the
+as much ready threads as SMT-cores and observe the turnaround time.
+In this scenario, the time the thread spends waiting in the ready queue causes the
 largest increase in turnaround time.
 A slight increase in maximum throughput reduces the waiting time and
 consequently leads to a significant decrease in turnaround time.
-Also, reordering the jobs in a shortest remaining time first manner can
+Also, reordering the threads in a shortest remaining time first manner can
 reduce the average turnaround time, too.
 For these reasons \citeauthor{eyerman_revisiting_2015} make the case
 that turnaround time alone can be a misleading measure.
@@ -134,14 +132,14 @@ number of executing cores --- and empty periods.
 If throughput improves, the processor utilization decreases and empty
 periods expand, as the time to execute the current load is reduced.
 Hence, using these two measures, improvements caused by the scheduler are
-compareable.
+comparable.
 \\
 
 Although no large performance improvements can be expected, symbiotic
 scheduling proves to be relevant to improve resource usage.
-But if no offline knowledge is available, it is difficult to connect performance
+However, if no offline knowledge is available, it is difficult to connect performance
 gains to scheduling decisions.
-As modern \gls{intel} multicores use \gls{smt} in each physical core, symbiotic
+As modern \gls{intel} multi-cores use \gls{smt} in each physical core, symbiotic
 scheduling provides an opportunity for performance gains.
 Together with hardware peformance counters, it might be possible to at least
 avoid bad co-schedules.
@@ -157,14 +155,14 @@ counters on cache occupancy, cycles per instruction, and the miss ratio of L1
 and L2 caches for each thread.
 If PAM can predict a better thread-to-core mapping based on this information,
 it overrules the default scheduler and enforces the better mapping.
-PAM uses a 'goodness' metric to rate the mapping of the last time interval.
+PAM uses a \emph{goodness} metric to rate the mapping of the last time interval.
 If the goodness value of the PAM mapping is better than the last observed
 default mapping, PAM continues to overrule the default scheduler.
 If it is worse, PAM falls back to observing the default scheduler.
 The goodness metric can describe performance, power or energy consumption.
 
-Their experiments run on a dual socket, quad-core machine, where two cores
-share an L2 cache.
+Their experiments run on a dual socket machine with one quad-core per socket,
+where two cores of each quad-core share an L2 cache.
 The processor does not support \gls{smt}.
 Hence, the performance gains stem not from symbiosis, but rather from
 congestion awareness.
@@ -177,8 +175,8 @@ Like \citeauthor{banikazemi_pam_2008}, they work on a \gls{cmp}-machine with
 two separated cache groups sharing an L2 cache.
 Similarly, they try to spread memory intensive tasks as much as possible,
 to reduce interference in the shared cache.
-The authors introduce the metric called 'cache weight', which denotes the
-\gls{llc}-cache misses per cycle for the last time interval.
+The authors introduce the metric called \emph{cache weight}, which denotes the
+\gls{llc} misses per cycle for the last time interval.
 Their research shows that longer histories worsen the prediction, as thread
 behaviour changes over time.
 To achieve the best possible spread of all threads across cache groups,
@@ -213,18 +211,18 @@ reuse and low miss rates do not affect other applications negatively.
 But applications with low reuse and high miss rates are likely to evict cache
 lines of others.
 
-\citeauthor{zhuravlev_addressing_2010} use this analysis and develope a
-metric called 'Pain', which consists of two parts: sensitivity and intensity.
+\citeauthor{zhuravlev_addressing_2010} use this analysis and develop a
+metric called \emph{pain}, which consists of two parts: sensitivity and intensity.
 The former describes how much an application suffers from sharing caches with
 others, the latter how much an application will hurt others.
 The pain application A feels, when scheduled with B, is the product of A's
 suffering and B's intensity.
 Vice versa for B.
 The sum of both describes the expected performance degradation for these two
-applications, when scheduled together on the same \gls{llc}.
+applications, when sharing the same \gls{llc}.
 
 To approximate sensitivity and intensity online, they assume cache miss and
-access rates to be a good measure, but it turnes out, only the cache miss
+access rates to be a good measure, but it turns out, only the cache miss
 rate is relevant.
 In contrast to memory reuse patterns, which focus solely on the cache as shared
 resource, the cache miss rate also displays the load on prefetching hardware,
@@ -235,8 +233,8 @@ degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \citeauthor{zhuravlev_addressing_2010} implemente their off- and online
 derived pain metrics in two scheduling algorithms: Distributed Intensity (DI)
 and Distributed Intensity Online (DIO).
-DI uses the 'Pain' metric derived offline from the stack-distance profiles,
-whereas DIO uses 'Approx-Pain' derived from the \gls{llc} miss rate.
+DI uses the pain metric derived offline from the stack-distance profiles,
+whereas DIO uses \emph{approx-pain} derived from the \gls{llc} miss rate.
 Like \cite{banikazemi_pam_2008}, both schedulers are implemented in the
 Linux user level and override the default scheduler.
 
@@ -248,11 +246,11 @@ Each core runs one application from each half.
 If the miss rate changes at runtime, the order changes, which could impair
 the performance.
 However, \citeauthor{zhuravlev_addressing_2010} observe only minor place
-switching, which they not expect to harm the performance.
+switching, which they do not expect to harm the performance.
 
 DIO on the other hand, constantly measures the applications miss rate and is
-thereby able to react to phase changes during runtime.
-The algorithm collects data every billion cycles and uses a running average to
+therefore able to react to phase changes during runtime.
+The algorithm collects data every $10^9$ cycles and uses a running average to
 sort the applications.
 Besides this it acts like DI.
 
@@ -260,7 +258,7 @@ Besides this it acts like DI.
 Xeon and AMD Opteron.
 The Xeon consists of eight cores on four chips sharing the L2 cache.
 The Opteron eight core has two chips sharing an L3 cache each.
-Leading to four cache groups in the Xeon case and two in the Opteron's.
+Leading to four cache groups in the Xeon case and two in the Opteron case.
 Their tests show only small performance differences for their tested workloads
 on both machines.
 The authors run eight different workloads on each machine and compare the
@@ -269,7 +267,7 @@ Of the total of 16 tests only three tests show performance differences above
 two percent between DI and DIO.
 In the Opteron's case DIO improves all workloads, whereas DI shows gains in
 all but one.
-The Xeon showes a mixed picture for DI and DIO: from 14 percent gains to four
+The Xeon shows a mixed picture for DI and DIO: from 14 percent gains to four
 percent loss compared to Linux's default scheduler.
 According to \citeauthor{zhuravlev_addressing_2010}, the good overall
 performance of the default scheduler can be accounted to the small test set and
@@ -278,7 +276,7 @@ They emphasise the performance gain of each individual application with DI and
 DIO scheduling and the reduced variance in execution time from run to run.
 
 The test workloads consist of independent applications.
-Thus, the trade off between placing two communicating, high miss rate
+Thus, the trade-off between placing two communicating, high miss rate
 applications on the same core, or communicating across chip boundaries was no
 research question.
 Additionally, \gls{cmp} architectures gave way to \gls{smp} architectures,
@@ -298,21 +296,22 @@ Consequently, the number of threads per core will be either
 $T = \left \lfloor{N/C}\right \rfloor$ or $T+1$.
 Fast cores are running $T$ threads, slow cores $T+1$, respectively.
 
-For their implementation, they also assume to be running besides other
+For their implementation, they also assume to be running alongside other
 workloads on the same hardware.
-Therefore, the term speed is defined as the relation of execution time per
+Therefore, the term \emph{speed} is defined as the relation of execution time per
 elapsed wall clock time.
-The authors algorithm runs one observation thread per core measuring the speed
+The authors' algorithm runs one observation thread per core measuring the speed
 of each thread and of the core, respectively.
 The sum of all core speeds determines the global average speed, which
-distinguishes fast and slow cores.
+distinguishes fast from slow cores.
 To provide equal progress opportunities, each thread needs to run on a fast
 core at least once.
-So, the observation thread on a fast core searches for a suitable thread to
-migrate from a slow core and pulls it to its local core.
-Thereby, the observation thread tries to migrate the least migrated thread to
+So, the observation thread on a fast core searches for a suitable thread on slow
+core to migrate to its own core.
+Additionally, the observation thread tries to migrate the least migrated thread to
 avoid constant migration of the same thread.
 
+%todo move up after 2nd sentence; rewrite paragraph
 The assumed parallel application model consists of one application
 spawning several worker threads, where a computation interval is followed by a
 communication barrier.
@@ -332,7 +331,7 @@ energy cost for running and cooling.
 In \cite{imes_poet_2015} the authors compare a mobile \gls{intel} Haswell and a
 Samsung Exynos5 Octa regarding their minimal energy consumption.
 The authors show that different strategies are necessary to achieve minimal
-energy consumption of the two processors.
+energy consumption for each of the two processors.
 In case of the \gls{intel} Haswell processor, race to idle proves to be the
 strategy of choice to reduce energy consumption.
 The Samsung processor on the other hand, should run constantly at low clock
@@ -340,14 +339,16 @@ speeds.
 
 \cite{le_sueur_slow_2011} considers systems loads below 30\% and different
 workloads: video playback and a web-server.
-Their measurements suggest, that it is best to maintain low clock speeds, as
-long as the system load and quality of service guarantees allow it.
+Their measurements suggest, that for x86 processors it is best to maintain low
+clock speeds, as long as the system load and quality of service guarantees
+allow it.
 During idle time, the processor changes to deep sleep states and saves
 energy.
 The recovery from deep sleep states -- power up core, load data into core local
 caches -- increases system load only slightly.
-To conserve energy, turbo boost should be avoided, as the gained frequency
-comes at a high energy cost.
+To conserve energy, \emph{turbo boost} -- raising the frequency
+of one core above standard, if other cores are idle -- should be avoided, as
+the gained frequency comes at a high energy cost.
 
 It is interesting for this work, how a load balancer can change the assignment
 of threads to cores, to reduce overall energy consumption.
@@ -355,7 +356,7 @@ In section \ref{design:energy} different models will be discussed.
 \\
 
 \paragraph{Cache side-channel attacks}
-The CPU cache has proved to be a great side channel to deduce private
+The CPU cache has proved to be a major side channel to deduce private
 cryptographic keys.
 Two different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.
 
@@ -366,7 +367,7 @@ code in shared libraries or executables;
 and conditional branches in the code path of the attacked program.
 \citeauthor{yarom_recovering_2014} present in \cite{yarom_recovering_2014} an
 attack to recover private keys via FLUSH+RELOAD.
-Thereby, they flush a set of cache lines from the cache and reload it after a
+To that end, they flush a set of cache lines from the cache and reload it after a
 waiting period.
 If the cache line was present in the cache, the time it takes to read the data
 is small; reading the data from memory is significantly slower.
@@ -390,8 +391,7 @@ Cryptographic Library (NaCL)\footnote{https://nacl.cr.yp.to} by
 do not rely on branching and are therefore not susceptible to this attack.
 
 However, shared memory with the target application is necessary.
-But between virtual machines no data is shared, making FLUSH+RELOAD
-impossible.
+Since no data is shared between virtual machines FLUSH+RELOAD is impossible.
 The PRIME+PROBE attack on the other hand works without this requirement.
 This attack writes known data to a set of cache lines, the eviction set,
 and accesses the same data after a waiting period.
@@ -400,8 +400,9 @@ longer to reload it from memory.
 
 The attack utilises the inclusiveness property of the CPU cache, to observe
 changes in core local L1 and L2 caches through the \gls{llc}.
-Each cache line of the L1 caches is present in L2 and each line present in L2
-is present in the L3 cache as displayed in figure \ref{state:fig:inclusive}.
+In inclusive caches each cache line of the L1 caches is present in L2 and each
+line present in L2 is also present in the L3 cache, as displayed in figure
+\ref{state:fig:inclusive}.
 %
 \begin{figure}[h]
   \setcapindent*{1em}
@@ -428,9 +429,9 @@ virtual machine.
 \citeauthor{inci_seriously_2015} test their attack on Amazon EC2 instances,
 proving its practicality in a real world scenario.
 
-Separating security critical applications on architectures, with shared
+Separating security critical applications on architectures with shared
 \gls{llc} raises the difficulty of an attack, but does not mitigate it.
-Only a physical spearation of the caches prevents a PRIME+PROBE attack.
+Only a physical separation of the caches prevents a PRIME+PROBE attack.
 
 
 % -----------------------------------------------------------------------------

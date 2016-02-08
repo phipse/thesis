@@ -4,14 +4,14 @@
 
 All the techniques introduced in the previous sections of this chapter
 are now united into the central load balancing component.
-The section describes the components the load balancer is build of.
+The section describes the components the load balancer is built of.
 % todo chapter structure
 
 
 \paragraph{Load Balancer \& Task Proxies}
 To achieve good load balancing performance, the load balancer needs information
-about the underlying hardware, as well as the amount of work in the system.
-Thereby, it is also possible to build hierarchical load balancing, where
+about the underlying hardware, as well as the total amount of work in the system.
+It is also possible to build hierarchical load balancing, where
 only a partial view on the hardware is available and only a subset of tasks run
 on this specific load balancer.
 However, while leading to isolation between different subhierarchies,
@@ -19,7 +19,7 @@ the overall performance can suffer, as the system is effectively partitioned.
 A surplus of computing resources in one partition is unusable by another
 partition leading to wasted resources.
 The size of the partition is only adaptable at core granularity, so meeting the
-precise resource needs may not be possible, leading to overprovisioning and
+precise resource needs may not be possible, leading to overprovisioning and,
 consequently, resource waste.
 
 Isolation between parts of the system can also be provided by a central load
@@ -27,12 +27,12 @@ balancing component.
 A central load balancer as well as a hierarchical approach are part of the chain
 of trust of each balanced application, so both approaches are equally
 trustworthy.
-But the central component can react dynamically to changes in the workloads and
+However, the central component can respond dynamically to changes in the workloads and
 shift the partition borders as needed.
 Also, if tasks with security properties, as discussed in section
 \ref{design:isolation}, enter or leave the system, the dynamic approach can
 repurpose a core.
-Redistribution of cores between hierarchical load balancer, would require
+Redistribution of cores between hierarchical load balancers would require
 additional reasoning which load balancer the free core is assigned to, or which
 load balancer must release a core.
 The load balancers must communicate their reasoning either with each other, or

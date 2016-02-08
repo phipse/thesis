@@ -10,10 +10,10 @@ in section \ref{state:related} and design an energy efficient load balancing
 strategy, based on this model.
 \\
 
-The critical question for an energy model is:
-When is least energy consumed?
-In a scenario where work is done fast and the cores sleep for a longer time or
-if the work is done at lower frequencies for a longer time.
+A critical question for an energy model is:
+When is the least amount of energy consumed?
+In a race-to-idle scenario, where work is done fast and the cores sleep for a
+longer time, or if the work is done at lower frequencies for a longer time.
 In \cite{le_sueur_slow_2011} \citeauthor{le_sueur_slow_2011} assume that
 quality of service is maintained, even at low frequencies.
 They show for their three applications that the
@@ -26,8 +26,7 @@ system.
 Furthermore, a load balancer cannot decide on core frequencies, because its
 view on the system is not necessarily complete.
 
-\citeauthor{le_sueur_slow_2011} note that turbo boost -- raising the frequency
-of one core above standard, if other cores are idle -- should be avoided at
+\citeauthor{le_sueur_slow_2011} note that turbo boost should be avoided at
 all cost, as the performance gain is little compared to the increased energy
 consumption.
 The hardware does not use turbo boost as long as all cores are loaded, as the
@@ -44,16 +43,16 @@ additional wakeup-load poses no problem.
 
 \cite{imes_poet_2015} states that different models are necessary for different
 platforms.
-A mobile Haswell generation processor consumes least energy if the race to
-idle scheme is used, whereas an embedded Exynos5 generation CPU is designed for
-constant low frequency operation.
+A mobile Haswell generation processor consumes the least amount of energy if
+the race-to-idle scheme is used, whereas an embedded Exynos5 generation CPU is
+designed for constant low frequency operation.
 The target hardware for this work is a Haswell generation processor, so the
 race to idle model seems promising.
 \\
 
 The difference in energy consumption between low frequency and normal
 frequency, however, is little compared to a deep sleep state, due to the
-already high base power.
+already high base energy consumption.
 So following \cite{imes_poet_2015}, it is best to increase sleep time and use
 the normal frequency to execute the arising work quickly.
 
