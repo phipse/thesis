@@ -1,3 +1,4 @@
+% vim:set ft=tex:
 \chapter{Introduction}
 \label{sec:intro}
 
@@ -12,32 +13,83 @@
 % den Rest der Arbeit. Meist braucht man mindestens 4 Seiten dafür, mehr
 % als 10 Seiten liest keiner.
 
+% list of glossary entries
+%\newacronym{intel}{}{INTEL\textregistered{}}
+\newglossaryentry{intel}{name=Intel\textregistered{},
+description={Intel\textregistered{} Corp.} }
+
+% list of acronyms
+\newacronym{ht}{HT}{hyper-threading}
+\newacronym{smt}{SMT}{simultaneous multi-threading}
+\newacronym{cmp}{CMP}{chip multiprocessor}
+\newacronym{smp}{SMP}{symmetric multiprocessor}
+\newacronym{utcb}{UTCB}{user thread control block}
+\newacronym{sc}{SC}{scheduling context}
+\newacronym{fifo}{FIFO}{first-in-first-out}
+\newacronym{lru}{LRU}{least-recently-used}
+\newacronym{llc}{LLC}{last-level cache}
+\newacronym{ipc}{L4-IPC}{L4 inter-process communication}
+\newacronym{instpc}{IPC}{instructions per cycle}
+\newacronym{isa}{ISA}{Instruction Set Architecture}
+
 %todo adopt title page
 
 The operating system manages all hardware resources of a computer.
 It makes these resources available to all tasks by assigning them an exclusive
 share for an amount of time.
-Thereby, it distinguishes between time and space shares.
-During the last centuries, the gap between execution speed and memory latency
-widened.
-The number of instruction a processor could execute while waiting for data
-from memory increased constantly.
+% improve above sentence
+In doing so, it distinguishes between time and space shares.
+% smoothe transition
+% throw above away ?
+Since 1980 a gap between issue rate and service time of memory requests
+developed.
+The time between two memory request a single core can issue decreased faster, than
+the time it takes memory to answer this request.
+Figure \ref{intro:fig:cpuMemGap} visualises this development between 1980 and
+2010.
+%
+\begin{figure}[h]
+  \KOMAoption{captions}{bottombeside}
+  \setcapindent*{1em}
+  \begin{captionbeside}[]{CPU and memory performance development since 1980.
+      CPU performance is measured as time between memory requests; memory
+      performance describes DRAM access latency.
+      Figure from \cite[73]{hennessy_computer_2012}.}
+    \includegraphics[width=0.65\textwidth]{images/cpu_mem_gap}
+  \end{captionbeside}
+  \label{intro:fig:cpuMemGap}
+\end{figure}
+%
 To reduce the number of waits, several levels of caches are present on the CPU
 nowadays, thus decreasing the impact of memory latency.
 The drawback of several layers of caches and increasing size of caches is the
 access latency and the additional cost for a cache miss, when the data
 requested is not in any cache layer.
-Each cache level adds the time it takes to search the whole cache level, to the
+Each cache level adds the time it takes to search it, to the overall
 time it takes to request the data from memory.
 Thus, three cache levels cost search time for the first, second, and third plus
 the memory latency.
 In short, larger caches decrease the miss probability, but increase the overall
 memory access latency.
+Figure \ref{into:fig:accessLatencies} provides and overview over size and
+access times for the memory hierarchy.
+The displayed access times describe the duration from issuing the request until
+receiving the data.
+%
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{images/mem_access_hierarchy_latency}
+  \caption{Size and access latencies for different levels of the
+    memory hierarchy.
+    The numbers displayed are from a Nehalem generation XEON server CPU.
+    Figure from \cite[72]{hennessy_computer_2012}.}
+  \label{into:fig:accessLatencies}
+\end{figure}
 
-Two hardware improvements minimize the time a CPU idles, while waiting for memory: out-of-order
-execution and simultaneous multi-threading.
-Out-of-order CPUs reorder instructions, such that the data request is issued
-before the CPU executes the instruction using this data.
+Two hardware improvements minimize the time a CPU idles, while waiting for
+memory: out-of-order execution and simultaneous multi-threading.
+Out-of-order CPUs reorder instructions, such that a instruction waiting for
+input data is surpassed by instructions with available input.
+After execution the results are written to memory in their original order.
 Whereas simultaneous multi-threading employs two or more hardware threads
 executing on the same physical hardware.
 If one hardware thread waits for memory or just uses a subset of all available
@@ -65,7 +117,7 @@ that is the responsibility of the load balancer.
 Thus, the load balancer is not necessarily part of the kernel.
 To allow for workload specific load balancers, Linux provides an interface to
 overrule kernel decisions.
-This is also the case for the Fiasco.OC microkernel and the L4Re user land
+This is also the case for the Fiasco.OC microkernel and the L4Re user-land
 environment.
 
 A specialized load balancer can take offline knowledge into account, not
@@ -85,6 +137,7 @@ requirements of client applications; for example by assigning a security
 critical application an exclusive core to exacerbate side-channel attacks.
 Also real-time applications benefit from isolation, as an exclusive cache
 decreases runtime influences.
+\pagebreak
 
 This thesis explores possibilities to gather runtime information about the
 behaviour of a load balancer's clients, to improve each clients execution time.
@@ -93,19 +146,19 @@ communication behaviour, and isolation requirements.
 I discuss different sources for these information with their merits and flaws and
 implement a prototype to show the benefits for client behaviour-aware load
 balancing.
-
+\\
 
 Chapter \ref{sec:state} defines terminology for this work and presents previous
-publications on simultaneous multi-threading (SMT), shared resource usage and
+publications on \gls{smt}, shared resource usage and
 congestion, and communication awareness.
 It also presents Linux's completely fair scheduler, Fiasco.OC and L4Re, and
 properties of the CPU architecture the prototype runs on.
 In chapter \ref{sec:design}, I discuss the building blocks for the load
-balancer: SMT, isolation needs, source for communication behaviour, an energy
+balancer: \gls{smt}, isolation needs, source for communication behaviour, an energy
 consumption model, and the architecture of the load balancer itself.
 Chapter \ref{sec:implementation} presents implementation details and
 implemented algorithms.
-Subsequently, chapter\ref{sec:evaluation} evaluates the prototype and answers
+Subsequently, chapter \ref{sec:evaluation} evaluates the prototype and answers
 the question, how beneficial the balancing is.
 Chapter \ref{sec:futurework} motivates future research on this topic and
 concludes this thesis.
