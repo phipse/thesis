@@ -2,9 +2,9 @@
 \section{Load Balancer}
 \label{design:balancer}
 
-All the techniques introduced in the previous sections of this chapter
-are now united into the central load balancing component.
-The section describes the components the load balancer is built of.
+I now unit all the techniques I introduce in the previous sections of this chapter
+into the central load balancing component.
+In this section I describe the components the load balancer is built of.
 % todo chapter structure
 
 
@@ -63,7 +63,7 @@ groups derived from the parameters.
   \begin{captionbeside}[]{Load Balancer with one Task Proxy per client task.
       The Task Proxy adds the task's configuration to the \texttt{run\_thread}
     call.}
-  \includestandalone[width=0.65\textwidth]{images/threadMapper_layout}
+  \includegraphics[width=0.65\textwidth]{images/threadMapper_layout}
 \end{captionbeside}
   \label{state:figbalancer_proxy}
 \end{figure}
@@ -119,7 +119,7 @@ assignment to the current circumstances.
   \setcapindent*{1em}
   \begin{captionbeside}{Sequential exectuion of the main components inside the load
   balancer.}
-  \includegraphics[width=0.65\textwidth]{images/statusvortrag/arch_interval_cycle}
+  \includestandalone[mode=tex,width=0.65\textwidth]{images/statusvortrag/arch_interval_cycle}
   \end{captionbeside}
   \label{arch:fig:intervalcycle}
 \end{figure}
@@ -154,8 +154,8 @@ prediction component changes.
 The decision component allows to easily test balancing and placement algorithms
 and also incorporating multi socket systems is neatly encapsulated in it.
 
-Of course if information sources arise, changes down the line are necessary.
-But this approach provides a concise description of the different components.
+Of course, if information sources arise, changes down the line are necessary,
+but this approach provides a concise description of the different components.
 Also, extending the load balancer to heterogeneous architectures is assumed to
 work well, as the design is similar to the approach in
 \cite{sarma_smartbalance_2015}.

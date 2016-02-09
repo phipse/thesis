@@ -5,9 +5,9 @@
 \newacronym{bsp}{BSP}{bulk synchronous parallel programming}
 
 A less attended behaviour property of threads is communication.
-It is expensive to observe which threads are communicating with each other and
-how often.
-This section explores kernel and user-land approaches to acquire this
+It is runtime-wise expensive to observe which threads are communicating with
+each other and how often.
+In the following I explore kernel and user-land approaches to acquire this
 information statically and dynamically.
 
 
@@ -23,7 +23,7 @@ the communication synchronisation at the same time to spend as little time as
 possible waiting for others.
 \cite{hofmeyr_load_2010} notes this connection.
 This so called compute-communicate pattern is typical for distributed systems and is
-called \gls{bsp} in high performance computing.
+called \gls{bsp} in high performance computing (\cite{mccoll_scalability_1996}).
 
 The other pattern is called client-server communication.
 To achieve the best possible performance, the communication latency, meaning
@@ -64,14 +64,15 @@ feature, I consider the approaches debugging features as well.
 \paragraph{Communication Matrix}
 Communication partners as well as the rate of communication during a time
 frame, are of interest.
-It is important to reduce the latency of intensive connections.
+It is important to reduce the latency of connections with a high message
+exchange rate.
 To model the communication relationships, each thread is assigned a global
 identifier and a matrix is created, where each field contains a counter,
 counting each communication event between the two corresponding global IDs.
 This matrix is symmetric, hence, to save memory, only the upper half is used
 and communication between two threads uses the counter in field
 (lowerID, higherID).
-The upper bound for the memory requirement is $1/2 * (|threads|)^2$.
+The upper bound for the memory requirement is $\sfrac{1}{2} * |\textit{threads}|^2$.
 As not all threads will communicate with each other, usage of a sparse matrix
 will further lower the memory requirement.
 %A sparse matrix allocates only memory for fields, which are actually used.
@@ -86,8 +87,8 @@ Furthermore, the used memory is directly accounted to the threads which need it.
 However, as this is a thread local solution, both communication partners will
 maintain their separate counters.
 
-The upper bound for the memory requirement is $(|threads|)^2$, as each thread
-needs to maintain it's own set of counters.
+The upper bound for the memory requirement is $|\textit{threads}|^2$, as each thread
+needs to maintain its own set of counters.
 As with the sparse matrix, only used counters are allocated to reduce the
 actual memory usage.
 \\
@@ -96,11 +97,11 @@ The user-land load balancer can use the system call interface to query
 and reset these counters.
 The response contains an array of all counters for this thread, to reduce the
 system call overhead.
-In case of the matrix, the answer must be created from the thread ID column and
-the thread ID row.
+%In case of the matrix, the answer must be created from the thread ID column and
+%the thread ID row.
 
 
-\subsection{User land}
+\subsection{User Land}
 At user level, information gathering is much more complicated compared to
 kernel level.
 The strong isolation guarantees of Fiasco.OC make it infeasible to work with global
@@ -122,10 +123,10 @@ the thread-to-core assignment.
 This approach requires changes to the scheduler interface in L4Re and
 thread cooperation.
 However, it has the benefit that each thread can decide on its own if the
-communication relationship is intensive enough to benefit from increased
+amount of exchanged messages is high enough to benefit from increased
 locality.
 Unfortunately, this requires changes to each thread managed by the balancer and
-regular intensity updates.
+regular updates regarding the amount of messages exchanged.
 Together with the interface changes, this dynamic approach is deemed infeasible
 for this project.
 

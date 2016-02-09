@@ -18,20 +18,24 @@ Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
 threads running at the same time on two corresponding logical cores.
 Two questions for this work are: how can the performance of a co-schedule be
-measured? And: is such a measurement comparable to previous ones?
+measured? And: is such a measurement comparable to measurements from previous
+intervals?
 
 From a hardware perspective the question is: How high is the \gls{eu}
 utilization of a co-schedule?
 A performance counter observing all executed
 micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
-However, it is questionable, if this measure reflects the performance
-degradation each thread suffers due to sharing execution resources.
+However, if this measure accuratley reflects the performance degradation each thread
+suffers due to sharing execution resources, needs further analysis.
+
 To get the degradation percentage, knowledge about solo execution is necessary,
 which is either gathered offline beforehand, or by scheduling each thread alone
 for some time and extrapolating the measurement to the thread's lifetime.
 The former is excluded due to the scope of this thesis, the latter harms
 overall system performance and is imprecise, if the thread's behaviour changes
 heavily.
+Therefore, it is not possible to determine the precise degradation percentatge
+in this thesis.
 
 Besides fine granular performance measure and relying on estimations, a third
 problem with rating \gls{ht} performance is the length of a balancing interval
@@ -40,8 +44,11 @@ pair of logical cores.
 If more than two threads are running during an interval, the load balancer can
 only rate the group performance, because it is impossible to deduce which
 of the
-$2^n-1$\footnote{Stirling numbers of the second kind: S(n,k), n = \#objects, k =
-\#partitions;\\special case for k = 2: $S(n,2) = 2^n-1$}
+$2^n-1$\footnote{The number of disjoint, non-empty partitions of a set of
+  objects is computed with the \emph{Stirling numbers of the second kind:}
+  $S(n,k):\;\; n = |objects|,\: k = |partitions|;$\\A special case exists for
+two partitions: $k = 2: S(n,2) = 2^n-1$.}
+%
 possible co-schedules ran for which amount of time.
 Consequently, the group rating describes the performance of a physical core.
 
@@ -52,3 +59,5 @@ be compared to logical cores of different physical cores.
 All of this necessitates an abstraction from logical cores.
 This abstraction allows for the comparison of physical core performance and
 lets the load balancer act independently of the presence of \gls{ht}.
+Furthermore, it provides a single point to change, if offline knowledge or
+hardware performance measurements become availble.

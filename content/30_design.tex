@@ -31,7 +31,7 @@ If the amount of work processed per core is uneven, the load balancer
 needs to reestablish balance by selecting a thread to migrate from an
 overloaded core to a less utilized core.
 The load balancer must account for the underlying architecture, as
-the performance improvement when migrating a thread from one \gls{smt} core to
+the performance improvement when migrating a thread from one \gls{smt}-core to
 its companion core, is likely smaller than migrating it to another physical core.
 
 Besides execution time, cache affinity is also relevant to the load balancer.
