@@ -2,7 +2,7 @@
 \section{Isolation}
 \label{design:isolation}
 
-Fiasco.OC provides strong isolation and also real-time guarantees.
+Fiasco.OC provides isolation and also real-time guarantees.
 In the following, I show how a requirement-aware thread-to-core mapping of a
 load balancer can support these guarantees.
 
@@ -21,7 +21,7 @@ Still, a security core increases the difficulty for PRIME+PROBE attacks.
 To completely mitigate this channel, no caches may be shared between the
 security-critical task and the attacker.
 Nowadays, only a multi-socket system or \gls{intel}'s Cache Allocation
-Technology can enforce this.
+Technology can enforce this (\cite{intel_cat}).
 \\
 
 The security requirements of a task are known at system design.

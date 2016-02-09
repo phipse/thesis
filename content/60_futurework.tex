@@ -24,8 +24,7 @@ The interrupt handler must then increase the account of the currently running
 thread.
 
 \paragraph{\gls{intel} Cache Allocation Technology (CAT)}
-The most promising improvement is CAT\footnote{
-  \url{http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/cache-allocation-technology-white-paper.pdf}}.
+The most promising improvement is CAT (\cite{intel_cat}).
 It allows the user to partition the \gls{llc} or, more precisely to decide
 which core is able to write to which cache lines in the \gls{llc}.
 However, the core can still read the whole cache.
