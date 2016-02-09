@@ -1,0 +1,170 @@
+\documentclass[border=5mm]{standalone}
+\usepackage{pgfplots,siunitx,pgfplotstable}
+
+\usepgfplotslibrary{statistics, units}
+
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\pgfplotsset{
+  tufte bar/.style={
+    ymajorgrids,
+    grid style=gray!30!white,
+    major grid style={ultra thin},
+    axis on top,
+    axis x line*=bottom,
+%    major ytick length=0pt,
+    major y tick style={opacity=0},
+    y axis line style={opacity=0},
+%    enlarge x limits={
+%      abs=0.5*\pgfkeysvalueof{/pgf/bar width}
+%    },
+%    bar width=2mm,
+%    x=1.5*\pgfkeysvalueof{/pgfplots/bar width},
+  }
+}
+
+\def\gccFiles{
+  ../linuxPlots/gcc_2016-02-06_9-39_run,
+  gcc_specAll_sld_060216_fix,
+  gcc_specAll_stb_smtbal_080216_fix,
+  gcc_specAll_tb_080216_fix,
+  ../linuxPlots/gamess_2016-02-06_9-39_run,
+  gamess_specAll_sld_060216_fix,
+  gamess_specAll_stb_smtbal_080216_fix,
+  gamess_specAll_tb_080216_fix
+}
+\def\lbmFiles{
+  ../linuxPlots/lbm_2016-02-06_9-39_all_run,
+  lbm_specAll_sld_060216_fix,
+  lbm_specAll_stb_smtbal_080216_fix,
+  lbm_specAll_tb_080216_fix,
+  ../linuxPlots/mcf_2016-02-06_9-39_run,
+  mcf_specAll_sld_060216_fix,
+  mcf_specAll_stb_smtbal_080216_fix,
+  mcf_specAll_tb_080216_fix
+}
+
+\definecolor{tufte1}{rgb}{0.7,0.7,0.55}
+\definecolor{cat3}{rgb}{1,0.49,0}
+\definecolor{cat7}{rgb}{0.19,1,0}
+\definecolor{cat9}{rgb}{0.1,0.7,1}
+\definecolor{cat11}{rgb}{0.4,0.3,1}
+\definecolor{cat13}{rgb}{0.9,0.1,0.19}
+
+\pgfplotscreateplotcyclelist{mylist}{%
+  {cat13, mark options={very thin, mark size=1.5pt}, mark=square},
+  {cat11, mark options={very thin, mark size=1.5pt}, mark=o},
+  {cat3, mark options={very thin, mark size=1.5pt}, mark=+},
+  {cat9, mark options={very thin, mark size=1.5pt}, mark=x}%
+}
+
+
+
+\begin{tikzpicture}
+  \begin{axis}[
+      cycle list name=mylist,
+      tufte bar,
+      boxplot/draw direction=y,
+%      title=average over 10x sld,
+%      symbolic x coords={gcc},%, gamess, mcf, lbm},
+      xtick={ {2.5}, {6.5} },
+      xticklabel={ {gcc}, {gamess} },
+%      xticklabel={lbm_sld, lbm_stb, lbm_tb, mcf_sld, mcf_stb, mcf_tb},
+      ylabel={Runtime},
+      y unit=s,
+      enlargelimits=0.2,
+%      ymin=0,
+%      ybar legend,
+      legend style={at={(0.5,-0.20)},anchor=north, legend columns=-1},
+%      nodes near coords,
+%      nodes near coords align={vertical},
+      /pgf/number format/precision=1,
+    ]
+
+    \foreach \filename in \gccFiles 
+    {
+      \hspace{1cm}
+    \addplot +[boxplot,
+      ] table [
+	col sep=comma,
+	 y index=0,
+      ]
+      {\filename}
+%      [below]
+%      node at
+%	(boxplot box cs: \boxplotvalue{lower whisker}, 0.2)
+%	{\footnotesize\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+%%      node at
+%%	(boxplot box cs: \boxplotvalue{lower quartile}, 0)
+%%	{\pgfmathprintnumber{\boxplotvalue{lower quartile}}}
+%      node[above] at
+%	(boxplot box cs: \boxplotvalue{median}, 0.2)
+%	{\footnotesize\pgfmathprintnumber{\boxplotvalue{median}}}
+%      node[above] at
+%	(boxplot box cs: \boxplotvalue{upper whisker}, 0.2)
+%	{\footnotesize\pgfmathprintnumber{\boxplotvalue{upper whisker}}}
+      ;
+    }
+    
+%    \legend{fixme,fixme,fixme}
+  \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      cycle list name=mylist,
+      tufte bar,
+      boxplot/draw direction=y,
+%      title=average over 10x sld,
+%      symbolic x coords={gcc},%, gamess, mcf, lbm},
+      xtick=data,
+      xticklabels={gcc, gamess, lbm, mcf},
+%      xticklabel={lbm_sld, lbm_stb, lbm_tb, mcf_sld, mcf_stb, mcf_tb},
+      ylabel={Runtime},
+      y unit=s,
+      enlargelimits=0.2,
+%      ymin=0,
+%      ybar legend,
+      legend style={anchor=north, legend columns=-1},
+      legend entries={cfs, sld, stb, tb},
+      legend to name={legend},
+      name=border,
+%      nodes near coords,
+%      nodes near coords align={vertical},
+      /pgf/number format/precision=0,
+    ]
+
+    \foreach \filename in \lbmFiles 
+    {
+      \hspace{1cm}
+    \addplot +[boxplot,
+      ] table [
+	col sep=comma,
+	 y index=0,
+      ]
+      {\filename}
+%      [below]
+%      node at
+%	(boxplot box cs: \boxplotvalue{lower whisker}, 0.2)
+%	{\footnotesize\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+%%      node at
+%%	(boxplot box cs: \boxplotvalue{lower quartile}, 0)
+%%	{\pgfmathprintnumber{\boxplotvalue{lower quartile}}}
+      node[below] at
+	(boxplot box cs: \boxplotvalue{median}, 0.5)
+	{\tiny\pgfmathprintnumber{\boxplotvalue{median}}}
+%      node[above] at
+%	(boxplot box cs: \boxplotvalue{upper whisker}, 0.2)
+%	{\footnotesize\pgfmathprintnumber{\boxplotvalue{upper whisker}}}
+      ;
+    
+    }
+    
+  \end{axis}
+  \node[below] at (border.south) {\ref{legend}};
+
+\end{tikzpicture}
+
+\end{document}
