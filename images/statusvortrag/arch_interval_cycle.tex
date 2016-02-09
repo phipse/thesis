@@ -9,11 +9,11 @@
 
 \begin{document}
 
-\begin{tikzpicture}[node distance=1.5cm]
+\begin{tikzpicture}[node distance=1cm]
 
   % Colors
   % Styles
-  \tikzstyle{defaultRec} = [font=\small, text centered, inner sep = 1pt,
+  \tikzstyle{defaultRec} = [font=\small, text centered, inner sep = 3pt,
     draw=black, shape=rectangle, fill=white, minimum height = .5cm, minimum
   width = 1.4cm];
 
@@ -42,7 +42,7 @@
   \node(place) [defaultRec, below of=deci, anchor=north, node distance=1cm] {Placement Generator};
 
   \node(help) [node distance=1cm,below of=place] {};
-  \node(topo) [defaultRec, left of=help, anchor=east,xshift=3mm] {HW-Topology};
+  \node(topo) [defaultRec, inner sep = 1pt, left of=help, anchor=east,xshift=-1mm] {HW-Topology};
 
   \draw[arrow] (meas.east) to [bend left=45] (pred.north);
   \draw[arrow] (pred.south) to [bend left=45] (deci.east);
