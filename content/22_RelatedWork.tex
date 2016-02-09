@@ -1,7 +1,7 @@
 \section{Related Work}
 \label{state:related}
 
-This section presents prior work and emphasises the parts pertinent to
+In this section I present prior work and emphasise the parts pertinent to
 this thesis.
 One assumption for this work is already in place:
 the target architecture is a single \gls{isa}, partly symmetric homogeneous
@@ -18,7 +18,7 @@ the current workload.
 
 % todo: write overview over topic, first smt, second  goodness, third
 % congestion, fourth communication, fifth energy, sixth security.
-This review will focus on research regarding five topics: \gls{smt},
+I will focus this review on research regarding five topics: \gls{smt},
 resource congestion, communication, energy usage, and security.
 A load balancer must address all these topics, to efficiently use available resources
 and to make repeated execution more predictable.
@@ -44,7 +44,7 @@ For each thread the change in instructions per cycle (IPC) compared to
 single-threaded execution is calculated.
 The sum of these values for all threads is the weighted speedup of this
 schedule.
-$$ WS(t) = \sum_{i=1}^n (\text{realized IPC thread}_i / \text{single-threaded IPC
+$$ \text{WS}(t) = \sum_{i=1}^n (\text{realized IPC thread}_i / \text{single-threaded IPC
 thread}_i)$$
 Their developed scheduler consists of two phases: sampling and symbiosis.
 The sampling phase measures different thread combinations and moves to the
@@ -112,7 +112,7 @@ first-come-first-serve scheduler.
 The authors explain the notable difference in \cite{eyerman_revisiting_2015} as
 different experimental views.
 \citeauthor{snavely_symbiotic_2000} study a fully loaded system with twice
-as much ready threads as SMT-cores and observe the turnaround time.
+as much ready threads as \gls{smt}-cores and observe the turnaround time.
 In this scenario, the time the thread spends waiting in the ready queue causes the
 largest increase in turnaround time.
 A slight increase in maximum throughput reduces the waiting time and
@@ -242,7 +242,7 @@ The DI algorithm sorts the applications based on their solo cache miss rate deri
 offline.
 This order is used to split the application set into two halfs: above and below
 average miss rate.
-Each core runs one application from each half.
+Each core runs all threads of one application from each half.
 If the miss rate changes at runtime, the order changes, which could impair
 the performance.
 However, \citeauthor{zhuravlev_addressing_2010} observe only minor place
@@ -294,7 +294,8 @@ Their concept assumes the number of threads $N$ to be greater than the number of
 cores $C$.
 Consequently, the number of threads per core will be either
 $T = \left \lfloor{N/C}\right \rfloor$ or $T+1$.
-Fast cores are running $T$ threads, slow cores $T+1$, respectively.
+The authors call cores running $T$ threads fast cores and cores running $T+1$
+threads slow cores, respectively.
 
 For their implementation, they also assume to be running alongside other
 workloads on the same hardware.
@@ -398,16 +399,16 @@ and accesses the same data after a waiting period.
 If a cache line was used by other processes the data is gone and it takes
 longer to reload it from memory.
 
-The attack utilises the inclusiveness property of the CPU cache, to observe
-changes in core local L1 and L2 caches through the \gls{llc}.
-In inclusive caches each cache line of the L1 caches is present in L2 and each
-line present in L2 is also present in the L3 cache, as displayed in figure
-\ref{state:fig:inclusive}.
+The attack utilises the inclusiveness property of the CPU's \gls{llc}, to observe
+changes in core local L1 and L2 caches.
+The inclusive \gls{llc} contains each cache line present in any of the L1 and
+L2 caches, as shown in figure \ref{state:fig:inclusive}.
 %
 \begin{figure}[h]
   \setcapindent*{1em}
-  \begin{captionbeside}[]{Caches of \gls{intel} Haswell generation processores are inclusive.
-Each core contains 32KB D-, 32KB I-, 256KB L2, and 1.5MB L3 cache}[r]%
+  \begin{captionbeside}[]{The \gls{llc} of \gls{intel} Haswell generation
+    processores are inclusive.
+   Each core contains 32KB D-, 32KB I-, 256KB L2, and 1.5MB L3 cache}[r]%
   \includestandalone[mode=tex, width=0.65\textwidth]{images/inclusive_caches}
   \end{captionbeside}
   \label{state:fig:inclusive}

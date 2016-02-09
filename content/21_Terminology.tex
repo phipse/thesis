@@ -1,7 +1,7 @@
 \section{Terminology}
 \label{state:term}
 
-The following makes the reader familiar with the terminology of the field.
+In the following I make the reader familiar with the terminology of the field.
 Readers may continue with section \ref{state:related} and use this section
 as reference, if a term is ambiguous or unknown.
 
@@ -57,33 +57,51 @@ as reference, if a term is ambiguous or unknown.
     written back to memory.
 % todo device memory caches: fully-cached, not-cached, buffered
 
+  \item[Cache Coherence] Data must be kept consistent between different CPU
+    cache levels to provide a strict order of writes to the same memory
+    relocation.
+    Multi-socket x86 system employ a snooping protocol to keep caches coherent.
+    Each cache broadcasts every update over the address bus and all other
+    caches update their the status of their copy of the data.
+    Haswell generation processors use the MESI protocol to keep their data
+    coherent (\cite[2-22]{intel_optimization_manual_2015}).
+
   \item[Migration] The process of moving a thread from one core to another core
     is called migration.
     The cores do not necessarily need to be on the same chip, nor do they need
     to be in the same machine. Only the thread is migrated, cached data remains
     on the old core.
 
-  \item[Simultaneous Muli-Threading (SMT)] \gls{smt} is a technique to multiplex several hardware
-    threads on the same physical core.
+  \item[\Gls{eu}] EU refers to hardware components inside a
+    processor core which perform a computation; for example integer or
+    floating-point units.
+
+  \item[Hardware Thread] A hardware thread describes an architectural state
+    which consists among others, general-purpose, control, and machine state
+    registers.
+    The operating system multiplexes the software threads to the hardware
+    thread.
+    Only a hardware thread can access \gls{eu}s of the processor.
+
+  \item[Simultaneous Muli-Threading (SMT)] \gls{smt} is a technique to
+    multiplex several hardware threads on the same physical core.
     Thus, sharing all the core's resources -- integer and floating point units,
     caches, prefetcher, etc. -- among the core's hardware threads.
-    The goal is to improve the utilization of the execution units by increasing
+    The goal is to improve the utilization of the \gls{eu}s by increasing
     the number of instructions available to them.
     \gls{smt} transforms thread level parallelism to instruction level
     parallelism.
-    A \gls{smt}-core is referenced as logical core or hardware thread.
+    I reference a \gls{smt}-core as logical core.
 
   \item[\Gls{ht}] \gls{ht} is the \gls{intel} specific implementation of the
     \gls{smt}-concept.
 
-  \item[\Gls{cmp}  \& \Gls{smp}] Regarding cache coherence, \gls{cmp} and
-    \gls{smp} architectures are equal.
-    However, \gls{cmp} style CPUs consists of several CPU chips soldered on one
-    die.
-    This leads to physically separated caches, limiting the amount of cache
-    available to a single thread.
-    In contrast, modern \gls{smp} architectures share the \gls{llc} among all
-    cores on one die.
+  \item[\Gls{cmp}  \& \Gls{smp}]
+    A \Gls{smp} architecture describes a set of completely equal physical
+    cores sharing the \gls{llc}.
+    \Gls{cmp} architectures on the other hand, consist of two equal processors
+    soldered on one die, thus sharing nothing.
+    In both cases, all cores follow a cache-coherency protocol.
 
   \item[\Gls{isa}]\gls{isa} describes the set of hardware instructions executed
     by a processor.
@@ -92,14 +110,7 @@ as reference, if a term is ambiguous or unknown.
   \item[Wall clock time] Describes the time passed in real life.
   \item[Execution time] Describes the time a thread spends executing on a
     core.
-
-%  \item[Job] In scheduling theory a job is a specific unit of work.
-%    In real-time systems, the execution time of a job is normally known beforehand.
-%    \todo{difference between jobs and threads?}
-
   \item[Turnaround time] Time between submission of a job and its completion.
-
-%  \item[Makespan] Time to execute a set of jobs from beginning to end.
 
 
 

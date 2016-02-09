@@ -4,13 +4,12 @@
 
 \newacronym{cfs}{CFS}{Completely Fair Scheduler}
 
-Since Linux version 2.6.23, Linux uses the \gls{cfs}.
+Since Linux version 2.6.23, Linux uses the\gls{cfs} (\cite{linux_cfs_doc}).
 It aims at complete fairness, in regard to execution time provided to each task.
 To achieve fairness, it measures so called virtual runtime of each task and
 selects the task with the lowest account to run next.
 Internally, \gls{cfs} uses a red-black tree to sort the tasks regarding virtual
-runtime, where the leftmost task in the tree is the one with the least virtual
-runtime.
+runtime,
 
 \gls{cfs} also supports group scheduling to provide fairness between tasks with one
 thread and tasks with many threads.
@@ -46,7 +45,8 @@ for example, a physical core is a domain and the two hyper-threads running
 inside each constitute a group within this domain.
 On each level of the hierarchy, the current level is the domain and the lower
 hierarchy levels are groups.
-Each group within a domain is equivalent to other groups in the same domain.
+Each group within a domain is equivalent to other groups in the same domain
+(\cite{lwn_sched_domains}).
 
 \gls{cfs} does active load balancing only between groups in the same domain.
 Their load is compared and if imbalances are found, \gls{cfs} tries to migrate
