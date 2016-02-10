@@ -16,7 +16,7 @@ instructions retired.
 Additionally, a general purpose counter for \gls{llc} misses is used,
 leaving three general purpose counters per logical core for future use.
 
-\paragraph{Configuration \& Start}
+\paragraph{Configuration \& Start.}
 Each general purpose performance counter consists of a counter register and a
 configuration register.
 To specify the event the counter should observe, the \texttt{UMask} and
@@ -44,7 +44,7 @@ implementation still used a general purpose counter.
 Using this flag, each core's performance counters are configured and enabled to
 count unhalted core cycles, instructions retired, and \gls{llc} misses.
 
-\paragraph{Per Thread Accounting}
+\paragraph{Per Thread Accounting.}
 % todo find out, where and when thread perf counting is enabled?
 The \texttt{-loadcnt} flag only enables the hardware counters.
 The accounting must be enabled for each thread separately, by calling

@@ -8,7 +8,7 @@ In this section I describe the components the load balancer is built of.
 % todo chapter structure
 
 
-\paragraph{Load Balancer \& Task Proxies}
+\paragraph{Load Balancer \& Task Proxies.}
 To achieve good load balancing performance, the load balancer needs information
 about the underlying hardware, as well as the total amount of work in the system.
 It is also possible to build hierarchical load balancing, where
@@ -69,7 +69,7 @@ groups derived from the parameters.
 \end{figure}
 
 
-\paragraph{Thread Management}
+\paragraph{Thread Management.}
 All threads known to the load balancer are managed by the thread management.
 It creates an internal administration class for each thread and identifies a
 thread via its capability.
@@ -80,7 +80,7 @@ The management provides a consistent view on all managed, grouped, and threads
 not assigned to a group for other components and is also in charge of cleanup.
 
 
-\paragraph{CPU Topology \& Accounting}
+\paragraph{CPU Topology \& Accounting.}
 Besides the management of threads, the load balancer must also know the
 topology of the underlying hardware.
 The topology scanner analyses topology via CPUID and stores it in a
@@ -102,7 +102,7 @@ If no \gls{ht} is available, no further assignment is necessary.
 The availability of \gls{ht} is deduced from the topology enumeration results.
 
 
-\paragraph{Information Gathering \& Balancing}
+\paragraph{Information Gathering \& Balancing.}
 % each interval measure predict decide enforce cycle
 % measure: for each thread, gather performance counter values and execution
   % time from kernel and store in thread administration class.

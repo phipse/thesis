@@ -6,7 +6,7 @@ Fiasco.OC provides isolation and also real-time guarantees.
 In the following, I show how a requirement-aware thread-to-core mapping of a
 load balancer can support these guarantees.
 
-\paragraph{Security}
+\paragraph{Security.}
 As presented in section \ref{state:related}, even in virtualized environments
 the CPU cache is a valid side-channel to attack secret information.
 To reduce the channel's throughput, security-critical applications should share
@@ -37,7 +37,7 @@ This can be achieved by a per task configuration parameter identifying
 different groups by name.
 
 
-\paragraph{Real-Time}
+\paragraph{Real-Time.}
 A similar isolation guarantee is necessary for real-time tasks.
 Real-time tasks need predictable execution times.
 By using an exclusive core and cache, real-time tasks are less affected by the

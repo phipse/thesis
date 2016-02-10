@@ -24,7 +24,7 @@ A load balancer must address all these topics, to efficiently use available reso
 and to make repeated execution more predictable.
 \\
 
-\paragraph{Simultaneous Multi-Threading}
+\paragraph{Simultaneous Multi-Threading.}
 \citeauthor{snavely_symbiotic_2000} introduce the term \emph{symbiotic
 scheduling}, describing a scheduling technique
 for \gls{smt}-systems in \cite{snavely_symbiotic_2000}.
@@ -145,7 +145,7 @@ Together with hardware peformance counters, it might be possible to at least
 avoid bad co-schedules.
 \\
 
-\paragraph{Resource Congestion}
+\paragraph{Resource Congestion.}
 A different technique is presented by \citeauthor{banikazemi_pam_2008}
 regarding thread-to-core mappings on a chip multiprocessor system.
 In \cite{banikazemi_pam_2008} they present PAM: a performance/power-aware
@@ -284,7 +284,7 @@ which do not necessarily provide strictly separated cache groups.
 Therefore, the performance gain must be reevaluated.
 \\
 
-\paragraph{Communication}
+\paragraph{Communication.}
 Up to now, all research covered assumes independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming communicating, parallel applications.
@@ -324,7 +324,7 @@ Hence, reducing the time the slowest thread needs to reach the synchronization
 point improves overall application performance.
 \\
 
-\paragraph{Energy efficiency}
+\paragraph{Energy efficiency.}
 Performance is not a one dimensional value anymore.
 Performance per watt is the important measure on battery supported devices like
 notebooks or smartphones, and also in datacenters, as less watts mean less
@@ -356,7 +356,7 @@ of threads to cores, to reduce overall energy consumption.
 In section \ref{design:energy} different models will be discussed.
 \\
 
-\paragraph{Cache side-channel attacks}
+\paragraph{Cache side-channel attacks.}
 The CPU cache has proved to be a major side channel to deduce private
 cryptographic keys.
 Two different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.

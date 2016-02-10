@@ -11,7 +11,7 @@ In the following I explore kernel and user-land approaches to acquire this
 information statically and dynamically.
 
 
-\paragraph{Communication patterns}
+\paragraph{Communication Patterns.}
 I present two patterns of communication: compute-communicate and client-server.
 
 \citeauthor{hofmeyr_load_2010} (\cite{hofmeyr_load_2010}) assume a program running several threads, which
@@ -61,7 +61,7 @@ feature, I consider the approaches debugging features as well.
 % todo improve debugging feature argument. because of global ids are df,
 
 
-\paragraph{Communication Matrix}
+\paragraph{Communication Matrix.}
 Communication partners as well as the rate of communication during a time
 frame, are of interest.
 It is important to reduce the latency of connections with a high message
@@ -77,7 +77,7 @@ As not all threads will communicate with each other, usage of a sparse matrix
 will further lower the memory requirement.
 %A sparse matrix allocates only memory for fields, which are actually used.
 
-\paragraph{Map}
+\paragraph{Map.}
 Another approach can be a thread local map, which contains the global
 identifier of the communication partner and a counter.
 Each communication attempt increases the counter by one.
@@ -109,7 +109,7 @@ identifiers across all threads.
 However, it is possible to ask the kernel if two capabilities point to the
 same object.
 
-\paragraph{Cooperative communication capabilities}
+\paragraph{Cooperative Communication Capabilities.}
 To communicate with a partner, a thread needs a capability in its own
 capability table, pointing to a channel to the receiver.
 A communication channel to another task is called an \gls{ipc}-gate.
@@ -130,7 +130,7 @@ regular updates regarding the amount of messages exchanged.
 Together with the interface changes, this dynamic approach is deemed infeasible
 for this project.
 
-\paragraph{Configuration parameter}
+\paragraph{Configuration Parameter.}
 Less invasive, but static, is the usage of task specific configuration parameters.
 The two communication patterns I introduced at the beginning of this section
 yield two configuration parameters to represent the different behaviours.

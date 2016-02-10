@@ -11,7 +11,7 @@ This thesis provides a basis for further experiments, be it to improve
 isolation between task groups, expansion to multi-socket systems, or
 heterogeneous architectures.
 
-\paragraph{Precise Event Based Sampling}
+\paragraph{Precise Event Based Sampling.}
 PEBS allows the user to register an interrupt coupled to a specific counter.
 If the counter is increased by an event or overflows, the interrupt triggers
 and allows to read the hardware state from a prespecified memory region.
@@ -23,7 +23,7 @@ accounting code path of the kernel.
 The interrupt handler must then increase the account of the currently running
 thread.
 
-\paragraph{\gls{intel} Cache Allocation Technology (CAT)}
+\paragraph{\gls{intel} Cache Allocation Technology (CAT).}
 The most promising improvement is CAT (\cite{intel_cat}).
 It allows the user to partition the \gls{llc} or, more precisely to decide
 which core is able to write to which cache lines in the \gls{llc}.
@@ -47,7 +47,7 @@ shared hardware.
 However, this hardware feature is currently only present in Broadwell or later
 generation Xeon Server CPUs.
 
-\paragraph{\gls{intel} Cache Monitoring Technology (CMT)}
+\paragraph{\gls{intel} Cache Monitoring Technology (CMT).}
 CMT allows the monitoring of individual or a group of threads, applications, or
 virtual machines by using a resource monitoring ID (RMID)
 \footnote{
@@ -62,7 +62,7 @@ displayed by CMT.
 However, this feature is only available in Haswell or later generation
 Xeon Server CPUs.
 
-\paragraph{Multi-socket systems}
+\paragraph{Multi-Socket Systems.}
 Besides CAT, usage of multi-socket systems can also prevent PRIME+PROBE attacks
 or provide a real-time task group with an environment with less interferences.
 Currently, the load balancer does not support multiple sockets.
@@ -70,7 +70,7 @@ First, the CPUID based topology analysis must be extended to support multiple
 packages and second, the CoreAccounting must be adapted to use this new
 topology.
 
-\paragraph{Heterogeneous Architectures}
+\paragraph{Heterogeneous Architectures.}
 A more complex extension is the support for heterogeneous architectures, like
 \gls{arm} big.LITTLE.
 \citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a
@@ -88,7 +88,7 @@ If performance per watt is important, is it better to run \texttt{distr} groups
 constantly on the little core type?
 
 
-\paragraph{Behaviour Categories}
+\paragraph{Behaviour Categories.}
 An approach I did not explore during this work are behaviour categories.
 Consider four categories: very high \gls{mpc}, high \gls{mpc}, low \gls{mpc},
 very low \gls{mpc}.
@@ -100,7 +100,7 @@ into account and categorize the thread regarding its general behaviour.
 I also expect behaviour categories to help decide on difficult questions
 arising from heterogeneous architectures.
 
-\paragraph{Hierarchy of Load Balancers}
+\paragraph{Hierarchy of Load Balancers.}
 I discuss hierarchical load balancing in chapter \ref{design:balancer} and
 decided to implement a central component.
 The logic in the central component does not allow to implement a
@@ -113,7 +113,7 @@ evaluate the performance differences compared to the central load balancing I
 present in this work.
 
 \begin{comment}
-\paragraph{Workload-aware balancing}
+\paragraph{Workload-Aware Balancing.}
 The modular approach allows quick replacement and testing of different
 algorithms in the various components.
 If very specific workloads run on the system, tuned balancing algorithms for

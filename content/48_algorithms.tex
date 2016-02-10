@@ -16,7 +16,7 @@ load balancing algorithm.
 The simple load distribution algorithm serves as baseline to show the benefit of
 behaviour analysis.
 
-\paragraph{SMT distribution}
+\paragraph{SMT distribution.}
 After the physical core assignment is done, each physical core internally
 distributes its set of assigned threads to the hyper-threads.
 Different options arise: simple round robin, by \gls{mpc}, by \gls{instpc}, or
@@ -30,7 +30,7 @@ while the \gls{mpc} heavy threads wait for memory.
 Superiority of one of these options above the others must be empirically evaluated.
 
 
-\paragraph{Two dimensional balance}
+\paragraph{Two Dimensional Balance.}
 What is balance? This question takes the most effort to answer, because it
 depends on several factors: isolation groups reduce the core count;
 communication groups are excluded from load balancing;
@@ -38,7 +38,7 @@ and only threads without further attachments are considered for migration.
 So balancing works on top of the placement of communication groups, which is
 possibly already imbalanced.
 The load balancer must even out these imbalances and be aware of cache usage of
-these threads, too.
+these threads as well.
 Also, if only parts of the system are managed by the load balancing service,
 the base load needs to be considered during placement.
 All this leads to a difficult environment for the load balancer and complicates
@@ -78,7 +78,7 @@ If no such thread is found, the thread generating the next higher amount of
 load is migrated.
 
 
-\paragraph{MPC-IPC-Placement}
+\paragraph{MPC-IPC-Placement.}
 This algorithm creates two copies of the list of all threads and sorts one copy
 by \gls{mpc} and one by \gls{instpc}.
 The first item of the \gls{mpc}-list is deleted from the
@@ -100,14 +100,14 @@ A possible improvement is to assign the remaining threads by
 exexcution time instead of \gls{instpc} and \gls{mpc}.
 
 
-\paragraph{First-Last-Placement}
+\paragraph{First-Last-Placement.}
 The list of threads without group affiliation is sorted by \gls{mpc}.
 Then, the algorithm assigns the first and the last element of the list to the
 same core.
 The core is selected based on \gls{mpc}.
 
 
-\paragraph{Group placements}
+\paragraph{Group placements.}
 % todo on what basis is first last placement used?
 If the group is of type \texttt{distr}, first-last-placement is used for its
 members.
@@ -122,7 +122,7 @@ The others threads are distributed by first last placement.
 all threads of these groups are assigned to the same core.
 
 
-\paragraph{Simple Load Distribution}
+\paragraph{Simple Load Distribution.}
 The algorithm assigns incoming threads to the core with the least load.
 If several cores have the same load, e.g. in an overload scenario, the
 algorithm assigns the thread to the core with the least threads.
@@ -136,7 +136,7 @@ To prove that behaviour analysis brings any benefit, it has to beat
 this simple algorithm.
 
 
-\paragraph{Missing logic for shared memory}
+\paragraph{Missing Logic for Shared Memory.}
 \todo{where is a better place for this?}
 Tasks running several threads which use shared memory to communicate will have
 a worse performance using these algorithms.
