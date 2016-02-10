@@ -1,0 +1,70 @@
+% vim:set ft=tex:
+\section{Measurements}
+\label{eval:measurements}
+
+I measure each of the four SPEC benchmarks twice; once running alone in the
+system and once, running under load in parallel with the three other benchmarks.
+The solo execution time of each application serves as baseline to compare the
+performance of different algorithms in a low load situation, and to enable the
+computation of the slowdown when run in parallel with other applications.
+The slowdown of the computation time is computed for the best case and worst
+case, the lower and upper quartile, and the median.
+The result provides a complete picture of the algorithms' performance.
+
+I also compare the algorithms using box plots to visualize
+the runtime for the major part of the measurements together with outliers.
+However, due to the nature of the box plots, data points marked as outlier need
+to be taken with a grain of salt. 
+Box plots have six components: median, lower and upper quartile, lower and
+upper whisker, and outliers.
+Median and lower and upper quartile are actual values present in the data set,
+and mark 50\%, 25\%, and 75\% of the sorted data.
+The distance between the lower and upper quartile values is the \emph{inter
+quartile distance} or IQD.
+The lower and upper whiskers are computed as follows:
+%
+\begin{align*}
+  \text{lower whisker} &= \text{lower quartile} - 1.5 * \text{IQD}\\
+  %
+  \text{upper whisker} &= \text{upper quartile} + 1.5 * \text{IQD}
+\end{align*}
+%
+The actual value of the lower whisker is the value of the next data point,
+which is higher than the computed value.
+For the upper whisker its the next lower value data point.
+Box plots consider every value beyond the value of the lower or upper whisker
+as outlier.
+
+Now the issue arises, if the inter quartile distance is low and therefore,
+the whisker values are close to the respective quartile value, which leads to
+lots of data points to be visualized as outliers.
+
+
+% todo SMT measurement issue: need micro benchmark to determine increase in
+% application performance, due to smt balancing decisions.
+
+\begin{comment}
+\begin{figure}[h!]
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/finalPlots/gcc_simple_balancer.pdf}
+    \caption{SPEC GCC}
+    \label{baseline:gcc}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/finalPlots/gamess_simple_balancer.pdf}
+    \caption{SPEC GAMESS}
+    \label{baseline:gamess}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/finalPlots/lbm_simple_balancer.pdf}
+    \caption{SPEC LBM}
+    \label{baseline:lbm}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=\textwidth]{images/finalPlots/mcf_simple_balancer.pdf}
+    \caption{SPEC MCF}
+    \label{baseline:mcf}
+  \end{subfigure}
+  \caption{Distribution of runtimes with simple balancer}
+\end{figure}
+\end{comment}
