@@ -60,6 +60,9 @@ For each application I measure the time it takes to start the application,
 execute it until completion, and exit it again.
 I repeat the measurement one hundred times, or if several benchmarks run
 concurrently, until the slowest benchmark has repeated one hundred times.
+Consequently, fast benchmarks -- 403.gcc and  416.gamess -- provide more
+measurements than slow benchmarks -- 429.mcf and 470.lbm.
+
 On L4Re, I use the Ned startup script to measure and output the times for
 each application.
 On Linux, I use a ruby script to measure the durations and to store them in a
@@ -69,7 +72,7 @@ Furthermore, I do not use the time stamp counter (TSC), as this counter depends
 on the core the time stamp is taken on.
 Instead I use \texttt{clock\_gettime(CLOCK\_MONOTONIC)} on Linux and
 \texttt{l4\_kip\_clock(l4re\_kip())} on L4Re.
- 
+
 
 \paragraph{64bit Issue.}
 Running the benchmarks on 64bit, raises an issue in the memory subsystem of L4Re.
