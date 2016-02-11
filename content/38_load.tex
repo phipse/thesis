@@ -42,7 +42,7 @@ imbalanced.
 
 A third measure is \gls{instpc}.
 It shows, how much instructions a thread was able to perform during its
-runtime.
+run-time.
 But as with \gls{mpc} this number is different for each thread.
 CPU bound workloads tend to have a high number of \gls{instpc},
 whereas memory bound workloads tend to have a much lower number, due to cache
@@ -50,7 +50,7 @@ misses and waiting for memory.
 Also, instructions are not equally costly, which leads
 \citeauthor{snavely_symbiotic_2000} (\cite{snavely_symbiotic_2000}) to their
 weighted instruction measure.
-But at runtime it is not possible to pinpoint the weight of the current
+But at run-time it is not possible to pinpoint the weight of the current
 instruction.
 
 Balancing only by \gls{instpc} will lead to a similarly unfair distribution of
@@ -89,7 +89,7 @@ Cache-heavy threads, determined by last-level cache misses per cycle, can have
 two reasons for a high miss count: first, they reuse little memory and use new
 memory in a not prefetchable manner, otherwise the prefetcher would not miss;
 second, the cache working set is large and parts of the working set were
-evicted during the runtime of other programs.
+evicted during the run-time of other programs.
 Migrating the former kind does not hurt the program much, migrating the latter
 kind however is costly and should be avoided.
 

@@ -76,7 +76,7 @@ Instead I use \texttt{clock\_gettime(CLOCK\_MONOTONIC)} on Linux and
 
 \paragraph{64bit Issue.}
 Running the benchmarks on 64bit, raises an issue in the memory subsystem of L4Re.
-Memory allocation and deallocation increases the runtime of 403.gcc by several
+Memory allocation and deallocation increases the run-time of 403.gcc by several
 seconds for each repetition, when it runs alone in the system.
 It is irrelevant if a simple load distribution, space-time-balancing,
 or no load balancing runs the benchmark.
@@ -86,20 +86,20 @@ The L4Re internal memory management should now merge free chunks of memory.
 However, the size of the list of free memory areas increases constantly and
 shows allocated pages in between, preventing compaction.
 I suspect the time spent to search for possible merges and to iterate through
-the list to be the cause for the increase in runtime.
+the list to be the cause for the increase in run-time.
 
-This issue does not affect the runtime of 416.games, but the other memory-bound
+This issue does not affect the run-time of 416.games, but the other memory-bound
 benchmarks are affected as well.
 429.mcf shows slight but constant increase with each run.
 429.mcf allocates all memory at the beginning of the benchmark, so the memory
 subsystem is not used constantly, as is the case for 403.gcc.
 
-When 416.gamess, 429.mcf, and 470.lbm run together on L4Re the runtimes
+When 416.gamess, 429.mcf, and 470.lbm run together on L4Re the run-times
 increase occasionally between 2.5 and 4 times.
 This increase cannot solely be explained by bad load balancing decisions.
-Also, the average runtime for the first 50 iterations of 470.lbm is 60 seconds
-lower than the average runtime of the second 50 iterations.
-Minimum, maximum and median runtime show a similar difference.
+Also, the average run-time for the first 50 iterations of 470.lbm is 60 seconds
+lower than the average run-time of the second 50 iterations.
+Minimum, maximum and median run-time show a similar difference.
 
 Providing a different memory allocator to each task created via the ned script,
 did not eliminate this problem.

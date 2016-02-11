@@ -243,13 +243,13 @@ offline.
 This order is used to split the application set into two halfs: above and below
 average miss rate.
 Each core runs all threads of one application from each half.
-If the miss rate changes at runtime, the order changes, which could impair
+If the miss rate changes at run-time, the order changes, which could impair
 the performance.
 However, \citeauthor{zhuravlev_addressing_2010} observe only minor place
 switching, which they do not expect to harm the performance.
 
 DIO on the other hand, constantly measures the applications miss rate and is
-therefore able to react to phase changes during runtime.
+therefore able to react to phase changes during run-time.
 The algorithm collects data every $10^9$ cycles and uses a running average to
 sort the applications.
 Besides this it acts like DI.

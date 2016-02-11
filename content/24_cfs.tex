@@ -6,37 +6,38 @@
 
 Since Linux version 2.6.23, Linux uses the\gls{cfs} (\cite{linux_cfs_doc}).
 It aims at complete fairness, in regard to execution time provided to each task.
-To achieve fairness, it measures so called virtual runtime of each task and
+To achieve fairness, it measures so called virtual run-time of each task and
 selects the task with the lowest account to run next.
 Internally, \gls{cfs} uses a red-black tree to sort the tasks regarding virtual
-runtime,
+run-time,
 
 \gls{cfs} also supports group scheduling to provide fairness between tasks with one
 thread and tasks with many threads.
 If a task spawns many threads, they all execute on the account of the main
 task, preventing one task to acquire more execution time than others.
 
-Conceptually, \gls{cfs} runs the currently selected task until the virtual runtime is
-higher than the virtual runtime of any other task.
+Conceptually, \gls{cfs} runs the currently selected task until the virtual run-time is
+higher than the virtual run-time of any other task.
 Then a task switch occurs.
 As this would lead to constant task switching, two measures are used to
-counteract this: Target scheduling latency and minimum task runtime granularity.
+counteract this: \emph{target scheduling latency} (TSL) and \emph{minimum task
+run-time granularity}.
 
-The target scheduling latency (TSL) describes an amount of time shared between a
+The target scheduling latency describes an amount of time shared between a
 number of tasks.
 If two tasks are runnable, and the TSL is 20ms, then each task runs for 10ms.
 However, if more tasks become runnable, the amount of time per task shrinks and
 eventually the switching overhead is higher than the time a task spends
 executing.
-To prevent this situation, the minimum task runtime granularity defines a
+To prevent this situation, the minimum task run-time granularity defines a
 minimum amount of time a task needs to execute.
 As the number of tasks grows, the TSL increases to be able to schedule each
-runnable task once for the minimum task runtime.
+runnable task once for the minimum task run-time.
 
-Priorities are accommodated by weighting the virtual runtime accounted to each
+Priorities are accommodated by weighting the virtual run-time accounted to each
 task depending on the priority level.
-The virtual runtime of a high priority task increases slower than the virtual
-runtime of a low priority task, leading to more actual execution time for the
+The virtual run-time of a high priority task increases slower than the virtual
+run-time of a low priority task, leading to more actual execution time for the
 high priority task.
 
 \paragraph{Domains, Groups, \& Load Balancing.}
