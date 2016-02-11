@@ -39,17 +39,18 @@ threads to other cores.
 
 \paragraph{Algorithms.}
 I will measure the performance of four different algorithms.
-The simple load distribution algorithms introduced in \ref{impl:algos},
+The simple load distribution (SLD) algorithms introduced in \ref{impl:algos},
 distributes each new thread to the core with the largest amount of idle time.
 It does no further migrations.
 
-The space-time-balance algorithm, also introduced in \ref{impl:algos},
+The space-time-balance (STB) algorithm, also introduced in \ref{impl:algos},
 observes temporal and spatial thread behaviour.
 It distributes the threads with the highest memory usage to different caches
 and balances the rest depending on their execution time.
 
 The third algorithm is a small adaption of the space-time-balance algorithm.
-It just omits the spatial balancing part and only performs temporal balancing.
+It just omits the spatial balancing part and only performs temporal balancing
+(TB).
 
 The fourth and last algorithm different from the above, as it runs in
 conjunction with the scheduler at kernel level; it is Linux's \gls{cfs}.
