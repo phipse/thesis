@@ -8,7 +8,7 @@ system environment, the benchmarks run in.
 I use four applications from the \emph{SPEC CPU2006} benchmarking
 suit\footnote{\url{http://spec.org/cpu2006/}}:
 namely, 403.gcc, 416.gamess, 429.mcf, and 470.lbm.
-They will display the algorithms performance under load.
+They display the algorithm's performance under load.
 
 416.gamess is a floating point benchmark written in Fortran executing a quantum
 chemistry simulation.
@@ -22,7 +22,7 @@ It generates a high amount of \gls{mpc}, therefore it is memory-bound.
 429.mcf generates the highest number of \gls{mpc}.
 It computes a combinatorial optimization using the integer units.
 The benchmark set consists of two compute-bound and two memory-bound
-benchmarks, with one integer and one floating point benchmark each.
+benchmarks, with one integer and one floating point benchmark within each group.
 
 Besides the SPEC benchmarks, I employ two other applications to proof the
 group configuration awareness of the load balancer one the one side, and the
@@ -38,27 +38,28 @@ threads to other cores.
 
 
 \paragraph{Algorithms.}
-I will measure the performance of four different algorithms.
-The simple load distribution (SLD) algorithms introduced in \ref{impl:algos},
-distributes each new thread to the core with the largest amount of idle time.
+I will measure the performance of four different algorithms I introduce in
+section \ref{impl:algos}.
+The simple load distribution (SLD) algorithm distributes each new thread to the
+core with the largest amount of idle time.
 It does no further migrations.
 
-The space-time-balance (STB) algorithm, also introduced in \ref{impl:algos},
-observes temporal and spatial thread behaviour.
+The space-time-balance (STB) algorithm observes temporal and spatial thread
+behaviour.
 It distributes the threads with the highest memory usage to different caches
-and balances the rest depending on their execution time.
+and balances the rest depending on their consumed execution time during the
+last interval.
 
 The third algorithm is a small adaption of the space-time-balance algorithm.
-It just omits the spatial balancing part and only performs temporal balancing
-(TB).
+It omits the spatial balancing and solely performs temporal balancing (TB).
 
-The fourth and last algorithm different from the above, as it runs in
-conjunction with the scheduler at kernel level; it is Linux's \gls{cfs}.
+The fourth and last algorithm differs from the above, as it runs in
+conjunction with the kernel-level scheduler; it is Linux's \gls{cfs}.
 
 
 \paragraph{Time Measurement.}
 For each application I measure the time it takes to start the application,
-execute it until completion, and exit it again.
+execute all threads to completion, and exit.
 I repeat the measurement one hundred times, or if several benchmarks run
 concurrently, until the slowest benchmark has repeated one hundred times.
 Consequently, fast benchmarks -- 403.gcc and  416.gamess -- provide more
@@ -78,18 +79,19 @@ Instead I use \texttt{clock\_gettime(CLOCK\_MONOTONIC)} on Linux and
 \paragraph{64bit Issue.}
 Running the benchmarks on 64bit, raises an issue in the memory subsystem of L4Re.
 Memory allocation and deallocation increases the run-time of 403.gcc by several
-seconds for each repetition, when it runs alone in the system.
-It is irrelevant if a simple load distribution, space-time-balancing,
-or no load balancing runs the benchmark.
-The task is run to completion and then restarted, so I expect each allocated
+seconds for each repetition.
+The load balancing algorithm is not the cause for this behaviour, as it also
+presents itself if no load balancing is done.
+The task runs to completion and then restarts, so I expect each allocated
 page to be free after completion.
 The L4Re internal memory management should now merge free chunks of memory.
 However, the size of the list of free memory areas increases constantly and
 shows allocated pages in between, preventing compaction.
-I suspect the time spent to search for possible merges and to iterate through
-the list to be the cause for the increase in run-time.
+I suspect the time spent iterating through the growing free list to search for
+possible compactions or chunk sizes fitting a memory request to be the cause
+for the increase in run-time.
 
-This issue does not affect the run-time of 416.games, but the other memory-bound
+This issue does not visibly affect the run-time of 416.games, but the other memory-bound
 benchmarks are affected as well.
 429.mcf shows slight but constant increase with each run.
 429.mcf allocates all memory at the beginning of the benchmark, so the memory
@@ -102,7 +104,7 @@ Also, the average run-time for the first 50 iterations of 470.lbm is 60 seconds
 lower than the average run-time of the second 50 iterations.
 Minimum, maximum and median run-time show a similar difference.
 
-Providing a different memory allocator to each task created via the ned script,
+Providing a different memory allocator to each task via the ned script,
 did not eliminate this problem.
 
 As this issue did not present itself for 32bit, all benchmarks are executed
