@@ -9,12 +9,12 @@ The \gls{ht} abstraction achieves two things: the load balancer compares the
 performance of physically equal units of hardware, and it becomes independent
 of the actual presence of \gls{ht}.
 
-The load balancing service provides isolation for application with real-time
-or security needs.
+The load balancing service provides isolation for applications with real-time
+or security requirements.
 Also, I present different approaches to gain knowledge about communication
 relationships within a task or between a group of tasks.
 
-The discussion about an energy model leads to the conclusion, that on x86
+The review of energy models leads to the conclusion, that on x86
 processors a race-to-idle scheme without usage of turbo-boost features is the
 most promising model.
 A reduction in computation time leads to larger idle periods for the different
@@ -27,8 +27,8 @@ Measurement and prediction of thread behaviour provides the knowledge to decide
 on balancing options and to enforce this decision.
 
 The chapter finishes with a discussion about different definitions for load
-and depending on the character of the load, which system state is considered to
-be in balance.
+and depending on the character of the load, which system states are considered
+to be in balance.
 \\
 
 The following chapter presents changes to the Fiasco.OC kernel to provide
