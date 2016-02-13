@@ -21,55 +21,6 @@
 \usepackage[table]{xcolor}
 \usepackage[hyphens]{url}
 
-%todo set math font with Fractions=On
-\defaultfontfeatures{Ligatures=TeX}
-%\setmainfont[
-%  Path = /home/phipse/.local/share/fonts/Roboto/,
-%  Extension = .ttf,
-%  BoldFont = Roboto-Regular,
-%  ItalicFont = Roboto-LightItalic,
-%  BoldItalicFont = Roboto-Italic,
-%] {Roboto-Light}
-
-%\setmainfont[
-%  Path = /home/phipse/.local/share/fonts/droidserif/,
-%  Extension = .ttf,
-%  BoldFont = DroidSerif-Bold,
-%  ItalicFont = DroidSerif-Italic,
-%  BoldItalicFont = DroidSerif-BoldItalic,
-%] {DroidSerif}
-
-%\setmainfont[
-%  Path = /home/phipse/.local/share/fonts/exo2/,
-%  Extension = .ttf,
-%  BoldFont = Exo2-Bold,
-%  ItalicFont = Exo2-Italic,
-%  BoldItalicFont = Exo2-BoldItalic
-%] {Exo2-Regular}
-
-%\setmainfont[
-%  Path = /home/phipse/.local/share/fonts/GFS_NEOHELLENIC/GFS_NEOHELLENIC_TT/,
-%  Extension = .ttf,
-%  BoldFont = GFSNeohellenicBold,
-%  ItalicFont = GFSNeohellenicItalic,
-%  BoldItalicFont = GFSNeohellenicBoldItalic
-%] {GFSNeohellenic}
-
-%\setsansfont[
-%  Path = /home/phipse/.local/share/fonts/sourcesanspro/,
-%  Extension = .ttf,
-%  BoldFont = SourceSansPro-Bold,
-%  ItalicFont = SourceSansPro-Italic,
-%  BoldItalicFont = SourceSansPro-BoldItalic,
-%] {SourceSansPro-Regular}
-
-\setsansfont[
-  Path = /home/phipse/.local/share/fonts/Roboto/,
-  Extension = .ttf,
-  BoldFont = Roboto-Bold,
-  ItalicFont = Roboto-Italic,
-  BoldItalicFont = Roboto-BoldItalic,
-] {Roboto-Regular}
 
 \usepackage[pdftex,
 citebordercolor={0.75 0.75 1},
@@ -91,7 +42,7 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 \input{preamble/style.tex}
 \input{preamble/newcommands.tex}
 
-\makeglossaries
+%\makeglossaries
 
 % If you know when you will hand in your thesis, enter the date here.
 %\date{30. April 2009}
@@ -116,7 +67,8 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 \end{abstract}
 
 \cleardoublepage
-
+% reduce line spacing for toc
+\renewcommand{\baselinestretch}{1.05}
 \tableofcontents
 
 \cleardoublepage
@@ -131,6 +83,9 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 \listoftables
 \cleardoublepage
 
+% reset line spacing to value defined in preamble/style.tex
+\renewcommand{\baselinestretch}{1.2}
+
 \pagenumbering{arabic}
 \input{content/10_introduction.tex}
 \input{content/20_state.tex}
@@ -142,11 +97,11 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 
 \appendix
 
-\addchap{Glossar}
-
-\printglossaries
-\printglossary[style=altlist]
-\printglossary[type=\acronymtype,style=long]
+%\addchap{Glossar}
+%
+%\printglossaries
+%\printglossary[style=altlist]
+%\printglossary[type=\acronymtype,style=long]
 
 \printbibliography
 \iffalse
