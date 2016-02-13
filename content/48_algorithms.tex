@@ -10,11 +10,11 @@
 % missing shared memory
 
 The load balancer uses different algorithms for SMT placement, assignment of
-groups and balancing of threads without group affiliation.
-I present algorithms for these three places and also a simple behaviour-unaware
+groups, and balancing of threads without group affiliation.
+I present algorithms for these three placements and also a simple behaviour-unaware
 load balancing algorithm.
-The simple load distribution algorithm serves as baseline to show the benefit of
-behaviour analysis.
+The simple load distribution algorithm serves as a baseline to demonstrate the
+benefits of behaviour analysis.
 
 \paragraph{SMT distribution.}
 After the physical core assignment is done, each physical core internally
@@ -30,11 +30,12 @@ while the \gls{mpc} heavy threads wait for memory.
 Superiority of one of these options above the others must be empirically evaluated.
 
 
-\paragraph{Two Dimensional Balance.}
-What is balance? This question takes the most effort to answer, because it
+\paragraph{Two-Dimensional Balance.}
+What is balance from a implementation point of view?
+This question takes the most effort to answer, because it
 depends on several factors: isolation groups reduce the core count;
 communication groups are excluded from load balancing;
-and only threads without further attachments are considered for migration.
+and only threads without further affiliation are considered for migration.
 So balancing works on top of the placement of communication groups, which is
 possibly already imbalanced.
 The load balancer must even out these imbalances and be aware of cache usage of
@@ -44,36 +45,34 @@ the base load needs to be considered during placement.
 All this leads to a difficult environment for the load balancer and complicates
 the test for the overall system balance.
 
-The core accounting needs to keep track of unaccounted load, accounted but
-not migratable load, and the migratable load.
+The core accounting needs to keep track of unaccounted load, accounted load by
+not migratable threads, and accounted load by migratible threads.
 \Gls{mpc} measurements are only accessible for managed threads, meaning not
-migratable load and migratable load.
+threads within groups and threads without group.
 Therefore, \gls{mpc} aware placement and balancing depends on these two
 groups.
 \\
 
-As mentioned in section \ref{design:load}, balance is two dimensional.
+As mentioned in section \ref{design:load}, balance is two-dimensional.
 Spatial balance takes priority over temporal balance, to allow better cache usage.
 But at the end, temporal balance is equally important.
 
 A simple spatial balance metric is the following: Sort the migratable threads by
 \gls{mpc} and assign the top four to one core each.
-The number of threads chosen depends on the number of available cores.
 
-To adapt preexisting imbalances regarding \gls{mpc},  the number of chosen
+To adapt to preexisting imbalances regarding \gls{mpc},  the number of chosen
 threads can vary; for example if the difference between the core with the
 highest \gls{mpc} and the core with the second highest \gls{mpc} is larger than
 the \gls{mpc} heaviest thread, assigning another thread to it makes no sense.
 
-Temporal balancing is different, as it has to assign all remaining threads.
-Thereby, the absolute core load is relevant, not only the load of the managed
-threads.
+Temporal balancing is different, as it has to assign all remaining threads and
+consider the absolute core load, not only the load of the managed threads.
 Sorting the threads by load, and assigning them one by one to the
 core with the least load, leads to a balanced system.
 
-When imbalances in time are detected, the temporal balancer computes the difference
-and searches for a thread to migrate.
-Thereby, the ideal thread generates load that accounts for half the difference.
+When imbalances in time are detected, the temporal balancer computes the
+difference in consumed CPU time and searches for a thread to migrate.
+Ideally, the thread generates load that accounts for half of the difference.
 If no such thread is found, the thread generating the next higher amount of
 load is migrated.
 
@@ -83,29 +82,31 @@ This algorithm creates two copies of the list of all threads and sorts one copy
 by \gls{mpc} and one by \gls{instpc}.
 The first item of the \gls{mpc}-list is deleted from the
 \gls{instpc}-list.
-Then, the algorithm delets the first item of the  \gls{instpc}-list from the
+Then, the algorithm deletes the first item of the  \gls{instpc}-list from the
 \gls{mpc}-list.
 Both lists are processed item by item, until the two lists are disjoint.
 
 As long as both lists contain more threads than cores available, each core
 is assigned one thread from each list.
-If there are less threads than available cores, the algorithm assigns the
-remaining thread to the core with the least \gls{mpc} and \gls{instpc},
-respectively.
+If the number of threads left in both lists is less than the number of
+available cores,
+the algorithm assigns these remaining thread to the core with the least
+\gls{mpc} and \gls{instpc}, respectively, to keep the number of threads per
+core even.
 
-I assume this works rather well for SMT, as each physical core gets a mixed
-workload.
-However, this approach does not account for execution time.
-A possible improvement is to assign the remaining threads by
-exexcution time instead of \gls{instpc} and \gls{mpc}.
+The performance of this approach must be evaluated.
+However, this approach does not account for execution time, therefore a
+possible improvement is to assign the remaining threads by execution time
+instead of \gls{instpc} and \gls{mpc}.
 
 
 \paragraph{First-Last-Placement.}
 The list of threads without group affiliation is sorted by \gls{mpc}.
 Then, the algorithm assigns the first and the last element of the list to the
 same core.
-The core is selected based on \gls{mpc}.
+The algorithm selects the core with the least amount of \gls{mpc}.
 
+% todo revise above and below paragraph
 
 \paragraph{Group placements.}
 % todo on what basis is first last placement used?
@@ -125,14 +126,14 @@ all threads of these groups are assigned to the same core.
 \paragraph{Simple Load Distribution.}
 The algorithm assigns incoming threads to the core with the least load.
 If several cores have the same load, e.g. in an overload scenario, the
-algorithm assigns the thread to the core with the least threads.
+algorithm assigns the thread to one of the cores with the least threads.
 
 A core's load is determined by the amount of idle time since the last
 placement.
-When threads leave, the system becomes unbalanced, but no extra balancing
-actions are taken.
+When threads leave, the system becomes unbalanced, but the algorithm does not
+take extra balancing actions.
 
-To prove that behaviour analysis brings any benefit, it has to beat
+To prove that behaviour analysis brings any benefits, it has to beat
 this simple algorithm.
 
 
