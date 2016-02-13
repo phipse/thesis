@@ -50,14 +50,14 @@ The \texttt{-loadcnt} flag only enables the hardware counters.
 The accounting must be enabled for each thread separately, by calling
 \texttt{l4\_thread\_perf\_reset}, which also resets the counter value to zero.
 Only then, Fiasco.OC adds the counter values on each context switch to the
-thread's account and resets the hardware counter to zero for the next thread.
+thread's account and resets the hardware counter to zero for the switch-to thread.
 
-I extended the \texttt{L4::Thread} interface to access the thread's performance
+I extend the \texttt{L4::Thread} interface to access the thread's performance
 account.
 \texttt{perf\_read} provides the interface to retrieve a thread's current
 account.
-A \texttt{perf\_counter\_read\_t} struct must be passed by reference, which
-is filled with the values provided by the kernel.
+A \texttt{perf\_counter\_read\_t} struct passed by reference is filled with the
+values provided by the kernel.
 
 Listing \ref{impl:lst:perfcntrinterface} shows the user-land implementation of
 this interface.
@@ -69,18 +69,15 @@ this interface.
 enum L4_thread_ops {
   ...
   L4_THREAD_PERF_READ_OP	      = 10UL,
-  /**< Read thread's performance counter */
   L4_THREAD_PERF_RESET_OP	      =	11UL,
-  /**< Reset thread's performance counter */
   ...
 }
 
-struct perf_counter_read_t {
+typedef struct perf_counter_read_t {
   l4_uint64_t core_cycle_cnt;
   l4_uint64_t instr_retired_cnt;
   l4_uint64_t llc_miss_cnt;
-};
-typedef struct perf_counter_read_t perf_counter_read_t;
+} perf_counter_read_t;
 
 L4_INLINE l4_msgtag_t
 l4_thread_perf_read(l4_cap_idx_t thread,
