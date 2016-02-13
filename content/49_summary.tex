@@ -5,16 +5,16 @@
 Implementation characteristics of the prototype load balancing service are the
 main topic of this chapter.
 The kernel provides per thread accounting on a set of predetermined hardware
-performance counters and defines an interface to access a threads account from
+performance counters and defines an interface to access a thread's account from
 user land.
 
-These measurements are a main information source for the load balancer.
+These measurements are the main information source for the load balancer.
 The other information source is the static task configuration defining
 isolation and communication groups.
 The system designer provides these information via the task startup script to
 the load balancer.
 
-This chapter finishes with a discussion about different algorithms for the
+This chapter finished with a discussion about different algorithms for the
 \gls{smt} abstraction, group placement, and balancing in space and time.
 Also, I present a simple load distribution algorithm to provide a baseline for
 evaluation.

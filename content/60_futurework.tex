@@ -11,25 +11,25 @@ This thesis provides a basis for further experiments, be it to improve
 isolation between task groups, expansion to multi-socket systems, or
 heterogeneous architectures.
 
-\paragraph{Precise Event Based Sampling.}
+\paragraph{Precise Event Based Sampling (PEBS).}
 PEBS allows the user to register an interrupt coupled to a specific counter.
 If the counter is increased by an event or overflows, the interrupt triggers
 and allows to read the hardware state from a prespecified memory region.
-This feature helps a developer to pinpoint, for example memory accesses which
+This feature helps a developer to pinpoint, for example, memory accesses which
 resulted in a cache miss.
 
 PEBS overflow interrupt could eliminate the overflow check in the thread
 accounting code path of the kernel.
 The interrupt handler must then increase the account of the currently running
-thread.
+thread by the maximum counter value and clear the overflow flag.
 
 \paragraph{\gls{intel} Cache Allocation Technology (CAT).}
 The most promising improvement is CAT (\cite{intel_cat}).
 It allows the user to partition the \gls{llc} or, more precisely to decide
 which core is able to write to which cache lines in the \gls{llc}.
-However, the core can still read the whole cache.
+However, the core can still read the entire cache.
 This feature allows to configure the system, such that security or latency
-critical applications run on a exclusive core, which uses a portion of the
+critical applications run on an exclusive core, which uses a portion of the
 \gls{llc} no other core has write access to.
 Only the core with write access to this memory area can evict cache lines.
 
@@ -41,18 +41,17 @@ Also, real-time applications can now rely on a set of cache lines being
 present, if the application does not evict the lines itself.
 
 The load balancer I present in  this thesis can now not only provide temporal
-separation, with the help of CAT it can also provide spatial isolation on
+separation, but with the help of CAT it can also provide spatial isolation on
 shared hardware.
 
 However, this hardware feature is currently only present in Broadwell or later
-generation Xeon Server CPUs.
+generation Xeon\texttrademark{} server CPUs.
 
 \paragraph{\gls{intel} Cache Monitoring Technology (CMT).}
 CMT allows the monitoring of individual or a group of threads, applications, or
-virtual machines by using a resource monitoring ID (RMID)
-\footnote{
+virtual machines by using a resource monitoring ID (RMID)\footnote{
   \url{https://software.intel.com/en-us/blogs/2014/12/11/intel-s-cache-monitoring-technology-software-visible-interfaces}}.
-It monitors the cache usage of the all object with the same RMID and provides
+It monitors the cache usage of all objects with the same RMID and provides
 the values via control and data MSRs\footnote{Model Specific Register}.
 As this feature measures actual cache usage, I expect it to provide better
 information for spatial balancing than \gls{llc} misses, but \gls{llc} misses still
@@ -60,14 +59,14 @@ indicate the load on prefetchers and the memory interface, which is not
 displayed by CMT.
 
 However, this feature is only available in Haswell or later generation
-Xeon Server CPUs.
+Xeon\texttrademark{} server CPUs.
 
 \paragraph{Multi-Socket Systems.}
 Besides CAT, usage of multi-socket systems can also prevent PRIME+PROBE attacks
-or provide a real-time task group with an environment with less interferences.
+or provide a real-time task group with an environment with less interference.
 Currently, the load balancer does not support multiple sockets.
 First, the CPUID based topology analysis must be extended to support multiple
-packages and second, the CoreAccounting must be adapted to use this new
+packages and second, the core accounting must be adapted to use this new
 topology.
 
 \paragraph{Heterogeneous Architectures.}
@@ -76,14 +75,14 @@ A more complex extension is the support for heterogeneous architectures, like
 \citeauthor{sarma_smartbalance_2015} (\cite{sarma_smartbalance_2015}) use a
 predefined matrix to predict the performance change of a thread,
 if it is migrated to another core type.
-But the authors do not consider communication or isolation realtionships.
-These groups raise numerous questions: Which core type do isolation groups
+However, the authors do not consider communication or isolation realtionships.
+Additionally, thread groups raise numerous questions: Which core type do isolation groups
 need?
-If an isolation group is migrated to another core type, how large is the impact
-to the rest of the system?
+If an isolation group is migrated to another core type, how large is the
+performance  impact to the rest of the system?
 Which core type uses a server task with multiple distributed clients?
 
-The energy consumption is also very different compared to a x86 system.
+The energy consumption is also very different compared to an x86 system.
 If performance per watt is important, is it better to run \texttt{distr} groups
 constantly on the little core type?
 
@@ -93,9 +92,10 @@ An approach I did not explore during this work are behaviour categories.
 Consider four categories: very high \gls{mpc}, high \gls{mpc}, low \gls{mpc},
 very low \gls{mpc}.
 Each thread belongs to one category and the algorithm selects threads of
-different categories to run together on one core.
+different categories to execute on the same core; the SMT abstraction can also
+use these categories.
 The assignment of threads to categories could also take a behaviour history
-into account and categorize the thread regarding its general behaviour.
+into account and categorize each thread regarding its past behaviour.
 
 I also expect behaviour categories to help decide on difficult questions
 arising from heterogeneous architectures.
