@@ -7,10 +7,13 @@ and heavy load.
 The solo execution time of each application serves as baseline to compare the
 performance of different algorithms in a low load situation, and to enable the
 computation of the slowdown when run in parallel with other applications.
-The slowdown of the computation time is computed for the best and worst
+The slowdown of the execution time is computed for the best and worst
 case and the median.
+I use the terms execution time and run-time synonymous and they describe the
+duration in wall clock time units between two measurements.
+I describe the measurement process in the previous section.
 
-I also compare the algorithms using box plots to visualize
+I compare the algorithms using box plots to visualize
 the run-time for the major part of the measurements together with outliers.
 However, due to the nature of the box plots, data points marked as outlier need
 to be taken with a grain of salt.
@@ -41,6 +44,65 @@ While they deviate from the main amount of run-time values, the actual distance
 is not necessarily high.
 So a high number of marked outliers is not necessarily a sign of bad performance.
 
+\paragraph{Cost of Balancing.}
+Balancing is can be expensive run-time wise, if it migrates threads with a
+large cache working set to another physical core, as the threads need to reload
+their working set into the core local caches.
+Furthermore, the measure-predict-decide-enforce (MPDE) cycle needs processor time,
+although only on core zero in the current implementation, but the housekeeping
+during the cycle can be expensive.
+Because threads can leave at any time, the load balancer must check their
+presence multiple times and act on failing system calls.
+I believe improvements to the source code can reduce the time, but currently,
+the MPDE cycle takes normally around $170\mu{}s$ when managing ten threads or around
+$55\mu{}s$ when managing one thread.
+However, I observed that this cycle can take up two to orders of magnitude
+longer due to housekeeping issues.
+The normal cycle duration depends on the number of threads the load
+balancer manages and not on the length of a balancing interval.
+A shorter balancing interval, however, raises the total overhead of the load
+balancer, as the MPDE cycle is executed more often.
+
+In the following, I analyse, how many cache misses must occur, to explain a one
+second run-time increase of an application, when running alone on the load
+balancer.
+Intel documentation(\cite{intel_perf_analysis_2009}) states $60ns$ for a
+\gls{llc} miss, independent
+measurements\footnote{\url{http://www.7-cpu.com/cpu/Haswell.html}}
+suggest $70ns$, which accounts on a $3\textit{GHz}$ CPU for a difference of $3$ to $4$ cycles
+compared to the Intel statement.
+
+The maximum amount of misses per seconds is $10^9/70 \approx 14285714$ misses.
+During one interval of $100ms$ $10^8/70 \approx 1428571$ or $10ms$ $10^7/70 \approx
+142857$ misses can be generated.
+
+The memory-heavy mcf application runs $90$ seconds.
+If its run-time is increased by one second due to bad balancing decisions and
+subsequent cache misses, it suffers on average an additional
+$14285714 / 90 \approx 158730$ cache misses per second during its run-time.
+Relative to an interval length of $100ms$ that are $15873$ misses per interval.
+The cache size of the core local L1 and L2 caches is $64 + 256 = 320$KB or
+$5120$ cache lines \`a $64$Byte.
+Producing $15873$ misses during an 100ms interval would mean to flush the
+whole cache $3.1$ times.
+One cache miss takes $70ns$, hence flushing the whole cache $3.1$ times takes
+$5120 * 3.1 * 70ns = 1111040ns$ or $1.11104ms$.
+So, if mcf suffers a slowdown of one second it has to spend $1.1ms$ each balancing
+interval on additional cache misses.
+
+However, forcing a core switch every $100ms$ might cause losing a whole cache set
+once, but not thrice.
+This discussion is simplified, as I discuss last level cache misses
+and only account for core local caches.
+When a core switch occurs, it is likely that the data can be fetched from the
+\gls{llc} as it is an inclusive cache.
+A \gls{llc} access needs approximately $13ns$. Assuming reuse of all $5120$ cache
+lines, fetching them needs $66560ns$ or  $0.06656ms$.
+That leaves around $1.05ms$ per balancing interval to account for.
+
+I suspect occasional spikes in the MPDE cycle duration to be the reason for
+this.
+
 % todo SMT measurement issue: need micro benchmark to determine increase in
 % application performance, due to smt balancing decisions.
 
@@ -52,16 +114,17 @@ So a high number of marked outliers is not necessarily a sign of bad performance
   \includegraphics[width=\textwidth]{images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_solo}
   \end{subfigure}
   \caption{Solo run-times visualized using one box plot for each balancing
-    algorithm; from top left to bottom right: SPEC gcc, mcf, gamess, and lbm.}
-    \label{eval:fig:box_solo}
+    algorithm; STB and TB use a 100ms balancing interval.
+    From top left to bottom right: SPEC gcc, mcf, gamess, and lbm.}
+  \label{eval:fig:box_solo}
 \end{figure}
 
 \paragraph{Solo Execution.}
 The solo run-times for each benchmark provide insight into the minimal
 execution time and the program behaviour throughout different runs.
-However, the benchmark is not the program under test, it is the balancing
-algorithm.
-I consider SLD to achieve the minimal possible run-times, because it does not
+However, the benchmark is not the program under test, the balancing algorithm
+is.
+SLD achieves the minimal possible run-times, because it does not
 migrate any running application and produces no additional overhead through
 measurement and balancing action.
 The green box plots in figure \ref{eval:fig:box_solo} show that nearly all SLD
@@ -70,88 +133,65 @@ The very deterministic run-time suggests, that SLD schedules the benchmark on
 the same core each run.
 Also, compared to the violet and blue plots of STB and TB, the SLD run-times
 are either as good as the minimal run-time of the other two or better.
+\\
 
+\begin{figure}[!ht]
+  \begin{subfigure}{\textwidth}
+  \includegraphics[width=\textwidth]{images/10msPlots/boxplots/pdf/boxplot_gcc_mcf_solo_10ms}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+  \includegraphics[width=\textwidth]{images/10msPlots/boxplots/pdf/boxplot_gamess_lbm_solo_10ms}
+  \end{subfigure}
+  \caption{Solo run-times visualized using one box plot for each balancing
+    algorithm; STB and TB use a 10ms balancing interval.
+    From top left to bottom right: SPEC gcc, mcf, gamess, and lbm.}
+  \label{eval:fig:box_solo_10ms}
+\end{figure}
 
-%todo STB an TB solo performance discussion
+%todo STB an TB solo performance discussion with 100/10 ms differences
 
-\paragraph{CFS -- Another League.}
-Why is \gls{cfs} so much faster than the Fiasco.OC scheduler?
-\Gls{cfs} dynamically adjusts the time slices of the running programs to reduce
-the amount of context switches.
+\Gls{cfs} on the other hand is significantly faster.
+The gap for the memory-bound benchmarks is smaller, than the gap for
+the two compute-bound benchmarks.
+The algorithm dynamically adjusts the time slices of the running programs to reduce
+the scheduling overhead.
 Furthermore, the consistently worse run-time of all other load balancing
 algorithms suggests, that this slowdown can also be accounted to the performance
 differences between monolithic kernels and micro-kernels.
+\\
 
-However, the measurement for lbm provides a different picture:
-the median is close to the upper quartile and the worst case run-time.
-A closer look at the data shown in figure \ref{eval:fig:lbm_cfs_solo} reveals,
-that the run-times are actually split up into two blocks: 129 and 133 seconds,
-with the 133 seconds block being larger.
-At this point the box plot is misleading regarding the actual distribution.
-STB and TB do not show such a split in run-time.
-% todo reason for split, if this is still present after remeasure
-Additionally, the best case of STB is better than the median of CFS and a closer look
-at the data shows, that this is not just one, but eleven measurements below
-CFS's median.
-Short above 10\% of the measurements does not look like a coincidence.
-Unfortunately, lbm is a special case and the in comparison good performance
-depends on the bad performance of \gls{cfs}.
+The results of STB and TB are good for gcc and gamess, mcf and lbm, however,
+raises question about the amount of migrations and the overhead of the load
+balancer.
+Between figure \ref{eval:fig:box_solo} and figure \ref{eval:fig:box_solo_10ms}
+lies a ten fold increase in overhead, as the interval duration changes from
+$100ms$ to $10ms$.
+In case of mcf and lbm, STB got a little bit slower, TB on the other hand got a
+little bit faster, so the overhead ten fold increase is not necessarily the
+reason for slower performance.
+Due to the low number of repetitions, the shown improvements might not be
+representative for lbm and mcf.
+Gamess's performance is unchanged and gcc sees a little improvement under TB.
 
-\begin{figure}[!ht]
-  \setcapindent*{1em}
-  \begin{captionbeside}[]{Histogram of the run-time distribution of lbm running
-    on CFS. The run-times are divided into two groups around 129 and 133
-    seconds, with the latter group being larger.}
-    \includegraphics[width=0.6\textwidth]{images/linuxPlots/pdf/lbm_2016-02-06_5-18_solo_run_plot.pdf}
-  \end{captionbeside}
-  \label{eval:fig:lbm_cfs_solo}
-\end{figure}
+Solo runs give insights into the behaviour of the algorithms and provide
+a base line to compare load runs to.
 
-
-
-\begin{comment}
-\begin{figure}[ht!]
-  \begin{subfigure}{.49\textwidth}
-    \includegraphics[width=\textwidth]{images/finalPlots/barcharts/barchart_solo_gcc}
-    \caption{SPEC GCC}
-    \label{solo:gcc}
-  \end{subfigure}
-  \begin{subfigure}{.49\textwidth}
-    \includegraphics[width=\textwidth]{images/finalPlots/barcharts/barchart_solo_gamess}
-    \caption{SPEC GAMESS}
-    \label{solo:gamess}
-  \end{subfigure}
-  \begin{subfigure}{.49\textwidth}
-    \includegraphics[width=\textwidth]{images/finalPlots/barcharts/barchart_solo_lbm}
-    \caption{SPEC LBM}
-    \label{solo:lbm}
-  \end{subfigure}
-  \begin{subfigure}{.49\textwidth}
-    \includegraphics[width=\textwidth]{images/finalPlots/barcharts/barchart_solo_mcf}
-    \caption{SPEC MCF}
-    \label{solo:mcf}
-  \end{subfigure}
-  \caption{Solo run-times for each SPEC benchmark and each load balancer.
-    Shown is the median over 100 repetitions together with minimum and maximum
-    run-time.}
-\end{figure}
-\end{comment}
 
 \paragraph{Concurrent Execution.}
 As large as the gap between \gls{cfs} and the other balancing algorithms is in
-the solo execution case, the concurrent case shows a much better picture.
+the solo execution case, the concurrent case provides better results.
 All measurements in figure \ref{eval:fig:box_all} are taken during the same
 benchmarking run of the specific balancer.
 Thus, the execution times of the different applications are connected, but
-determining if worst case time of
-one benchmark correlates with best case times of another, needs further
-analysis, which, again, the time budget does not allow for.
+determining if worst case time of one benchmark correlates with best case times
+of another, needs further analysis, which, again, the time budget does not
+allow for.
 
 At this point, I want to recall the above mentioned connection between outliers
 and the inter quartile distance in box plots.
 
 Where the performance of SLD for a single application was quite good, it is
-downright ridiculous if the system is loaded, as is the case in figure
+no competitor if the system is loaded, as is the case in figure
 \ref{eval:fig:box_all}.
 The inner quartile distance for mcf, gamess, and lbm covers nearly the whole
 deviation span of the other algorithms, and for gcc SLD shows an already large
@@ -173,14 +213,32 @@ high risk to generate a bad performing thread-to-core mapping.
   \includegraphics[width=\textwidth]{images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_all}
   \end{subfigure}
   \caption{Concurrent run-times visualized using one box plot for each balancing
-    algorithm; from top left to bottom right: SPEC gcc, mcf, gamess, and lbm.
-    Time measurements are taken from the same concurrent run.}
+    algorithm; STB and TB use a 100ms balancing interval and all time
+    measurements are taken from the same concurrent run.
+    From top left to bottom right: SPEC gcc, mcf, gamess, and lbm.
+    }
     \label{eval:fig:box_all}
+\end{figure}
+%
+\begin{figure}[!ht]
+  \begin{subfigure}{\textwidth}
+  \includegraphics[width=\textwidth]{images/10msPlots/boxplots/pdf/boxplot_gcc_mcf_all_10ms}
+  \end{subfigure}
+  \begin{subfigure}{\textwidth}
+  \includegraphics[width=\textwidth]{images/10msPlots/boxplots/pdf/boxplot_gamess_lbm_all_10ms}
+  \end{subfigure}
+  \caption{Concurrent run-times visualized using one box plot for each balancing
+    algorithm; STB and TB use a 10ms balancing interval and all time
+    measurements are taken from the same concurrent run.
+    From top left to bottom right: SPEC gcc, mcf, gamess, and lbm.
+    }
+  \label{eval:fig:box_all_10ms}
 \end{figure}
 \\
 
-\Gls{cfs} on the other hand, performs well, but it does not play in another
-league anymore.
+
+\Gls{cfs} on the other hand, performs well, but it is not as superior as during
+the solo benchmarks.
 Regarding minimum and maximum run-times, it performs better than TB and STB in
 case of gcc and lbm and equally well for mcf and gamess.
 Gamess has a lot of outliers, which partly can be accounted to the computation
@@ -204,55 +262,33 @@ investigate its issues with gamess and gcc.
 
 The focus of this thesis lies on behaviour awareness, which the STB and TB
 algorithms implement.
-In difference to SLD, both perform a information gathering and balancing cycle
-every interval.
-% todo this is also true for the solo execution case and explains some of the
-% overhead there as well, so move up.
-The default interval length is 100 ms to be able to respond to workload
-changes while keeping the overhead low.
-The size of the overhead depends on the number of threads managed by the load
-balancer, because for each thread it executes several system calls to gather
-measurements and check if the thread is still present in the system.
-For around ten threads measurement, housekeeping, and balancing takes 100µs on
-average or 0.1\% of the default interval length.
-The interval length does not affect the duration of measurements and balancing
-decisions, just the ratio changes.
+In difference to SLD, both perform a MPDE cycle every balancing interval.
+The interval length in figure \ref{eval:fix:box_all} is $100ms$, whereas figure
+\ref{eval:fix:box_all_10ms} shows a $10ms$ interval.
 
-% todo Transition
+In both figures, TB's gamess shows a behaviour similar to CFS, while the
+outliers in the $10ms$ case are less and not as high.
+Looking at all benchmarks, TB performs better with a short interval duration:
+less deviation, lower worst-case execution times, and the memory-bound
+applications show also better best-case run-times.
 
-0.1\% of 41 seconds are 0.41 seconds, which reduces the gap between TB and SLD
-for gcc to 0.3 seconds.
-0.3 seconds account on Haswell for 3 to 4.38 million cache misses, a core runs
-at 3GHz thus performs $3* 10^9$ cycles per second, leading to around $41 * 3 *
-10^9$ overall cycles performed during a gcc run.
-After doing the math, this leads to one miss ever 28000 to 41000 cycles or one
-miss every 13.6µs, thus estimated 7350 misses per 100ms interval.
-It seems a bit high, that migrations during the runtime of gcc can lead to this
-amount of \gls{llc} misses.
-Also, an interval of bad co-scheduling can impact the performance of gcc, but
-this is unlikely when comparing best-cases, as the best-case slowdown compared
-to solo runs for TB and SLD is 11.3s.
+STB is more of a mixed picture: less deviation as well, but the median
+slightly decreased for all applications and also the worst-case run-times
+increased.
+However, when compared to TB, deviation of all benchmarks is less providing a
+more deterministic result.
+STB provides each application with a fair share of resources depending on the
+application's run-time behaviour.
+As the measurements of all applications were taken during the same run, the
+best-case run-time of one is possibly connected to the worst-case run-time of
+another, hence a fair load balancer provides an equal share of resources
+during each execution.
 
-
-STB's run-time deviation is lower than TB's, thus it provides more
-deterministic run-times for all benchmarks.
-However, the determinism comes at the cost of worse median and best-case
-values, but with the benefit of better worst-case performance.
-While I expected a better median performance compared to TB, the values are not
-bad.
-Due to the connection between the applications, the improvement in worst-case
-performance combined with the low deviation suggests, that the system fairly
-distributes its resources.
-
-
-\paragraph{Interval Size of 10ms}
-% todo interval size of 100ms -> measurement setup -- no, because 10ms is much
-% better hence there must be a separate paragraph.
-
+However, the system load can be increased.
 
 
 \paragraph{Heavy Load.}
-On a quad-core machine, the four SPEC benchmarks would be sufficient to fully
+On a quad-core machine, the four SPEC benchmarks are sufficient to fully
 utilize the processor.
 However, the quad-core machine with \gls{ht} has still some underutilized
 resources, thus I double the workload by running each benchmark twice.
@@ -260,9 +296,9 @@ resources, thus I double the workload by running each benchmark twice.
 the Xeon server processor with eight physical cores, where each two cores share
 one \gls{llc}.
 
-Figure \ref{eval:fig:box_heavy} shows the results for a 100ms load balancing
+Figure \ref{eval:fig:box_heavy} shows the results for a $100ms$ load balancing
 interval for STB and TB. SLD is not part of this measurement, as the
-performance shown in figure \ref{eval:fig:box_all} is not competitive.
+performance shown under less load is not competitive.
 
 Although I run two instances of each benchmark, I only use the numbers of one
 instance.
@@ -271,7 +307,7 @@ The results in figure \ref{eval:fig:box_heavy} are consistent with figure
 First, the run-time deviation is much lower for STB; second, the median
 run-time is better in case of gcc, but worse for the other three applications,
 however, the worst-case performance of STB is consistently better.
-It is not evident from the bottom-left figure for lbm if STB is better; the
+It is not evident from the bottom-left plot if STB is better; the
 execution time of the top mark is 373.0.
 
 Because the execution times of all applications is connected, the worse
@@ -285,9 +321,7 @@ three times as high as the gcc's or gamess's median.
 So the goal besides the numbers is to provide an environment, where each
 application uses as much resources as needed to perform well, while not causing
 severe performance degradation to other applications.
-
-
-
+%
 \begin{figure}[h!]
   \begin{subfigure}{\textwidth}
   \includegraphics[width=\textwidth]{images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_heavy}
@@ -301,6 +335,31 @@ severe performance degradation to other applications.
     \label{eval:fig:box_heavy}
 \end{figure}
 
+\paragraph{Gamess}
+Before I discuss the overall performance, I want to focus on the performance of
+gamess.
+On Linux the benchmark spawns one thread and runs on one core, on L4Re gamess
+spawns four threads: one to work, one for the L4Re-kernel, and two unaccounted
+for.
+In difference to Linux, gamess prints a lot of data to console on L4Re, but as
+the application is written in Fortran, maintaining it is an issue.
+The measured solo run-times are consistently $55$ seconds independent of the
+load balancing algorithm.
+However, if gamess runs concurrently with other applications, the best-case
+run-time is $47.2$ seconds, so gamess executed nearly eight seconds faster.
+$47.2$ would $0.6$ seconds slower than CFS, which is a reasonable distance, but
+where does this eight second gap come from?
+Dynamic voltage and frequency scaling? Turned off.
+Turbo Boost? Turned off.
+Looking at the numbers, over 60 of 291 measurements are below 50 seconds under
+load, so this is no coincidence either.
+Scheduled on core zero or its companion core? Already unlikely for STB and TB,
+but an additional tests showed, that running it without a load balancer on core
+zero also takes $55$ seconds.
+Also, using the load balancer to pin all threads to one core neither improves
+the run-time.
+The reason behind the execution time decrease under load remains an open
+question.
 
 \paragraph{Overall Performance.}
 Which scheduler performed best?
@@ -308,15 +367,3 @@ How can this be computed, when the amount of repetitions for gcc, gamess, and
 mcf is different?
 By weighing the repetition count by  median run-time?
 Just using the sum of the run-times of 100 lbm repetitions?
-
-
-
-\paragraph{LLC Miss Math}
-Intel documentation(\cite{intel_perf_analysis_2009}) states 60ns for a
-\gls{llc} miss, independent
-measurements\footnote{\url{http://www.7-cpu.com/cpu/Haswell.html}}
-suggest 70ns, which accounts on a 3GHz CPU for a difference of 3 to 4 cycles.
-
-So one second slowdown accounts for $10^9/70 \approx 14285714$ misses.
-During one interval cycle $10^8/70 \approx 1428571$ misses.
-Or one miss every 210 cycles.
