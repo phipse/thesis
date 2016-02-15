@@ -34,35 +34,69 @@ description={Intel\textregistered{} Corp.} }
 \newacronym{eu}{EU}{Execution Unit}
 
 %todo adopt title page
+\begin{comment} 
+Starting with the common availability of computer systmes in the 80's, computing
+and memory facilities have devloped in different speeds.
+While memory size grew considerably, their access speed did not change as much.
+On the contrary, processor's performance increased in magnitudes until hitting
+the frequency wall, which was jumped over by using many processors in a single
+system.
+However, processors need to access the memory to process data and since the
+memory is relatively slow, processors are sitting idle waiting for data.
+This effect is amplified by mutli-processor systems where even more processors
+query the memory.
+Multiple levels of different sized caches where introduced to hide memory
+access latancies, as shown in figure \ref{intro:fig:accessLatencies}.
+However, in today's multi-core systems, placing programs on the right core for
+efficient execution and cache use remains a challenge.
 
-%The operating system manages all hardware resources of a computer.
-%It makes these resources available to all tasks by assigning them an exclusive
-%share for an amount of time.
-% improve above sentence
-%In doing so, it distinguishes between time and space shares.
-% smoothe transition
-% todo throw above away ?
-Since 1980 a gap between issue rate and service time of memory requests
-developed.
-The time between two memory request a single core can issue decreased faster, than
-the time it takes memory to answer this request.
-Figure \ref{intro:fig:cpuMemGap} visualises this development between 1980 and
-2010.
+In this work
+\end{comment}
+
+Starting with the common availability of computer systmes in the 80's,
+computing and memory facilites have developed in different directions.
+Uniprocessor speeds increased until they hit the frequency wall, which then led
+to the rise of muti-core processors.
+Whereas memory sizes increased significantly, memory speed did not see an
+equal development.
+The increasing difference in processing speed, displayed in figure
+\ref{intro:fig:cpuMemGap}, led the processor vendors to obscure the gap by
+introducing numerous levels of on-die caches.
+%, differing in access speed andsize.
+These caches allow to prefetch memory based on typical memory access patterns
+and reduce the number of times the CPU sits idle.
+However, search duration increases with cache size and if the requested data is
+not present, the search duration increases the memory access latency additionally.
+Figure \ref{intro:fig:accessLatencies} shows size and latency of a Nehalem
+generation Intel CPU.
+
+Besides reducing the number waits for data from memory, the waiting time can be
+used for computation.
+Out-of-order processors execute other instructions while waiting for data and
+therefore reduce the idle time of the processor.
+Another technology to use idle processing resources is simultaneaous
+multi-threading.
+It employs several hardware threads sharing a processor's execution units to
+provide several instruction streams.
+If one instruction stream waits for memory others are present to utilize the
+otherwise idle resources.
 %
 \begin{figure}[h]
   \KOMAoption{captions}{bottombeside}
   \setcapindent*{1em}
-  \begin{captionbeside}[]{CPU and memory performance development since 1980.
-      CPU performance is measured as time between memory requests; memory
-      performance describes DRAM access latency.
+  \begin{captionbeside}[Processor and memory performance gap 1980 - 2010.]
+    {CPU and memory performance development since 1980.
+      CPU performance is plotet as memory request per second, memory
+      performance as requests served per second.
       Figure from \cite[73]{hennessy_computer_2012}.}
     \includegraphics[width=0.65\textwidth]{images/cpu_mem_gap}
   \end{captionbeside}
   \label{intro:fig:cpuMemGap}
 \end{figure}
 %
-To reduce the number of waits, several levels of caches are present on the CPU
-nowadays, thus decreasing the impact of memory latency.
+\begin{comment}
+To reduce the number of waits and obscure the gap, several levels of caches
+are present on today's processors, thus decreasing the impact of memory latency.
 The drawback of several layers of caches and increasing size of caches is the
 access latency and the additional cost for a cache miss, when the data
 requested is not in any cache layer.
@@ -76,6 +110,7 @@ Figure \ref{into:fig:accessLatencies} provides and overview over size and
 access times for the memory hierarchy.
 The displayed access times describe the duration from issuing the request until
 receiving the data.
+\end{comment}
 %
 \begin{figure}[h]
   \includegraphics[width=\textwidth]{images/mem_access_hierarchy_latency}
@@ -84,9 +119,9 @@ receiving the data.
     The numbers displayed are from a Nehalem generation
     Xeon\texttrademark{} server CPU.
     Figure from \cite[72]{hennessy_computer_2012}.}
-  \label{into:fig:accessLatencies}
+  \label{intro:fig:accessLatencies}
 \end{figure}
-
+\begin{comment}
 Two hardware improvements minimize the time a CPU idles, while waiting for
 memory: out-of-order execution and simultaneous multi-threading.
 Out-of-order CPUs reorder instructions, such that a instruction waiting for
@@ -96,9 +131,9 @@ Whereas simultaneous multi-threading employs two or more hardware threads
 executing on the same physical hardware.
 If one hardware thread waits for memory or just uses a subset of all available
 execution units, the others can utilize the idle resources.
-
-Besides these hardware solutions, software can also reduce the number of cache
-misses it produces.
+\end{comment}
+%
+Besides hardware solutions, software can also increase memory efficiency.
 Programmers of performance critical software invest time and effort to adjust
 their program's data to fit into cache lines and allow for efficient prefetching.
 However, besides time and money these custom adjustments are limited by the
@@ -107,8 +142,9 @@ Two memory intensive threads sharing a processor will evict each others
 cache lines, thus decreasing each others performance as they need to fetch
 data from memory again.
 In the era of multi-cores, to decide if these two programs will run on
-the same core and cache is the job of the scheduler and load balancer.
+the same core and cache is the challange the load balancer faces.
 
+\begin{comment}
 While Linux runs a scheduler which is also in charge of load balancing, these
 are two separate jobs.
 It is the scheduler's duty to provide an equal amount of CPU time to each
@@ -121,40 +157,34 @@ To allow for workload specific load balancers, Linux provides an interface to
 overrule kernel decisions.
 This is also the case for the Fiasco.OC microkernel and the L4Re user-land
 environment.
+\end{comment}
 
 A specialized load balancer can take offline knowledge into account, not
 accessible by the kernel;
-for example offline analysis of a program's cache usage, or communication
-patterns between different parts of one or different applications,
-respectively.
-
+for example offline analysis of a program's cache usage.
 Such an specialized load balancer can improve the run-time of its clients by
-improving cache utilization through distribution or reduce communication latencies
-through co-location.
+improving cache utilization.
 A general-purpose load balancer most likely does not know its client tasks
 beforehand, thus limiting the amount of information available.
-
-Besides performance improvements, a load balancer can also satisfy isolation
+Besides performance improvements, the load balancer can also satisfy isolation
 requirements of client applications; for example by assigning a security
 critical application an exclusive core to exacerbate side-channel attacks.
-Also real-time applications benefit from isolation, as an exclusive cache
-decreases run-time influences.
 
 This thesis explores possibilities to gather run-time information about the
-behaviour of a load balancer's clients, to improve each clients execution time.
+behaviour of a load balancer's clients, to provide for efficient execution of
+all clients.
 Besides execution time needs, the load balancer should care for cache usage,
 communication behaviour, and isolation requirements.
 I discuss different sources for these information with their merits and flaws and
 implement a prototype to show the benefits for client behaviour-aware load
 balancing.
-\\
 
 Chapter \ref{sec:state} defines terminology for this work and presents previous
-publications on \gls{smt}, shared resource usage and
-congestion, and communication awareness.
+publications on \gls{smt}, shared resource congestion, and communication awareness.
 It also presents Linux's completely fair scheduler, Fiasco.OC and L4Re, and
 properties of the CPU architecture the prototype runs on.
-In chapter \ref{sec:design}, I discuss the building blocks for the load
+After presenting the research state, chapter \ref{sec:design} discusses 
+the building blocks for the load
 balancer: \gls{smt}, isolation needs, source for communication behaviour, an energy
 consumption model, and the architecture of the load balancer itself.
 Chapter \ref{sec:implementation} presents implementation details and
