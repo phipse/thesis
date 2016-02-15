@@ -362,8 +362,25 @@ The reason behind the execution time decrease under load remains an open
 question.
 
 \paragraph{Overall Performance.}
-Which scheduler performed best?
-How can this be computed, when the amount of repetitions for gcc, gamess, and
-mcf is different?
-By weighing the repetition count by  median run-time?
-Just using the sum of the run-times of 100 lbm repetitions?
+I compute the overall performance of each load balancing scheme as average
+run-time increase relative to average solo run-time.
+Figure \ref{eval:fig:exec_inc} shows a group of bars for each application
+executing under each balancing scheme and the overall average.
+On average CFS and STB perform equally well, whereas TB outperforms both,
+however in the high load scenario CFS's performance is significantly worse
+than TB's or STB's.
+However, these numbers do incorporate all measurements, including the extreme
+run-times of Gamess under CFS displayed in figure \ref{eval:fig:box_heavy}.
+They also do not reflect the run-time deviation across multiple repetitions.
+%
+\begin{figure}[h!]
+  \begin{subfigure}{.49\textwidth}
+  \includegraphics[width=\textwidth]{images/runtimeIncrease/barchart_load_inc}
+  \end{subfigure}
+  \begin{subfigure}{.49\textwidth}
+  \includegraphics[width=\textwidth]{images/runtimeIncrease/barchart_heavy_inc}
+  \end{subfigure}
+  \caption{Average increase in run-time per application and overall; for
+    normal load on the left and high load on the right.}
+  \label{eval:fig:exec_inc}
+\end{figure}
