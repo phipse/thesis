@@ -1,0 +1,33 @@
+% vim:set ft=tex:
+\section{Summary}
+\label{eval:summary}
+
+The evaluation shows, that topology and behaviour-aware load balancing has its
+benefits regarding fairness, run-time deviation, and worst-case run-time.
+While the solo execution baseline shows overhead issues of the behaviour-aware
+implementation, it also shows slower execution on top of L4Re compared to
+GNU/Linux.
+However, as the system load increases space-time-balancing shows less deviation
+and better worst-case execution times, which suggests fair distribution of
+execution resources among all managed applications.
+Both, time-balancing and space-time-balancing are superior than the
+simple-load-distribution approach that does not adapt to changing
+circumstances or application behaviour.
+
+The evaluation also raised issues of the implementation.
+The measure-predict-decide-enforce cycle shows enormous run-time spikes, which
+significantly slow down the executing applications.
+Besides these spikes the MPDE cycle overhead depends on the number of managed
+threads and a reasonable duration of around $170\mu{}s$ for ten managed
+threads.
+
+Some question are not answered during this evaluation.
+The impact of \gls{ht}-aware balancing remains an open question, however,
+different implementation stages showed, that bad \gls{ht} balancing visibly
+impacts the performance.
+The reason for Gamess's five to seven second faster execution under load
+remains unknown, as well as the performance of other load balancing algorithms
+like MPC-IPC-Placement (section \ref{impl:algos}).
+
+The following section explores different directions for future work with this
+implementation and on this topic in general.
