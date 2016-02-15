@@ -12,7 +12,8 @@ isolation between task groups, expansion to multi-socket systems, or
 heterogeneous architectures.
 
 \paragraph{Precise Event Based Sampling (PEBS).}
-PEBS allows the user to register an interrupt coupled to a specific counter.
+PEBS is a feature on Intel-based processors that allows the user to register
+an interrupt coupled to a specific counter.
 If the counter is increased by an event or overflows, the interrupt triggers
 and allows to read the hardware state from a prespecified memory region.
 This feature helps a developer to pinpoint, for example, memory accesses which
@@ -24,7 +25,7 @@ The interrupt handler must then increase the account of the currently running
 thread by the maximum counter value and clear the overflow flag.
 
 \paragraph{\gls{intel} Cache Allocation Technology (CAT).}
-The most promising improvement is CAT (\cite{intel_cat}).
+The most promising improvement on Intel processors is CAT (\cite{intel_cat}).
 It allows the user to partition the \gls{llc} or, more precisely to decide
 which core is able to write to which cache lines in the \gls{llc}.
 However, the core can still read the entire cache.
@@ -83,7 +84,7 @@ performance  impact to the rest of the system?
 Which core type uses a server task with multiple distributed clients?
 
 The energy consumption is also very different compared to an x86 system.
-If performance per watt is important, is it better to run \texttt{distr} groups
+If performance per energy is important, is it better to run \texttt{distr} groups
 constantly on the little core type?
 
 
@@ -119,6 +120,33 @@ algorithms in the various components.
 If very specific workloads run on the system, tuned balancing algorithms for
 this specific workload can be used to increase the performance of the system.
 \end{comment}
+
+\paragraph{Conclusion.\newline}
+
+{\itshape
+This thesis showed the benefit of topology and behaviour-aware load balancing.
+It explored static and dynamic information sources to enable informed balancing
+decisions.
+The designed load balancer connects hardware topology with balancing on
+different levels, while maintaining communication relationships and isolation
+properties.
+The implementation proved through reduced run-time deviation in all application
+running concurrently, the positive effect of informed decisions.
+Fair distribution of resources makes the system's throughput predictable for
+known task sets.
+
+While the evaluation lacks an analysis of all information sources, their
+theoretical benefit was argued for.
+The evaluation also showed implementation deficits which disturb the
+measurements of loaded systems.
+I provided ideas to improve on these deficits.
+However, the results showed a clear tendency for behaviour-information-based
+load balancing to fully utilize the hardare resources.
+
+This thesis challenges future research to improve on cache isolation and usage
+analysis, but also to explore load balancing on hetereogeneous hardware, where
+performance prediction plays a much larger role.
+\/}
 
 
 \cleardoublepage
