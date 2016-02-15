@@ -78,7 +78,7 @@ to implement a mechanism to provide this for a user-level service.
 
 % -----------------------------------------------------------------------------
 
-\section{\gls{intel} Haswell Architecture}
+\section{Intel Haswell Architecture}
 \label{state:haswell}
 
 In section \ref{state:related}, I mentione several hardware features.
@@ -127,7 +127,8 @@ if and in which core's caches it is present.
 
 \begin{figure}[h!]
   \setcapindent*{1em}
-  \begin{captionbeside}[]{Schematic layout of two cores of a Core i7-4660K quad-core.
+  \begin{captionbeside}[Schematic of cache sharing across cores of a Haswell
+    generation processor.]{Schematic layout of two cores of a Core i7-4660K quad-core.
     Each physical core has two logical cores sharing the core's L1I-,
     L1D-, and L2-cache.}
   \includestandalone[mode=tex,width=0.65\textwidth]{images/haswell_core_layout}

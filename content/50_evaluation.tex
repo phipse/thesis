@@ -14,13 +14,18 @@
 Numerous questions regarding different aspects of load balancing arise
 throughout this thesis.
 What is the impact on performance of good balancing at \gls{smt}-level?
-Does the prototype meet the expectations for spatial balancing?
-What precisely are these expectations?
+How does the prototype perform under little, normal, and heavy load compared to
+Linux's CFS?
+Load balancing is not about average performance, it is also about consistent
+run-time behaviour of the whole system throughout several repetitions. How do
+the balancing algorithms perform in this regard?
+How beneficial is the knowledge of communication relationships?
+How does a preferential treatment of those impact the performance of other
+applications in the system?
 
-These are the basic questions I delve into in this chapter.
-They contain numerous more questions within itself, but due to time
-constraints, I am not able to measure, analyse, and answer all of the
-contained, more detailed aspects.
+These are the questions I delve into in this chapter.
+However, due to time constraints, I am not able to measure, analyse, and answer
+all of them in detail.
 
 \input{content/51_setup.tex}
 \input{content/52_measurement.tex}

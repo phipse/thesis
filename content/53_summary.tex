@@ -5,8 +5,7 @@
 The evaluation shows, that topology and behaviour-aware load balancing has its
 benefits regarding fairness, run-time deviation, and worst-case run-time.
 While the solo execution baseline shows overhead issues of the behaviour-aware
-implementation, it also shows slower execution on top of L4Re compared to
-GNU/Linux.
+implementation.
 However, as the system load increases space-time-balancing shows less deviation
 and better worst-case execution times, which suggests fair distribution of
 execution resources among all managed applications.
@@ -25,8 +24,8 @@ Some question are not answered during this evaluation.
 The impact of \gls{ht}-aware balancing remains an open question, however,
 different implementation stages showed, that bad \gls{ht} balancing visibly
 impacts the performance.
-The reason for Gamess's five to seven second faster execution under load
-remains unknown, as well as the performance of other load balancing algorithms
+The positive effect of communication groups was not supported with empirical
+data, as well as the performance of other load balancing algorithms
 like MPC-IPC-Placement (section \ref{impl:algos}).
 
 The following section explores different directions for future work with this

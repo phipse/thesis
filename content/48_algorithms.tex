@@ -1,4 +1,5 @@
 % vim:set ft=tex:
+\pagebreak
 \section{Algorithms}
 \label{impl:algos}
 
@@ -25,9 +26,10 @@ by load.
 Another possibility consists of one core getting the high \gls{mpc}
 threads and the other one the threads with high \gls{instpc}.
 I assume this leads to a good symbiosis, as the high \gls{instpc} threads compute,
-while the \gls{mpc} heavy threads wait for memory.
+while the \gls{mpc}-heavy threads wait for memory.
 
-Superiority of one of these options above the others must be empirically evaluated.
+Superiority of one of these options above the others must be empirically
+evaluated. The default balancing uses CPU load as metric.
 
 
 \paragraph{Two-Dimensional Balance.}
@@ -49,7 +51,7 @@ The core accounting needs to keep track of unaccounted load, accounted load by
 not migratable threads, and accounted load by migratible threads.
 \Gls{mpc} measurements are only accessible for managed threads, meaning not
 threads within groups and threads without group.
-Therefore, \gls{mpc} aware placement and balancing depends on these two
+Therefore, \gls{mpc}-aware placement and balancing depends on these two
 groups.
 \\
 
@@ -63,7 +65,7 @@ A simple spatial balance metric is the following: Sort the migratable threads by
 To adapt to preexisting imbalances regarding \gls{mpc},  the number of chosen
 threads can vary; for example if the difference between the core with the
 highest \gls{mpc} and the core with the second highest \gls{mpc} is larger than
-the \gls{mpc} heaviest thread, assigning another thread to it makes no sense.
+the \gls{mpc}-heaviest thread, assigning another thread to it makes no sense.
 
 Temporal balancing is different, as it has to assign all remaining threads and
 consider the absolute core load, not only the load of the managed threads.
@@ -100,27 +102,26 @@ possible improvement is to assign the remaining threads by execution time
 instead of \gls{instpc} and \gls{mpc}.
 
 
-\paragraph{First-Last-Placement.}
-The list of threads without group affiliation is sorted by \gls{mpc}.
-Then, the algorithm assigns the first and the last element of the list to the
-same core.
-The algorithm selects the core with the least amount of \gls{mpc}.
-
-% todo revise above and below paragraph
-
 \paragraph{Group placements.}
-% todo on what basis is first last placement used?
-If the group is of type \texttt{distr}, first-last-placement is used for its
+Configured groups are treated with a higher priority, because their
+dependencies are known to the load balancer and must be treated accordingly.
+The group type \texttt{distr} suggests blocking synchronization among all group
 members.
+Thus, they are distributed to all cores to provide equal progress opportunities
+to each member.
 
 \texttt{Clsvr} type groups are handled in two ways: First, it is checked which
 group members belong to the same tasks.
-Of each task one thread is assigned to the same core as the server thread.
-% todo on what basis? why not by load? would make more sense.
-The others threads are distributed by first last placement.
+Of each task one thread is assigned to the same core as the server thread, the
+rest is distributed to the other cores.
 
 \texttt{Sec} and \texttt{rt} type groups get their private physical core, hence
 all threads of these groups are assigned to the same core.
+However, a security critical application might not need to run all the time,
+e.g. email decryption, thus if the application is stopped, the exclusive core
+is reassigned to the general load balancing.
+If the application is later started again, the load balancer provides an
+exclusive core.
 
 
 \paragraph{Simple Load Distribution.}
@@ -138,7 +139,6 @@ this simple algorithm.
 
 
 \paragraph{Missing Logic for Shared Memory.}
-\todo{where is a better place for this?}
 Tasks running several threads which use shared memory to communicate will have
 a worse performance using these algorithms.
 No communication parameter tells the load balancer that these tasks should be

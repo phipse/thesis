@@ -54,7 +54,7 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 
 \input{content/00_title.tex}
 
-\includepdf{images/diplom-aufgabe.pdf}
+\input{content/diplom-aufgabe.tex}
 \cleardoublepage
 
 \input{content/01_disclaimer.tex}
@@ -62,19 +62,15 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 % NOTE: if you selected british or american above, change that here too
 \selectlanguage{british}
 
-\begin{abstract}
-\input{content/02_abstract.tex}
-\end{abstract}
+%\begin{abstract}
+%\input{content/02_abstract.tex}
+%\end{abstract}
 
 \cleardoublepage
 % reduce line spacing for toc
 \renewcommand{\baselinestretch}{1.05}
 \tableofcontents
 
-\cleardoublepage
-
-% remove this on final
-\listoftodos
 \cleardoublepage
 
 \listoffigures
@@ -93,7 +89,7 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 \input{content/40_implementation.tex}
 \input{content/50_evaluation.tex}
 \input{content/60_futurework.tex}
-\input{content/70_conclusion.tex}
+%\input{content/70_conclusion.tex}
 
 \appendix
 

@@ -190,7 +190,7 @@ overweight thread to the lightest \gls{llc}-group.
 Furthermore, cache light threads suffer next to cache intensive ones, as they
 most likely start with a cold cache each time they are scheduled.
 To compensate for this, \citeauthor{knauerhase_using_2008} propose to transfer
-CPU time from the cache heavy to the suffering threads.
+CPU time from the cache-heavy to the suffering threads.
 In their experiments, this fairness compensation reduces the performance
 degradation of the most suffering thread to less than 1\%.
 \\
@@ -288,6 +288,9 @@ Therefore, the performance gain must be reevaluated.
 Up to now, all research covered assumes independent, non-interacting threads.
 \citeauthor{hofmeyr_load_2010} present in \cite{hofmeyr_load_2010} a load
 balancing technique explicitly assuming communicating, parallel applications.
+The parallel application model consists of one application
+spawning several worker threads, where a computation interval is followed by a
+communication barrier.
 They propose a technique called \emph{speed balancing} with a notion for fast
 and slow cores.
 Their concept assumes the number of threads $N$ to be greater than the number of
@@ -312,10 +315,6 @@ core to migrate to its own core.
 Additionally, the observation thread tries to migrate the least migrated thread to
 avoid constant migration of the same thread.
 
-%todo move up after 2nd sentence; rewrite paragraph
-The assumed parallel application model consists of one application
-spawning several worker threads, where a computation interval is followed by a
-communication barrier.
 Their implementation takes this kind of application as input, executes it and
 distributes its worker threads.
 They do neither model communication between different tasks in a client-server
@@ -326,8 +325,8 @@ point improves overall application performance.
 
 \paragraph{Energy efficiency.}
 Performance is not a one dimensional value anymore.
-Performance per watt is the important measure on battery supported devices like
-notebooks or smartphones, and also in datacenters, as less watts mean less
+Performance per energy is the important measure on battery supported devices like
+notebooks or smartphones, and also in datacenters, as less energy mean less
 energy cost for running and cooling.
 In \cite{imes_poet_2015} the authors compare a mobile \gls{intel} Haswell and a
 Samsung Exynos5 Octa regarding their minimal energy consumption.
@@ -406,7 +405,7 @@ L2 caches, as shown in figure \ref{state:fig:inclusive}.
 %
 \begin{figure}[h]
   \setcapindent*{1em}
-  \begin{captionbeside}[]{The \gls{llc} of \gls{intel} Haswell generation
+  \begin{captionbeside}[Intel Haswell generation cache inclusiveness.]{The \gls{llc} of \gls{intel} Haswell generation
     processores are inclusive.
    Each core contains 32KB D-, 32KB I-, 256KB L2, and 1.5MB L3 cache}[r]%
   \includestandalone[mode=tex, width=0.65\textwidth]{images/inclusive_caches}

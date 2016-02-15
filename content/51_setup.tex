@@ -5,7 +5,7 @@ In the following, I describe the benchmark applications and the
 system environment, the benchmarks run in.
 
 \paragraph{Benchmarks.}
-I use four applications from the \emph{SPEC CPU2006} benchmarking
+I use four single threaded applications from the \emph{SPEC CPU2006} benchmarking
 suit\footnote{\url{http://spec.org/cpu2006/}}:
 namely, 403.gcc, 416.gamess, 429.mcf, and 470.lbm.
 They display the algorithm's performance under load.
@@ -24,6 +24,7 @@ It computes a combinatorial optimization using the integer units.
 The benchmark set consists of two compute-bound and two memory-bound
 benchmarks, with one integer and one floating point benchmark within each group.
 
+\begin{comment}
 Besides the SPEC benchmarks, I employ two other applications to proof the
 group configuration awareness of the load balancer one the one side, and the
 performance benefits for such a configuration on the other side.
@@ -35,10 +36,11 @@ The latter benchmark shows that client and server are migrated together, as
 long as there is only one client per task.
 If a task spawn several threads, the balancer distributes the additional
 threads to other cores.
+\end{comment}
 
 
 \paragraph{Algorithms.}
-I will measure the performance of four different algorithms I introduce in
+I will measure the performance of four different algorithms I introduced in
 section \ref{impl:algos}.
 The simple load distribution (SLD) algorithm distributes each new thread to the
 core with the largest amount of idle time.
@@ -91,7 +93,7 @@ I suspect the time spent iterating through the growing free list to search for
 possible compactions or chunk sizes fitting a memory request to be the cause
 for the increase in run-time.
 
-This issue does not visibly affect the run-time of 416.games, but the other memory-bound
+This issue does not visibly affect the run-time of 416.gamess, but the other memory-bound
 benchmarks are affected as well.
 429.mcf shows slight but constant increase with each run.
 429.mcf allocates all memory at the beginning of the benchmark, so the memory
@@ -106,9 +108,8 @@ Minimum, maximum and median run-time show a similar difference.
 
 Providing a different memory allocator to each task via the ned script,
 did not eliminate this problem.
-
 As this issue did not present itself for 32bit, all benchmarks are executed
-in a 32bit environment.
+in a 32bit environment. This issue will be addressed by the L4Re developers.
 
 
 \begin{comment}

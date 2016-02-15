@@ -38,26 +38,25 @@ processor.
 \gls{llc} between two processors on one die.
 \end{comment}
 
-I present separate approaches to increase SMT performance through symbiotic
-co-schedules, to reduce congestion on shared caches through analysis of
-\gls{llc} misses, to improve application run-time through knowledge about the
-communication behaviour of its threads, and to determine cryptographic secrets
-through the cache side-channel attacks.
+I presented separate approaches to improve different aspects of load balancing.
+Those aspects are \gls{smt}-aware balancing on shared cores, observation of
+congestion on shared resource, knowledge about communication relationships
+between tasks, and isolation requirements.
 
 My goal in this thesis is to unite all these topics in a load balancing
 service for Fiasco.OC/L4Re.
-The load balancer should: provide applications with security requirements with
+The load balancer should provide applications with security requirements with
 a separate core and cache, to reduce the attack surface for cache side-channel
-attacks;
-consider communication relationships to reduce communication latencies;
-determine memory usage through hardware performance counters and provide cache
-intense applications with as much cache as possible;
-achieve good co-schedule performance on two corresponding logical cores.
+attacks.
+Furthermore, the load balancer increases application efficiency by considering 
+communication relationships and differentiating between memory and 
+compute-bound threads.
+As little offline knowledge should be used to provide the load balancer with
+necessary information regarding task properties and thread behaviour.
+Hardware performance counter play a vital role in this endeavour.
 
 I implement the prototype service for one specific architecture, an \gls{intel}
 Haswell Core i7-4660K.
-
-% todo not mentioned: energy, linux cfs, details about each single topic
 
 
 \begin{comment}
