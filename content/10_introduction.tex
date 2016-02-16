@@ -82,14 +82,13 @@ While one instruction stream waits for memory, others are able to utilize the
 otherwise idle resources.
 %
 \begin{figure}[h]
-  \setcapindent*{1em}
-  \begin{captionbeside}[Processor and memory performance gap 1980 - 2010.]
+  \centering
+  \includegraphics[width=0.65\textwidth]{images/cpu_mem_gap}
+  \caption[Processor and memory performance gap 1980 - 2010.]
     {CPU and memory performance development since 1980.
       CPU performance is plotted as memory request per second, memory
       performance as requests served per second.
       Figure from \cite[73]{hennessy_computer_2012}.}
-    \includegraphics[width=0.65\textwidth]{images/cpu_mem_gap}
-  \end{captionbeside}
   \label{intro:fig:cpuMemGap}
 \end{figure}
 %
@@ -131,7 +130,7 @@ executing on the same physical hardware.
 If one hardware thread waits for memory or just uses a subset of all available
 execution units, the others can utilize the idle resources.
 \end{comment}
-%
+
 Besides hardware solutions, software can also increase memory efficiency.
 Programmers of performance-critical software invest time and effort to adjust
 their program's data to fit into cache lines and allow for efficient prefetching.
@@ -177,6 +176,7 @@ communication patterns, and isolation requirements.
 I discuss various sources for these information with their merits and flaws and
 implement a prototype to show the benefits of load balancing that is aware of
 client behaviour.
+\pagebreak
 
 Chapter \ref{sec:state} defines terminology for this work and presents previous
 publications on \gls{smt}, shared resource congestion, and communication awareness.
