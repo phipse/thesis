@@ -16,7 +16,8 @@ communication groups.
 The \texttt{\_C} or \texttt{\_S} flag marks a task as client or server.
 
 \begin{lstlisting}[language={[5.2]Lua}, caption={Implemented set of
-configuration parameters.},label={impl:config:parameters}]
+configuration parameters for priority range, isolation, and communication
+groups.},label={impl:config:parameters}]
 min_prio  = <number>
 max_prio  = <number>
 sec       = <name>
@@ -69,8 +70,9 @@ Listing \ref{impl:config:taskcreation} displays a complete task creation in
 the Ned configuration script.
 \pagebreak
 
-\begin{lstlisting}[language={[5.2]Lua},caption={Task creation with replaced
-scheduler in Ned startup script.},label={impl:config:taskcreation}]
+\begin{lstlisting}[language={[5.2]Lua},caption={Task creation with create call
+  to the load balancer factory and replacement of the default scheduler in the
+  Ned startup script.},label={impl:config:taskcreation}]
 L4.default_loader:start(
   {
     caps = {},
@@ -87,8 +89,9 @@ configuration parameters, which are encapsulated in the Ned startup script,
 shown in listing \ref{config:ned_full}.
 The load balancing service is completely transparent to the application.
 
-\lstinputlisting[language={[5.2]Lua}, caption={Complete Benchmark
-configuration.}, label={config:ned_full}]{app_restart_mmul_parallel.cfg}
+\lstinputlisting[language={[5.2]Lua}, caption={Example of the a benchmark
+  startup using the load balancer as scheduler.},
+  label={config:ned_full}]{app_restart_mmul_parallel.cfg}
 \pagebreak
 
 
@@ -114,5 +117,6 @@ number of available cores.
 \\
 \newline
 
-\lstinputlisting[language=c++, caption={Configuration Type},
+\lstinputlisting[language=c++, caption={Implementation of the configuration
+type stored by the task proxy.},
 label={config:config_t}]{codeSamples/config.cc}
