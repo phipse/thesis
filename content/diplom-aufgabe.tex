@@ -22,7 +22,7 @@ eingesetzt werden, die Threads selbstständig auf mehrere Prozessoren verteilt.
 Hierbei können verschiedene Vorgehensweisen zum Eisatz kommen.
 Das L4Re-System hat Ausführungsanforderungen bezüglich Sicherheit sowie
 Echtzeit, die durch Isolation von Subsystemen auf unterschiedlichen Prozessoren
-umgesetzt werden müssen. Einzelne Applikationen habe aber auch die Anforderung
+umgesetzt werden müssen. Einzelne Applikationen haben aber auch die Anforderung
 mehrere Threads prozessorlokal auszuführen.
 Der Energieverbrauch eines Gesamtsystems ist ein weiterer Gesichtspunkt und
 kann durch eine Lastverteilungskomponente beeinflusst werden, indem nicht
@@ -30,10 +30,10 @@ benötigte Prozessoren potentiell abgeschaltet werden. Die
 Lastverteilungskomponente muss hierbei für entsprechend leere Prozessoren
 sorgen.
 
-Ziel der Arbeit ist es die Informationen zu identifizieren und Mechanismen
-bereitzustellen anhand derer eine Lastverteilungskomponente mit  ihren
+Ziel der Arbeit ist es, die Informationen zu identifizieren und Mechanismen
+bereitzustellen, anhand derer eine Lastverteilungskomponente mit  ihren
 Algorithmen Entscheidungen treffen kann. Dabei muss im Zusammenspiel zwischen
-Anwendungen und Betriebssystem die last des Systems analysiert, evtl.
+Anwendungen und Betriebssystem die Last des Systems analysiert, eventuell
 zukünftige Last vorausgesagt und anhand von Einstellungen
 Lastbalancierungsentscheidungen getroffen werden.
 Die Lastverteilungskomponente soll in das bestehende L4Re-System integriert
@@ -44,8 +44,8 @@ Die Heuristiken sollen anhand verwandter Arbeiten ermittelt werden.
 
 Die Lösung soll exemplarisch umgesetzt und mit einem multi-threaded Benchmark
 evaluiert werden.
-Dabei sollen min. zwei Lastbalancierungsalgorithmen zum Einsatz kommen: ein
-Energieoptimierender und ein Latenzoptimierender. Sowie soll die Ausführung von
+Dabei sollen mindestens zwei Lastbalancierungsalgorithmen zum Einsatz kommen: ein
+Energieoptimierender und ein Latenzoptimierender sowie soll die Ausführung von
 sicherheits- und echtzeitkritischen Applikationen beachtet werden.
 
 Die zentrale Fragestellung ist welche Informationen lassen sich effizient durch

@@ -9,18 +9,15 @@ performance of different algorithms in a low load situation, and to enable the
 computation of the slowdown when run in parallel with other applications.
 The slowdown of the execution time is computed for the best and worst
 case and the median.
-I use the terms execution time and run-time synonymous and they describe the
+I use the terms execution time and run-time synonymously and they describe the
 duration in wall clock time units between two measurements.
 I described the measurement process in the previous section.
 
-I compare the algorithms using box plots to visualize
-the run-time for the major part of the measurements together with outliers.
-However, due to the nature of the box plots, data points marked as outlier need
+As a means to visualize the run-time measurements, I chose box plots.
+However, due to the nature of the box plots, data points marked as outliers need
 to be taken with a grain of salt.
 Box plots have six components: median, lower and upper quartile, lower and
 upper whisker, and outliers.
-Lower quartile, median and upper quartile are actual values present in the data
-set and mark 25\%, 50\%, and 75\% of the sorted data values.
 The distance between the lower and upper quartile values is the \emph{inter
 quartile distance} or IQD.
 Depending on the IQD, the lower and upper whiskers are computed as follows:
@@ -31,40 +28,40 @@ Depending on the IQD, the lower and upper whiskers are computed as follows:
   \text{upper whisker} &= \text{upper quartile} + 1.5 * \text{IQD}
 \end{align*}
 %
-The actual value of the lower whisker is the value of the next data point,
+The actual value of the lower whisker is the value of the next data point
 that is higher than the computed value.
-For the upper whisker its the next lower-value data point.
+For the upper whisker it is the next lower-value data point.
 Box plots consider every value beyond the value of the lower or upper whisker
 as outlier.
 
-Now the issue arises, if the inter quartile distance is low and therefore,
-the whisker values are close to their respective quartile value, a lot of
-data points can be marked as outliers.
-While they deviate from the main amount of run-time values, the actual distance
+The issue arises, if the IQD is low and therefore, the whisker values are close
+to their respective quartile value.
+Then a lot of data points can be marked as outliers.
+While they deviate from the bulk of run-time values, the actual distance
 is not necessarily high.
-So a high number of marked outliers is not necessarily a sign of bad performance.
+Consequently, a high number of marked outliers is not necessarily a sign of
+high deviation.
 
 \paragraph{Cost of Balancing.}
 Balancing can be expensive run-time wise.
 If it migrates threads with a large cache working set to another physical core,
 the threads need to reload their working set into the core local caches.
 Furthermore, the measure-predict-decide-enforce (MPDE) cycle needs processor time,
-although only on core zero in the current implementation, but the housekeeping
-during the cycle can be expensive.
+although only on core zero in the current implementation.
+Still, the housekeeping during the cycle can be expensive.
 Because threads can leave at any time, the load balancer must check their
 presence multiple times and act on failing system calls.
-I believe improvements to the source code can reduce the time, but currently,
-the MPDE cycle takes normally around $170\mu{}s$ when managing ten threads or around
-$55\mu{}s$ when managing one thread.
-However, I observed that this cycle can take up two to orders of magnitude
+I believe optimizations to the source code can reduce the time, but currently,
+the MPDE cycle takes around $55$\textmu{}s when managing one thread,
+$170$\textmu{}s when managing ten threads.
+However, I observed that this cycle can take up to two orders of magnitude
 longer due to housekeeping issues.
-The normal cycle duration depends on the number of threads the load
+The cycle duration depends on the number of threads the load
 balancer manages and not on the length of a balancing interval.
 A shorter balancing interval, however, raises the total overhead of the load
 balancer, as the MPDE cycle is executed more often.
 Unfortunately, the overhead analysis raised questions about the implementation.
-In the worst-case a MPDE cycle can take up to $1.5s$; if the load
-heavy load scenario discussed later, measurements can take around $45ms$.
+In the worst-case, an MPDE cycle can take up to $1.5$s.
 As the measurement component gathers each thread's performance data, it has to
 send a message to the core, that currently runs this thread.
 This leads to several cross-core messages and the answer is also delayed, as
@@ -72,42 +69,43 @@ the request has the same priority as the running threads.
 To improve this, the load balancer must employ one measurement thread per core
 with a higher priority.
 
-In the following, I analyse, how many cache misses must occur, to explain a one
-second run-time increase of an application, when running alone on the load
+In the following, I analyse, how many cache misses must occur, to be the reason
+for a one second run-time increase of an application, when running alone on the load
 balancer.
-Intel documentation(\cite{intel_perf_analysis_2009}) states $60ns$ for a
+Intel documentation (\cite{intel_perf_analysis_2009}) states $60$ns for an
 \gls{llc} miss, independent
 measurements\footnote{\url{http://www.7-cpu.com/cpu/Haswell.html}}
-suggest $70ns$, which accounts on a $3\textit{GHz}$ CPU for a difference of $3$ to $4$ cycles
+suggest $70$ns, which accounts for a difference of $3$ to $4$ cycles on a $3$GHz CPU
 compared to the Intel statement.
 
-The maximum amount of misses per seconds is $10^9/70 \approx 14285714$ misses.
-During one interval of $100ms$ $10^8/70 \approx 1428571$ or $10ms$ $10^7/70 \approx
+The maximum amount of misses per second is $10^9/70 \approx 14285714$ misses.
+During one interval of $100$ms $10^8/70 \approx 1428571$ or $10$ms $10^7/70 \approx
 142857$ misses can be generated.
 
-The memory-heavy Mcf application runs $90$ seconds.
-If its run-time is increased by one second due to bad balancing decisions and
+The memory-heavy Mcf application runs for $90$ seconds.
+When its run-time is increased by one second due to bad balancing decisions and
 subsequent cache misses, it suffers on average an additional
 $14285714 / 90 \approx 158730$ cache misses per second during its run-time.
-Relative to an interval length of $100ms$ that are $15873$ misses per interval.
+Relative to an interval length of $100$ms that means $15873$ misses per interval.
 The cache size of the core local L1 and L2 caches is $64 + 256 = 320$KB or
 $5120$ cache lines \`a $64$Byte.
 Producing $15873$ misses during an 100ms interval would mean to flush the
 whole cache $3.1$ times.
-One cache miss takes $70ns$, hence flushing the whole cache $3.1$ times takes
-$5120 * 3.1 * 70ns = 1111040ns$ or $1.11104ms$.
-So, if Mcf suffers a slowdown of one second it has to spend $1.1ms$ each balancing
+One cache miss takes $70$ns, hence flushing the whole cache $3.1$ times takes
+$5120 * 3.1 * 70ns = 1111040$ns or $1.11104$ms.
+So, if Mcf suffers a slowdown of one second it has to spend $1.1$ms each balancing
 interval on additional cache misses.
 
-However, forcing a core switch every $100ms$ might cause losing a whole cache set
+However, forcing a core switch every $100$ms might cause losing a whole cache set
 once, but not thrice.
 This discussion is also simplified, as I discuss last level cache misses
 and only account for core local caches.
 When a core switch occurs, it is likely that the data can be fetched from the
 \gls{llc} as it is an inclusive cache.
-A \gls{llc} access needs approximately $13ns$. Assuming reuse of all $5120$ cache
-lines, fetching them needs $66560ns$ or  $0.06656ms$.
-That leaves around $1.05ms$ per balancing interval to account for.
+A successful \gls{llc} access takes approximately $13$ns.
+Assuming reuse of all $5120$ cache lines, fetching them takes $66560$ns or
+$0.06656$ms.
+That leaves around $1.05$ms per balancing interval to account for.
 
 This concludes that additional cache misses due load balancing decisions cannot
 be the sole reason for run-time deviation as observed in figure
@@ -138,7 +136,7 @@ migrate any running application and produces no additional overhead through
 measurement and balancing action.
 The green box plots in figure \ref{eval:fig:box_solo} show that nearly all SLD
 run-times lie within a tenth of a second of each other.
-The very deterministic run-time suggests, that SLD schedules the benchmark on
+The very deterministic run-time suggests that SLD schedules the benchmark on
 the same core each run.
 Also, compared to the violet and blue plots of STB and TB, the SLD run-times
 are either as good as the minimal run-time of the other two or better.
@@ -157,10 +155,9 @@ are either as good as the minimal run-time of the other two or better.
   \label{eval:fig:box_solo_10ms}
 \end{figure}
 
-%todo STB an TB solo performance discussion with 100/10 ms differences
 
 \Gls{cfs} on the other hand is significantly faster.
-The gap for the memory-bound benchmarks is smaller, than the gap for
+The gap for the memory-bound benchmarks is smaller than the gap for
 the two compute-bound benchmarks.
 The algorithm dynamically adjusts the time slices of the running programs to reduce
 the scheduling overhead.
@@ -168,18 +165,28 @@ Furthermore, the amount of time, money, and effort the Linux community put into
 scheduling is reflected in these numbers.
 \\
 
-The results of STB and TB are good for all benchmarks however,
-raises questions about the amount of migrations and the overhead of the load
-balancer.
+The results of STB and TB display equally fast run-times for the compute-bound
+benchmarks.
+However, the run-times of the memory-bound benchmarks raise questions about the
+amount of migrations and the overhead of the load balancer.
 Between figure \ref{eval:fig:box_solo} and figure \ref{eval:fig:box_solo_10ms}
-lies a ten fold increase in overhead, as the interval duration changes from
-$100ms$ to $10ms$.
-In case of Mcf and Lbm, STB got a little bit slower, TB on the other hand got a
-little bit faster, so the overhead ten fold increase is not necessarily the
-reason for slower performance.
-Due to the low number of repetitions, the shown improvements might not be
-representative for Lbm and Mcf.
-Gamess's performance is unchanged and Gcc sees a little improvement under TB.
+lies a tenfold increase in overhead, as the interval duration changes from
+$100$ms to $10$ms.
+In case of Mcf, STB displays better run-times for best-case, worst-case, and
+median, but worse run-times at all three points for Lbm.
+TB's results for Mcf improved as well.
+Whereas Lbm's run-times under TB balancing decreased in median and best-case,
+they increased in upper quartile and worst-case.
+If the tenfold increase in overhead would be a problem, the best-case run-time
+would not have improved.
+Due to the increased number of measurements, the measurement-time spikes during
+the MPDE cycle occur more frequent, thus affects more application run-time
+measurements.
+Consequently, the upper quartile and worst-case run-times increase.
+The number of repetitions must be increased to provide a better view on the
+run-time deviations.
+Additionally, the implementation must change to eliminate these spikes, as I
+suggested above.
 
 Solo runs give insights into the behaviour of the algorithms and provide
 a base line to compare load runs to.
@@ -192,26 +199,26 @@ All measurements in figure \ref{eval:fig:box_all} are taken during the same
 benchmarking run of the specific balancer.
 Thus, the execution times of the different applications are connected, but
 determining if worst case time of one benchmark correlates with best case times
-of another, needs further analysis, which, again, the time budget does not
-allow for.
+of another, needs further analysis.
+Which, again, the time budget does not allow for.
 
-At this point, I want to recall the above mentioned connection between outliers
+At this point, I want to recall the above-mentioned connection between outliers
 and the inter quartile distance in box plots.
 
-Where the performance of SLD for a single application was quite good, it is
-no competitor if the system is loaded, as is the case in figure
-\ref{eval:fig:box_all}.
+While the performance of SLD for a single application was on a par with TB and
+STB, it is no competition for the two if the system is loaded.
+Figure \ref{eval:fig:box_all} depicts the results.
 The inner quartile distance for Mcf, Gamess, and Lbm covers nearly the whole
 deviation span of the other algorithms, and for Gcc SLD shows an already large
 IQD and upper whisker value, but still a high number of bad performing outliers.
 
 The median run-time is as good as the other algorithms', but SLD's worst case
 is more than two times worse than its median.
-Furthermore, in all benchmarks is the distance between median and upper quartile
-much larger than the distance between lower quartile and median.
-This asymmetry shows the unpredictability of the SLD placement.
-In summary, SLD provides indeterministic performance for loaded systems with a
-high risk to generate a bad performing thread-to-core mapping.
+Furthermore, in all benchmarks the distance between median and upper quartile
+is much larger than the distance between lower quartile and median.
+This asymmetry displays the unpredictability of the SLD placement.
+In summary, SLD provides non-deterministic performance for loaded systems with a
+high risk to generate a suboptimal thread-to-core mapping.
 %
 \begin{figure}[h!]
   \begin{subfigure}{\textwidth}
@@ -261,38 +268,36 @@ median run-time, which points to other issues with this workload.
 % Guess: coscheduling issue, as stb has less worst case and slightly better best case
 %  . . .
 
-I do not consider the printed outliers in case of Gcc as a problem, because
+I do not consider the printed outliers in case of Gcc as a problem, as
 they are within the 1.5 times median run-time range and compared to the other
-algorithms, they are below their upper quartile run-time.
+algorithms, they are below the upper quartile run-time of STB and TB.
 However, CFS is not the focus of this thesis, hence, I do not further
 investigate its issues with Gamess and Gcc.
 \\
 
-The focus of this thesis lies on behaviour awareness, which the STB and TB
+The focus of this thesis lies in behaviour awareness, which the STB and TB
 algorithms implement.
 In difference to SLD, both perform a MPDE cycle every balancing interval.
-The interval length in figure \ref{eval:fig:box_all} is $100ms$, whereas figure
-\ref{eval:fig:box_all_10ms} shows a $10ms$ interval.
+The interval length in figure \ref{eval:fig:box_all} is $100$ms, whereas figure
+\ref{eval:fig:box_all_10ms} shows a $10$ms interval.
 
 In both figures, TB's Gamess shows a behaviour similar to CFS, while the
-outliers in the $10ms$ case are less and not as high.
-Looking at all benchmarks, TB performs better with a short interval duration:
+outliers in the $10$ms case are less and not as high.
+Considering all benchmarks, TB performs better with a short interval duration:
 less deviation, lower worst-case execution times, and the memory-bound
-applications show also better best-case run-times.
+applications also show better best-case run-times.
 
-STB is more of a mixed picture: less deviation as well, but the median
-slightly decreased for all applications and also the worst-case run-times
-increased.
-However, when compared to TB, deviation of all benchmarks is less providing a
-more deterministic result.
+STB offers more of a mixed picture: less deviation as well, but the median
+slightly decreased for all applications and along with an increase in
+worst-case run-times.
+However, when STB and TB are compared regarding deviation of all benchmarks,
+STB displays more reliable results.
 STB provides each application with a fair share of resources depending on the
 application's run-time behaviour.
 As the measurements of all applications were taken during the same run, the
 best-case run-time of one is possibly connected to the worst-case run-time of
 another, hence a fair load balancer provides an equal share of resources
 during each execution.
-
-However, the system load can be increased.
 
 
 \paragraph{Heavy Load.}
@@ -301,8 +306,8 @@ utilize the processor.
 However, the quad-core machine with \gls{ht} has still some underutilized
 resources, thus I double the workload by running each benchmark twice.
 \cite{zhuravlev_addressing_2010} also turns to this approach to fully utilize
-the Xeon server processor with eight physical cores, where each two cores share
-one \gls{llc}.
+the Xeon server processor with eight physical cores, where two cores share
+one \gls{llc} each.
 
 Figure \ref{eval:fig:box_heavy} shows the results for a $100ms$ load balancing
 interval for STB and TB. SLD is not part of this measurement, as the
@@ -314,19 +319,20 @@ The results in figure \ref{eval:fig:box_heavy} are consistent with figure
 \ref{eval:fig:box_all} in the following two ways:
 First, the run-time deviation is much lower for STB; second, the median
 run-time is better in case of Gcc, but worse for the other three applications,
-however, the worst-case performance of STB is consistently better.
-It is not evident from the bottom-left plot if STB is better; the
-execution time of the top mark is 373.0.
+However, the worst-case performance of STB is consistently better.
+It is not evident from the bottom-left plot whether STB is better; the
+execution time of the top mark is $373.0$s.
 
 Because the execution times of all applications are connected, the worse
 best-case performance of one application benefits the better worst-case
 performance of the other.
 It is preferable to improve on the median execution time of all benchmarks and
-I believe there is room for algorithmic improvements, however, a high
-worst-case execution time in one long running application like Mcf or Lbm, allows for a
+I believe there is room for algorithmic improvements.
+However, a high worst-case execution time in one long running application like
+Mcf or Lbm, allows for a
 several good run-times in the short running Gcc or Gamess; Lbm's median is
 three times as high as the Gcc's or Gamess's median.
-So the goal besides the numbers is to provide an environment, where each
+So, the goal besides the numbers is to provide an environment where each
 application uses as much resources as needed to perform well, while not causing
 severe performance degradation to other applications.
 %
@@ -376,12 +382,14 @@ question.
 I compute the overall performance of each load balancing scheme as average
 run-time increase relative to average solo run-time.
 Table \ref{eval:tbl:exec_inc} shows the average run-time increase per
-application per balancer and figure \ref{eval:fig:exec_inc} one group of
-bars per application visualizes these differences.
-On average CFS and STB perform equally well, whereas TB outperforms both,
-however in the high load scenario CFS's performance is significantly worse
+application per balancer.
+One group of bars in figure \ref{eval:fig:exec_inc} displays the differences
+between all balancers per application.
+On average CFS and STB perform equally well, whereas TB outperforms both.
+However in the high load scenario CFS's performance is significantly worse
 than TB's or STB's.
-However, these numbers do incorporate all measurements, including the extreme
+In contrast to the box plots where outliers are clearly marked, these numbers
+do incorporate all measurements, including the extreme
 run-times of Gamess under CFS displayed in figure \ref{eval:fig:box_heavy}.
 They also do not reflect the run-time deviation across multiple repetitions.
 %

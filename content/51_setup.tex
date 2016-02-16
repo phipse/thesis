@@ -2,12 +2,14 @@
 \section{Benchmark and Measurement Setup}
 
 In the following, I describe the benchmark applications and the
-system environment, the benchmarks run in.
+system environment the benchmarks run in.
 
 \paragraph{Benchmarks.}
 I use four single threaded applications from the \emph{SPEC CPU2006} benchmarking
-suit\footnote{\url{http://spec.org/cpu2006/}}:
+suite\footnote{\url{http://spec.org/cpu2006/}}:
 namely, 403.gcc, 416.gamess, 429.mcf, and 470.lbm.
+The benchmark set consists of two compute-bound and two memory-bound
+benchmarks, with one integer and one floating point benchmark within each group.
 They display the algorithm's performance under load.
 
 416.gamess is a floating point benchmark written in Fortran executing a quantum
@@ -21,11 +23,9 @@ The benchmark is also compute-bound and generates a low number of \gls{mpc}.
 It generates a high amount of \gls{mpc}, therefore it is memory-bound.
 429.mcf generates the highest number of \gls{mpc}.
 It computes a combinatorial optimization using the integer units.
-The benchmark set consists of two compute-bound and two memory-bound
-benchmarks, with one integer and one floating point benchmark within each group.
 
 \begin{comment}
-Besides the SPEC benchmarks, I employ two other applications to proof the
+Besides the SPEC benchmarks, I employ two other applications to prove the
 group configuration awareness of the load balancer one the one side, and the
 performance benefits for such a configuration on the other side.
 To that end, I use a multi-threaded matrix multiplication for a matrix with
@@ -34,7 +34,7 @@ core it currently runs on.
 
 The latter benchmark shows that client and server are migrated together, as
 long as there is only one client per task.
-If a task spawn several threads, the balancer distributes the additional
+If a task spawns several threads, the balancer distributes the additional
 threads to other cores.
 \end{comment}
 
@@ -62,15 +62,16 @@ conjunction with the kernel-level scheduler; it is Linux's \gls{cfs}.
 \paragraph{Time Measurement.}
 For each application I measure the time it takes to start the application,
 execute all threads to completion, and exit.
-I repeat the measurement one hundred times, or if several benchmarks run
-concurrently, until the slowest benchmark has repeated one hundred times.
-Consequently, fast benchmarks -- 403.gcc and  416.gamess -- provide more
-measurements than slow benchmarks -- 429.mcf and 470.lbm.
+I repeat the measurement at least 100 times.
+When several benchmarks run concurrently, the slowest benchmark needs more time
+to reach 100 measurements.
+To keep the system load constant, fast benchmarks -- 403.gcc and  416.gamess --
+provide more measurements than slow benchmarks -- 429.mcf and 470.lbm.
 
 On L4Re, I use the Ned startup script to measure and output the times for
 each application.
-On Linux, I use a ruby script to measure the durations and to store them in a
-file for each application.
+On Linux, I use a self-written ruby script to measure the durations and to
+store them in one file per application.
 
 Furthermore, I do not use the time stamp counter (TSC), as this counter depends
 on the core the time stamp is taken on.
@@ -79,13 +80,13 @@ Instead I use \texttt{clock\_gettime(CLOCK\_MONOTONIC)} on Linux and
 
 
 \paragraph{64bit Issue.}
-Running the benchmarks on 64bit, raises an issue in the memory subsystem of L4Re.
+Running the benchmarks on 64bit raises an issue in the memory subsystem of L4Re.
 Memory allocation and deallocation increases the run-time of 403.gcc by several
 seconds for each repetition.
-The load balancing algorithm is not the cause for this behaviour, as it also
+The load balancing algorithm is not the cause for this behaviour, as this issue also
 presents itself if no load balancing is done.
 The task runs to completion and then restarts, so I expect each allocated
-page to be free after completion.
+page to be freed after completion.
 The L4Re internal memory management should now merge free chunks of memory.
 However, the size of the list of free memory areas increases constantly and
 shows allocated pages in between, preventing compaction.
@@ -99,14 +100,14 @@ benchmarks are affected as well.
 429.mcf allocates all memory at the beginning of the benchmark, so the memory
 subsystem is not used constantly, as is the case for 403.gcc.
 
-When 416.gamess, 429.mcf, and 470.lbm run together on L4Re the run-times
-increase occasionally between 2.5 and 4 times.
+When 416.gamess, 429.mcf, and 470.lbm run together on L4Re, the run-times
+increase occasionally by a factor of 2.5 to 4.
 This increase cannot solely be explained by bad load balancing decisions.
 Also, the average run-time for the first 50 iterations of 470.lbm is 60 seconds
 lower than the average run-time of the second 50 iterations.
 Minimum, maximum and median run-time show a similar difference.
 
-Providing a different memory allocator to each task via the ned script,
+Providing a different memory allocator to each task via the Ned script
 did not eliminate this problem.
 As this issue did not present itself for 32bit, all benchmarks are executed
 in a 32bit environment. This issue will be addressed by the L4Re developers.

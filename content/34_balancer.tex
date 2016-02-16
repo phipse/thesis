@@ -39,7 +39,6 @@ The load balancers must communicate their reasoning either with each other, or
 with a central instance further up the hierarchy.
 The former weakens the isolation and increases overhead, the latter means more
 logic in a central instance.
-
 Due to the easier implementation of a central load balancing component,
 I choose to implement the centralized service.
 \\
@@ -60,11 +59,12 @@ groups derived from the parameters.
 
 \begin{figure}[h!]
   \setcapindent*{1em}
+  \setlength{\columnsep}{10mm}
   \begin{captionbeside}[Load balancer interaction with clients.]
     {Load Balancer with one Task Proxy per client task.
       The Task Proxy adds the task's configuration to the \texttt{run\_thread}
     call.}
-  \includegraphics[width=0.65\textwidth]{images/threadMapper_layout}
+  \includegraphics[]{images/threadMapper_layout}
 \end{captionbeside}
   \label{state:figbalancer_proxy}
 \end{figure}
@@ -118,11 +118,12 @@ assignment to the current circumstances.
 
 \begin{figure}[h]
   \setcapindent*{1em}
+  \setlength{\columnsep}{10mm}
   \begin{captionbeside}[MPDE Cycle with topology awareness.]
     {Sequential succession of the measure-predict-decide-enforce cycle inside the load
     balancer. This cycle executes every balancing interval to read performance
     data and to decide on migrations.}
-  \includestandalone[mode=tex,width=0.65\textwidth]{images/statusvortrag/arch_interval_cycle}
+  \includestandalone[mode=tex]{images/statusvortrag/arch_interval_cycle}
   \end{captionbeside}
   \label{arch:fig:intervalcycle}
 \end{figure}
