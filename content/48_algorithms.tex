@@ -49,10 +49,8 @@ the test for the overall system balance.
 
 The core accounting needs to keep track of unaccounted load, accounted load by
 not migratable threads, and accounted load by migratible threads.
-\Gls{mpc} measurements are only accessible for managed threads, meaning not
+\Gls{mpc} measurements are only accessible for managed threads, meaning
 threads within groups and threads without group.
-Therefore, \gls{mpc}-aware placement and balancing depends on these two
-groups.
 \\
 
 As mentioned in section \ref{design:load}, balance is two-dimensional.
@@ -145,7 +143,7 @@ No communication parameter tells the load balancer that these tasks should be
 grouped together.
 Consider two threads with shared memory on two separated cores.
 The only connection is the \gls{llc}.
-The cache line holding the shared memory will bounce back and forth between
+The cache lines holding the shared memory will bounce back and forth between
 the two cores, as one writes and invalidates the cache of the other.
 This means additional L1 and L2 cache-miss costs, each time they communicate.
 
@@ -155,7 +153,7 @@ performance of the threads.
 
 An additional shared memory configuration parameter is necessary to help the
 load balancer diminish this issue.
-Then two threads could be placed, so that they run co-scheduled on the same
+Then two threads could be placed, such that they run co-scheduled on the same
 caches.
 
 

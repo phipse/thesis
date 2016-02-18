@@ -2,7 +2,7 @@
 \section{Load Balancer}
 \label{design:balancer}
 
-I now unit all the techniques I introduce in the previous sections of this chapter
+I now unit all the techniques I introduced in the previous sections of this chapter
 into the central load balancing component.
 In this section I describe the components the load balancer is built of.
 % todo chapter structure
@@ -48,7 +48,7 @@ task's configuration information.
 Each task can have isolation (\ref{design:isolation}) and communication
 properties (\ref{design:comm}).
 The task's proxy scheduler stores the configuration and provides it to the
-central load balancer.
+central load balancer, as depicted in figure \ref{state:fig:balancer_proxy}.
 
 A factory creates the central load balancer and processes the configuration
 parameters for each client task.
@@ -66,7 +66,7 @@ groups derived from the parameters.
     call.}
   \includegraphics[]{images/threadMapper_layout}
 \end{captionbeside}
-  \label{state:figbalancer_proxy}
+  \label{state:fig:balancer_proxy}
 \end{figure}
 
 
@@ -77,17 +77,17 @@ thread via its capability.
 The load balancer evaluates the configuration passed by the task proxy and
 if isolation or communication groups are set, the thread is assigned to these
 groups.
-The management provides a consistent view on all managed, grouped, and threads
-not assigned to a group for other components and is also in charge of cleanup.
+The management provides a consistent view on all managed threads for other
+components and is also in charge of cleanup.
 
 
 \paragraph{CPU Topology \& Accounting.}
 Besides the management of threads, the load balancer must also know the
 topology of the underlying hardware.
-The topology scanner analyses topology via CPUID and stores it in a
+The topology scanner analyses the topology via CPUID and stores it in a
 hierarchical data structure.
 A package describes all physical cores of one socket.
-If \gls{ht} is present, each physical core contains data structures for
+If \gls{ht} is present, each physical core representation contains data structures for
 two logical cores.
 
 Each physical core is associated with an accounting object.
@@ -100,7 +100,7 @@ it is the place for the SMT abstraction introduced in \ref{design:smt}.
 Each thread assigned to the physical core is distributed to its hyper-threads
 by an algorithm, e.g. round robin, \gls{llc} weight, IPC, or load.
 If no \gls{ht} is available, no further assignment is necessary.
-The availability of \gls{ht} is deduced from the topology enumeration results.
+The availability of \gls{ht} is dynamically deduced from the topology enumeration results.
 
 
 \paragraph{Information Gathering \& Balancing.}
@@ -115,6 +115,8 @@ The logic of the load balancer is partitioned into four consecutive modules:
 measurement, prediction, decision, and enforcement.
 Each balancing interval, they run once and adapt the thread-to-core
 assignment to the current circumstances.
+Figure \ref{arch:fig:intervalcycle} depicts this Measure-Predict-Decide-Enforce
+(MPDE) cycle.
 
 \begin{figure}[h]
   \setcapindent*{1em}
@@ -149,7 +151,7 @@ The ideal interval size increases system performance to outweigh the interval's
 own run-time overhead.
 \\
 
-The benefit of dividing the interval cycle into four separate components lies
+The benefit of dividing the MPDE cycle into four separate components lies
 in its flexibility.
 If other information sources should be used, the measurement component is the
 place to add them.

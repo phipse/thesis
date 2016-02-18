@@ -6,11 +6,11 @@ In sections \ref{design:isolation} and \ref{design:comm}, I discussed
 task properties relevant to a load balancer.
 The result of these discussions was to provide the load balancer with a static
 configuration of a task's properties.
-In th following section I show how the configuration is used and implemented.
+In the following section I show how the configuration is used and implemented.
 
 \paragraph{Configuration Parameters.}
 Listing \ref{impl:config:parameters} shows the implemented parameters:
-\texttt{sec} and \texttt{rt} define security and real-time groups,
+\texttt{sec} and \texttt{rt} define security and real-time groups;
 \texttt{distr} and \texttt{clsvr} configure \gls{bsp} and client-server
 communication groups.
 The \texttt{\_C} or \texttt{\_S} flag marks a task as client or server.
@@ -39,8 +39,6 @@ As mentioned in \ref{design:isolation}, a real-time group could have more than
 one core assigned, but this is currently not implemented.
 In the future the name could be followed by a core count, to state the number
 of cores necessary.
-Then a combination of \texttt{clsvr} and \texttt{rt} makes sense, which is not
-the case at the current state.
 
 To configure the task a create call to the factory service of the load
 balancer must be issued, containing the scheduler protocol as first parameter
@@ -62,7 +60,7 @@ tmFactory:create(
 \end{lstlisting}
 \end{comment}
 
-The capability received from the above create call replaces the
+The capability received from the above create call replaces the from the parent
 inherited scheduler in the task's environment.
 As the scheduler interface has not changed, the task accesses the scheduler via
 \texttt{L4Re::Env::env()->scheduler()}.

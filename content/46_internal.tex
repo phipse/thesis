@@ -3,7 +3,7 @@
 \label{impl:internal}
 
 %\paragraph{Thread representation \& management}
-If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)}, passing
+If a thread calls \texttt{scheduler()->run\_thread(cap, sched\_params)} passing
 a capability and its scheduling parameters, the proxy scheduler
 receives the call.
 After adding the task's configuration, the proxy forwards the run call to the
@@ -25,7 +25,7 @@ presence of threads and in the case of deletion, it removes the corresponding
 groups, before the object is destroyed.
 
 
-\paragraph{Interval Cycle.}
+\paragraph{MPDE Cycle.}
 The interval cycle design introduced in section \ref{design:balancer} is
 implemented as follows:
 Measurements and prediction are stored in the thread's \texttt{Thread\_t}
@@ -44,7 +44,7 @@ considered first for migration.
 Isolation groups are not considered here, as their core assignment is static.
 Then the threads of each \texttt{distr} group are distributed to all cores, before
 \texttt{clsvr} type groups are placed.
-The client-server groups are placed on the core with the least \gls{mpc}.
+The client-server groups are placed on one core.
 If a task provides several threads to the group, its threads are evenly
 distributed to each core.
 

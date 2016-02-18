@@ -18,10 +18,11 @@ chip.
 As shown in \cite{inci_seriously_2015} and \cite{liu_last-level_2015},
 the impact of placing security critical tasks on a seprate core is limited.
 Still, a security core increases the difficulty for PRIME+PROBE attacks.
-To completely mitigate this channel, no caches may be shared between the
+To eliminate this channel, no caches may be shared between the
 security-critical task and the attacker.
-Nowadays, only a multi-socket system or \gls{intel}'s Cache Allocation
-Technology can enforce this (\cite{intel_cat}).
+Therefore, either a multi-socket system, Intel's Cache Allocation
+Technology can enforce this (\cite{intel_cat}), or similar cache rights
+management must be used.
 \\
 
 The security requirements of a task are known at system design.
@@ -41,12 +42,12 @@ different groups by name.
 A similar isolation guarantee is necessary for real-time tasks.
 Real-time tasks need predictable execution times.
 By using an exclusive core and cache, real-time tasks are less affected by the
-influenced of best-effort workloads.
+influence of best-effort workloads.
 Due to the inclusive cache design, evictions from the \gls{llc} require
 evicting the cache line in the core local caches as well.
-Hence, this approach limits the possible disturbance, but does not eliminate them.
-Also, several cores can be assigned to a real-time task group, depending on its
-requirements.
+Hence, this approach limits the possible disturbance, but does not eliminate it.
+Also, the load balancer can assign several cores to a real-time task group, 
+depending on its requirements.
 
 As the requirements of real-time tasks are also known before run-time, a static
 configuration can be used.

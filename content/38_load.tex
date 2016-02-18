@@ -29,7 +29,7 @@ So the load of a domain is the sum of \gls{mpc} of all assigned threads.
 A system is in balance, if each group within a domain has an equal number of
 \gls{mpc}, or in a different formulation:
 if no thread-to-core assignment reduces the imbalances between cores.
-However, this metric suffers because of its disregard for remaining execution time.
+However, this metric suffers because of its disregard for required execution time.
 While memory intense threads may perform better, computation intense threads
 suffer due to migration and possibly thread count imbalances between
 cores.
@@ -106,8 +106,7 @@ The spatial balancing should act, if high imbalances regarding accumulated
 \gls{mpc} per core arise, or if the difference of \gls{mpc}-heavy threads per
 core rises above one or two high \gls{mpc} threads per core.
 
-Regarding temporal imbalances, the questions are: is there a thread that would
-even out imbalances if migrated?
+Regarding temporal imbalances, the implementation questions are: is there a 
+thread that would even out imbalances if migrated?
 And: At which load differences does the load balancer start searching for such
 a thread?
-In the evaluation section I search for a good threshold value.

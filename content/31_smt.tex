@@ -6,8 +6,6 @@
 
 At the lowest level, a load balancer must balance the work of two corresponding
 \gls{ht} cores.
-% todo improve connection
-
 The performance gains of \gls{ht} stem from the conversion of thread level
 parallelism to instruction level parallelism, by providing more instructions to
 the \gls{eu} to fill their pipelines.
@@ -17,7 +15,7 @@ Hence, two threads with good \gls{ht} performance use different \gls{eu}s.
 
 The term co-schedule, coined in \cite{snavely_symbiotic_2000}, describes two
 threads running at the same time on two corresponding logical cores.
-Two questions for this work are: how can the performance of a co-schedule be
+Two questions in this section are: how can the performance of a co-schedule be
 measured? And: is such a measurement comparable to measurements from previous
 intervals?
 
@@ -26,7 +24,7 @@ utilization of a co-schedule?
 A performance counter observing all executed
 micro-ops\footnote{UOPS\_RETIRED.ALL} could answer this question.
 However, if this measure accuratley reflects the performance degradation each thread
-suffers due to sharing execution resources, needs further analysis.
+suffers, due to sharing execution resources, needs further analysis.
 
 To get the degradation percentage, knowledge about solo execution is necessary,
 which is either gathered offline beforehand, or by scheduling each thread alone
@@ -44,12 +42,12 @@ pair of logical cores.
 If more than two threads are running during an interval, the load balancer can
 only rate the group performance, because it is impossible to deduce which
 of the
-$2^n-1$\footnote{The number of disjoint, non-empty partitions of a set of
+$2^n-1$ possible co-schedules\footnote{The number of disjoint, non-empty partitions of a set of
   objects is computed with the \emph{Stirling numbers of the second kind:}
   $S(n,k):\;\; n = |objects|,\: k = |partitions|;$\\A special case exists for
 two partitions: $k = 2: S(n,2) = 2^n-1$.}
 %
-possible co-schedules ran for which amount of time.
+ ran for which amount of time.
 Consequently, the group rating describes the performance of a physical core.
 
 The same applies to any performance comparison between hyper-threads. As the

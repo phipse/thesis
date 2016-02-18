@@ -13,7 +13,8 @@ as reference, if a term is ambiguous or unknown.
     communication buffers. It is primarily used for message transfer.
 
   \item[\Gls{sc}] A \gls{sc} contains information for the scheduler consisting
-    of a priority level, execution time, and remaining execution time.
+    of a priority level, execution time, remaining time quantum, and core
+    afffinity mask.
 
   \item[Thread] A thread is a unit of execution, consisting of a kernel and
     \gls{utcb}, a \gls{sc}, and further interfaces.
@@ -64,7 +65,7 @@ as reference, if a term is ambiguous or unknown.
     Each cache broadcasts every update over the address bus and all other
     caches update the status of their copy of the data.
     Haswell generation processors use the MESI protocol to keep their data
-    coherent (\cite[2-22]{intel_optimization_manual_2015}).
+    coherent (\autocite[2-22]{intel_optimization_manual_2015}).
 
   \item[Migration] The process of moving a thread from one core to another core
     is called migration.
@@ -108,9 +109,9 @@ as reference, if a term is ambiguous or unknown.
 
   \item[Intervall] Describes a pre-defined amount of time.
   \item[Wall clock time] Describes the time passed in real life.
-  \item[Execution time] Describes the time a thread spends executing on a
+  \item[Execution time] Describes the time a thread spends executing on any
     core.
-  \item[Turnaround time] Time between submission of a job and its completion.
+  \item[Turnaround time] Time between start of a thread and its completion.
 
 
 

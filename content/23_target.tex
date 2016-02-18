@@ -2,7 +2,7 @@
 \section{Fiasco.OC \& L4Re}
 \label{state:env}
 The related research I present in section \ref{state:related} states the
-following feature requirements:
+following three feature requirements:
 hardware performance counters, assignment of threads to specific
 cores, and the ability to overrule the kernel scheduler.
 
@@ -80,7 +80,7 @@ to implement a mechanism to provide this for a user-level service.
 \section{Intel Haswell Architecture}
 \label{state:haswell}
 
-In section \ref{state:related}, I mentione several hardware features.
+In section \ref{state:related}, I mention several hardware features.
 The most important of all are performance counters to measure cache misses,
 cycles and instructions executed.
 The performance counters in the target processor --- an \gls{intel} Haswell
@@ -90,11 +90,11 @@ capabilities, which consist, among other features, of three fixed-function
 performance counters counting Instruction Retired, Unhalted Core Cycles, and
 Reference Instruction Retired (\cite{intel_arch_ref_manual_2015}).
 In contrast to the first two counters, the last counter is unaffected by
-processor speed changes due to power saving or \textit{turbo boost} features.
+processor speed changes due to \emph{dynamic voltage and frequency scaling} or \textit{turbo boost} features.
 
 Besides these, four general purpose performance counters are available per
 logical core, which can be programmed to count one specific event.
-All \gls{intel} Core i generations support architectural performance monitoring
+All Intel Core i generations support architectural performance monitoring
 in different versions, but all versions are guaranteed to support the following
 events:
 Unhalted Core Cycles, Instruction Retired, Unhalted Reference Cycles,
@@ -112,13 +112,13 @@ earlier research, is the \gls{smp} architecture.
 In contrast to \gls{cmp}, the architecture does not define cache groups,
 because the \gls{llc} is shared among all cores.
 Figure \ref{state:fig:core_layout} shows an example of the cache hierarchy of
-the \gls{intel} Haswell processor.
+the Intel Haswell processor.
 Each core consists of two \gls{ht} cores, sharing L1- and L2-caches.
 All cores on one socket share the same \gls{llc}.
 The \gls{llc} is inclusive, meaning each cache line present in L1I-, L1D-, or
 L2-cache is also present in the \gls{llc}
-(\cite[2-23]{intel_optimization_manual_2015}).
-This eases the lookup of cache lines in other cores on the same package.
+(\autocite[2-23]{intel_optimization_manual_2015}).
+This eases the lookup of cache lines in other cores on the same socket.
 If the line is present in the \gls{llc} the cache-coherency status indicates,
 if and in which core's caches it is present.
 
@@ -139,9 +139,9 @@ if and in which core's caches it is present.
 \paragraph{Topology analysis.}
 The topology of the CPU can be determined at run-time.
 It is useful to detect which two logical cores exist together on the same
-physical core, since Fiasco boots the physical cores in a nondeterministic order.
+physical core, since Fiasco.OC boots the physical cores in a nondeterministic order.
 The CPU provides this information through the CPUID interface, if the
-extended topology enumeration leaf is supported(\cite[Vol.2A
+extended topology enumeration leaf is supported (\autocite[Vol.2A
 3-179]{intel_arch_ref_manual_2015}). This is the case for the
 target CPU.
 

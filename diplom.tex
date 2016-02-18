@@ -2,7 +2,8 @@
   a4paper,
   abstract=true,
   twoside,
-  listof=totoc,
+%  listof=totoc,
+%  listof=nochaptergap,
   numbers=noenddot,
   bibliography=totoc,
   BCOR1.5cm,
@@ -45,8 +46,8 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 %\makeglossaries
 
 % If you know when you will hand in your thesis, enter the date here.
-%\date{30. April 2009}
-%\newcommand{\printdate}{\@date}
+\date{18. Februar 2016}
+\newcommand{\printdate}{\@date}
 
 \begin{document}
 
@@ -67,6 +68,7 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 %\end{abstract}
 
 \cleardoublepage
+\renewcommand\lstlistlistingname{List of Listings}
 % reduce line spacing for toc
 \renewcommand{\baselinestretch}{1.05}
 \tableofcontents
@@ -77,6 +79,10 @@ pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
 \cleardoublepage
 
 \listoftables
+\begingroup
+\let\clearpage\relax
+\lstlistoflistings
+\endgroup
 \cleardoublepage
 
 % reset line spacing to value defined in preamble/style.tex

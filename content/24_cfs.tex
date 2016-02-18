@@ -4,12 +4,12 @@
 
 \newacronym{cfs}{CFS}{Completely Fair Scheduler}
 
-Since Linux version 2.6.23, Linux uses the\gls{cfs} (\cite{linux_cfs_doc}).
+Since Linux version 2.6.23, Linux uses the \gls{cfs} (\cite{linux_cfs_doc}).
 It aims at complete fairness, in regard to execution time provided to each task.
 To achieve fairness, it measures so called virtual run-time of each task and
 selects the task with the lowest account to run next.
 Internally, \gls{cfs} uses a red-black tree to sort the tasks regarding virtual
-run-time,
+run-time.
 
 \gls{cfs} also supports group scheduling to provide fairness between tasks with one
 thread and tasks with many threads.
@@ -21,11 +21,11 @@ higher than the virtual run-time of any other task.
 Then a task switch occurs.
 As this would lead to constant task switching, two measures are used to
 counteract this:
-\emph{target sched-\\ uling latency} (TSL) and \emph{minimum task run-time granularity}.
+\emph{target scheduling latency} (TSL) and \emph{minimum task run-time granularity}.
 
 The target scheduling latency describes an amount of time shared between a
 number of tasks.
-If two tasks are runnable, and the TSL is 20ms, then each task runs for 10ms.
+If two tasks are runnable, and the TSL is $20$ms, then each task runs for $10$ms.
 However, if more tasks become runnable, the amount of time per task shrinks and
 eventually the switching overhead is higher than the time a task spends
 executing.
@@ -43,7 +43,7 @@ high priority task.
 \paragraph{Domains, Groups, \& Load Balancing.}
 In \gls{cfs} a domain represents a unit of physical hardware;
 for example, a physical core is a domain and the two hyper-threads running
-inside each constitute a group within this domain.
+inside constitute a group each within this domain.
 On each level of the hierarchy, the current level is the domain and the lower
 hierarchy levels are groups.
 Each group within a domain is equivalent to other groups in the same domain

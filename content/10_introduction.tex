@@ -66,7 +66,7 @@ introducing numerous levels of on-die caches.
 These caches allow to prefetch memory based on typical memory access patterns
 and reduce the number of times the CPU sits idle.
 However, search duration increases with cache size and if the requested data is
-not present, the search duration increases the memory access latency additionally.
+not present, the cache-search duration increases the memory access latency additionally.
 Figure \ref{intro:fig:accessLatencies} shows size and latency of a Nehalem
 generation Intel CPU.
 
@@ -74,8 +74,7 @@ Besides reducing the number of waits for data from memory, the waiting time can 
 used for computation.
 Out-of-order processors execute other instructions while waiting for data and
 therefore reduce the idle time of the processor.
-Another technology to use idle processing resources is simultaneous
-multi-threading.
+Another technology to use idle processing resources is \gls{smt}.
 It employs several hardware threads sharing a processor's execution units to
 provide several instruction streams.
 While one instruction stream waits for memory, others are able to utilize the
@@ -134,8 +133,8 @@ execution units, the others can utilize the idle resources.
 Besides hardware solutions, software can also increase memory efficiency.
 Programmers of performance-critical software invest time and effort to adjust
 their program's data to fit into cache lines and allow for efficient prefetching.
-However, besides these custom adjustments are limited by the
-environment the software executes in.
+However, these custom adjustments are limited by the environment the software
+executes in.
 Two memory intensive threads sharing a processor will evict each other's
 cache lines, thus decreasing each other's performance as they need to fetch the
 data from memory again.

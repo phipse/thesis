@@ -49,7 +49,7 @@ thread}_i)$$
 Their developed scheduler consists of two phases: sampling and symbiosis.
 The sampling phase measures different thread combinations and moves to the
 symbiosis phase, when enough samples were gathered.
-During in the symbiosis phase, the scheduler selects the schedule, which
+During the symbiosis phase, the scheduler selects the schedule, which
 promises the highest weighted speedup.
 As the thread mix changes, the scheduler will move back and forth between these two
 phases.
@@ -64,7 +64,7 @@ conflicts.
 However, the best predictor in their study made a majority vote of all other
 predictors to determine the best schedule.
 \citeauthor{snavely_symbiotic_2000} conclude, that good thread symbiosis depends
-not only on high IPC, but also for examples usage conflicts in shared hardware
+not only on high IPC, but also on usage conflicts in shared hardware
 resources or cache hit rates.
 \\
 
@@ -139,7 +139,7 @@ Although no large performance improvements can be expected, symbiotic
 scheduling proves to be relevant to improve resource usage.
 However, if no offline knowledge is available, it is difficult to connect performance
 gains to scheduling decisions.
-As modern \gls{intel} multi-cores use \gls{smt} in each physical core, symbiotic
+As modern \gls{intel} multi-cores use \gls{ht} in each physical core, symbiotic
 scheduling provides an opportunity for performance gains.
 Together with hardware peformance counters, it might be possible to at least
 avoid bad co-schedules.
@@ -172,20 +172,20 @@ congestion awareness.
 Becoming aware of and reducing cache congestion is also topic of
 \cite{knauerhase_using_2008}.
 Like \citeauthor{banikazemi_pam_2008}, they work on a \gls{cmp}-machine with
-two separated cache groups sharing an L2 cache.
-Similarly, they try to spread memory intensive tasks as much as possible,
+a shared L2 cache per chip.
+They try to spread memory intensive tasks as much as possible,
 to reduce interference in the shared cache.
 The authors introduce the metric called \emph{cache weight}, which denotes the
 \gls{llc} misses per cycle for the last time interval.
 Their research shows that longer histories worsen the prediction, as thread
 behaviour changes over time.
 To achieve the best possible spread of all threads across cache groups,
-\citeauthor{knauerhase_using_2008} balance the threads in the \gls{llc}-group
+\citeauthor{knauerhase_using_2008} balance the threads in the \gls{llc} group
 based on the aggregate cache weight.
 New threads are assigned to the cache group with the lowest weight and only
 cache light threads are migrated across group boundaries.
 However, to care for workload changes, their scheduler periodically migrates an
-overweight thread to the lightest \gls{llc}-group.
+overweight thread to the lightest \gls{llc} group.
 
 Furthermore, cache light threads suffer next to cache intensive ones, as they
 most likely start with a cold cache each time they are scheduled.
@@ -203,8 +203,8 @@ resources.
 Although their assumption in \cite{fedorova_managing_2010} is that memory
 reuse patterns are the indicator of
 choice to predict cache interference between threads, their research leads to
-the conclusion that \gls{llc}-misses are a superior predictor.
-Memory reuse patterns model the access and miss frequency to a memory area for
+the conclusion that \gls{llc} misses are a superior predictor.
+Memory-reuse patterns model the access and miss frequency to a memory area for
 a particular application.
 This analysis is to be done offline and assumes that applications with high
 reuse and low miss rates do not affect other applications negatively.
@@ -224,7 +224,7 @@ applications, when sharing the same \gls{llc}.
 To approximate sensitivity and intensity online, they assume cache miss and
 access rates to be a good measure, but it turns out, only the cache miss
 rate is relevant.
-In contrast to memory reuse patterns, which focus solely on the cache as shared
+In contrast to memory-reuse patterns, which focus solely on the cache as shared
 resource, the cache miss rate also displays the load on prefetching hardware,
 memory controller and memory bus.
 Load on these shared resources turnes out to be the main reason for performance
@@ -233,7 +233,7 @@ degradation in most of their benchmarks (\cite{zhuravlev_addressing_2010}).
 \citeauthor{zhuravlev_addressing_2010} implemente their off- and online
 derived pain metrics in two scheduling algorithms: Distributed Intensity (DI)
 and Distributed Intensity Online (DIO).
-DI uses the pain metric derived offline from the stack-distance profiles,
+DI uses the pain metric derived offline from the memory-reuse patterns,
 whereas DIO uses \emph{approx-pain} derived from the \gls{llc} miss rate.
 Like \cite{banikazemi_pam_2008}, both schedulers are implemented in the
 Linux user level and override the default scheduler.
@@ -310,12 +310,12 @@ The sum of all core speeds determines the global average speed, which
 distinguishes fast from slow cores.
 To provide equal progress opportunities, each thread needs to run on a fast
 core at least once.
-So, the observation thread on a fast core searches for a suitable thread on slow
-core to migrate to its own core.
+So, the observation thread on a fast core searches for a suitable thread on a slow
+core.
 Additionally, the observation thread tries to migrate the least migrated thread to
 avoid constant migration of the same thread.
 
-Their implementation takes this kind of application as input, executes it and
+Their implementation takes an application as input, starts it and
 distributes its worker threads.
 They do neither model communication between different tasks in a client-server
 notion, nor at arbitrary points in time.
@@ -326,7 +326,7 @@ point improves overall application performance.
 \paragraph{Energy efficiency.}
 Performance is not a one dimensional value anymore.
 Performance per energy is the important measure on battery supported devices like
-notebooks or smartphones, and also in datacenters, as less energy mean less
+notebooks or smartphones, and also in datacenters, as less energy usage mean less
 energy cost for running and cooling.
 In \cite{imes_poet_2015} the authors compare a mobile \gls{intel} Haswell and a
 Samsung Exynos5 Octa regarding their minimal energy consumption.
@@ -356,7 +356,7 @@ In section \ref{design:energy} different models will be discussed.
 \\
 
 \paragraph{Cache side-channel attacks.}
-The CPU cache has proved to be a major side channel to deduce private
+The CPU cache proved to be a major side channel to deduce private
 cryptographic keys.
 Two different attacks are discussed here: FLUSH+RELOAD and PRIME+PROBE.
 
@@ -375,7 +375,7 @@ is small; reading the data from memory is significantly slower.
 The attack uses the fact that the OpenSSL implementation of the Montgomery
 ladder\footnote{fix published 05 Jun 2014, see
 http://www.openssl.org/news/secadv/20140605.txt}
-executes a different branch, depending on the bit value of the current
+executes a different branch, depending on the value of the current
 bit in the private key.
 If the data containing the \textit{then} branch is present in the cache, the
 tested bit was one, if the \textit{else} branch data is present, the bit was
@@ -418,7 +418,7 @@ Therefore, the eviction set must cover the cache lines in the \gls{llc} that
 correspond to the core local caches.
 Hence, the core running the application under attack must be known.
 
-Now, after the right set of cache lines is found, the access frequency can be
+After the right set of cache lines is found, the access frequency can be
 observed.
 The access to the cache set reveals squaring operations in the algorithm.
 Based on the time passed between two squaring operations, the attacker deduces
@@ -432,7 +432,8 @@ proving its practicality in a real world scenario.
 
 Separating security critical applications on architectures with shared
 \gls{llc} raises the difficulty of an attack, but does not mitigate it.
-Only a physical separation of the caches prevents a PRIME+PROBE attack.
+Only a physical separation of the caches or access right management prevents a
+PRIME+PROBE attack.
 
 
 % -----------------------------------------------------------------------------

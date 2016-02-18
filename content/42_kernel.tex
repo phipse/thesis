@@ -2,22 +2,22 @@
 \section{Kernel Performance Counter}
 \label{impl:perfcounter}
 
-\gls{intel} provides hardware performance counters for various CPU
+Intel provides hardware performance counters for various CPU
 architectures.
 Their intention is to enable software developers to observe the behaviour of
-their software and examine bottlenecks or performance hotspots.
+their software and determine bottlenecks and hotspots.
 
 I presented the performance monitoring capabilities of the targeted Haswell
 architecture in section \ref{state:haswell}.
 
-The present kernel implementation for architectural performance monitoring is
+The current Fiasco.OC implementation for architectural performance monitoring is
 extended to use the fixed-function counters for unhalted core cycles and
 instructions retired.
-Additionally, a general purpose counter for \gls{llc} misses is used,
-leaving three general purpose counters per logical core for future use.
+Additionally, a general-purpose counter for \gls{llc} misses is used,
+leaving three general-purpose counters per logical core for future use.
 
 \paragraph{Configuration \& Start.}
-Each general purpose performance counter consists of a counter register and a
+Each general-purpose performance counter consists of a counter register and a
 configuration register.
 To specify the event the counter should observe, the \texttt{UMask} and
 \texttt{Event Select} fields in the configuration register must be filled.
@@ -34,13 +34,13 @@ If one of these two bits is not set, the counter is not enabled.
 Fixed-function counters are a bit different.
 They consist of one counter register and one control register shared among all
 fixed-function counters, to enable and disable each one.
-Like general purpose counters, the fixed-function counters must also be enabled
+Like general-purpose counters, the fixed-function counters must also be enabled
 in the global control register.
 
 Fiasco.OC already contains the boot parameter \texttt{-loadcnt} enabling the
 unhalted core cycle counter on each core.
 Although a fixed-function counter is available for this event, the
-implementation still used a general purpose counter.
+implementation still used a general-purpose counter.
 Using this flag, each core's performance counters are configured and enabled to
 count unhalted core cycles, instructions retired, and \gls{llc} misses.
 
@@ -58,7 +58,6 @@ account.
 account.
 A \texttt{perf\_counter\_read\_t} struct passed by reference is filled with the
 values provided by the kernel.
-
 Listing \ref{impl:lst:perfcntrinterface} shows the user-land implementation of
 this interface.
 

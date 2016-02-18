@@ -80,8 +80,6 @@ will further lower the memory requirement.
 Another approach can be a thread local map, which contains the global
 identifier of the communication partner and a counter.
 Each communication attempt increases the counter by one.
-Similar to the sparse matrix, this approach only allocates memory for used
-counters.
 Furthermore, the used memory is directly accounted to the threads which need it.
 However, as this is a thread local solution, both communication partners will
 maintain their separate counters.
@@ -101,7 +99,7 @@ system call overhead.
 
 
 \subsection{User Land}
-At user level, information gathering is much more complicated compared to
+At user level, information gathering is more complicated compared to
 kernel level.
 The strong isolation guarantees of Fiasco.OC make it infeasible to work with global
 identifiers across all threads.
