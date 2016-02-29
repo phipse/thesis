@@ -1,0 +1,14 @@
+\frametitle{}
+  \centering
+  \begin{minipage}[c]{\columnwidth}
+    \begin{minted}[]{lua}
+ld:start({  caps = { },
+    scheduler = threadMapperFactory:create(
+      L4.Proto.Scheduler,
+      "min_prio = 0", "max_prio = 5",
+      "distr=fract" ),
+    log = { "client", "green" }
+  },
+  "rom/ex_fractal");
+    \end{minted}
+  \end{minipage}

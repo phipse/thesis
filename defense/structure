@@ -1,0 +1,28 @@
+Introduction
+* Motivation
+* Hypothesis
+* Expectations
+
+Design
+* Communication & Isolation
+* Task Proxy
+* MPDE-Cycle
+* Load & Balance
+
+Evaluation
+* baseline
+* 100ms normal load, heavy load
+* 10 ms normal load, heavy load
+* speedup
+
+
+Questions:
+* Is the speedup enough to outweigh the overhead
+* 
+
+Future:
+* small improvements:
+  * 
+* large changes: 
+  * heterogeneous systems -- ARM big.LITTLE
+  * server infrastrukturen
