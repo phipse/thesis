@@ -23,7 +23,7 @@
 \usepackage{amsfonts}
 \usepackage{textcomp}
 
-\usetikzlibrary{arrows, shapes, positioning, trees,calc,intersections}
+\usetikzlibrary{arrows, shapes, positioning, trees,calc,intersections,patterns}
 \mode<presentation>
 
 % 45 degree rotated column descriptor
@@ -44,7 +44,7 @@
 \setbeamertemplate{enumerate items}[default]
 \setbeamertemplate{itemize items}[triangle]
 
-\title[]{Behaviour-Aware Load Balancing for a Micro-Kernel}
+\title[]{Behaviour-Aware Load Balancing for a Microkernel}
 
 \author{Philipp Eppelt}
 
@@ -69,14 +69,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{data latency limits execution speed\\ and leaves processor
+  underutilized}
   \centering
   \includegraphics[width=\columnwidth]{../images/cpu_mem_gap}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{caches reduce number of waits for memory\\ but increase cache
+  miss latency}
   \centering
   \includegraphics[width=\columnwidth]{../images/mem_access_hierarchy_latency}
 \end{frame}
@@ -86,31 +88,43 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % service architecture
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
-  \frametitle{haswell cache architecture}
+  \centering
+  \Large
+  Load Balancing Service
+\end{frame}
+
+\begin{frame}
+  \frametitle{isolation-, communication-, and cache-aware placement depends on
+  topology knowledge}
   \centering
   \begin{minipage}[l]{.49\columnwidth}
-    \includestandalone[mode=tex,width=\columnwidth]{../images/haswell_core_layout}
+    \includestandalone[mode=tex,width=\columnwidth]{../images/inclusive_caches}
   \end{minipage}
   \begin{minipage}[r]{.49\columnwidth}
-    \includegraphics[scale=.27]{../images/haswell_architecture_by_intel_large_cropped}
+    \includestandalone[mode=tex,width=\columnwidth]{../images/haswell_core_layout}
   \end{minipage}
 \end{frame}
 
 \begin{frame}
-  \frametitle{adjustment cycle executed each interval}
+  \frametitle{MPDE-cycle: }
   \centering
   \includestandalone[mode=tex,width=.6\columnwidth]{../images/statusvortrag/arch_interval_cycle}
 \end{frame}
 
-
+\begin{frame}
+  \frametitle{}
+  \centering
+  \includestandalone[mode=tex]{../images/threadMapper_layout}
+\end{frame}
 
 \begin{frame}
-  \frametitle{system layout}
+  \frametitle{all threads of a task are identified via the task proxy, which
+  also encapsulates the configuration }
   \centering
   \includestandalone[mode=tex,width=.7\columnwidth]{../images/system_layout_with_loadBalancer}
 \end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{}
@@ -129,9 +143,55 @@ ld:start({  caps = { },
   \end{minipage}
 \end{frame}
 
+\begin{frame}
+  \frametitle{load \& balance}
+\end{frame}
+
+% evaluation 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \centering
+  \Large
+  Evaluation
+\end{frame}
+
+\begin{frame}
+  \centering
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_solo}
+
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_solo}
+\end{frame}
+
+\begin{frame}
+  \centering
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_all}
+
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_all}
+\end{frame}
+
+
+\begin{frame}
+  \centering
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_heavy}
+
+    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_heavy}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \centering
+    \includegraphics[width=.49\textwidth]{../images/runtimeIncrease/barchart_load_inc.pdf}
+    \includegraphics[width=.49\textwidth]{../images/runtimeIncrease/barchart_heavy_inc.pdf}
+    %table_load.pdf
+\end{frame}
 
 % future work 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \centering
+  \Large
+  Future Work
+\end{frame}
 
 \begin{frame}
   \frametitle{Future Work}
