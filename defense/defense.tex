@@ -1,5 +1,5 @@
 % vi:ft=tex
-\documentclass[utf8,10pt]{beamer}
+\documentclass[utf8,10pt,aspectratio=169]{beamer}
 
 \usepackage[english]{babel}
 \usepackage{etex}
@@ -19,8 +19,6 @@
 \usepackage{ragged2e}
 \usepackage{minted}
 \usepackage{verbatim}
-\usepackage{amssymb}
-\usepackage{amsfonts}
 \usepackage{textcomp}
 
 \usetikzlibrary{arrows, shapes, positioning, trees,calc,intersections,patterns}
@@ -33,6 +31,7 @@
 \usetheme[noheader,smallrightmargin,smallleftmargin,nosectionnum,heavyfont,pagenum]{tud}
 \addbibresource{../Related_Work.bib}
 
+
 \setbeamertemplate{footnote}
 {
   %\scriptsize
@@ -44,7 +43,7 @@
 \setbeamertemplate{enumerate items}[default]
 \setbeamertemplate{itemize items}[triangle]
 
-\title[]{Behaviour-Aware Load Balancing for a Microkernel}
+\title[]{Behaviour-Aware Load Balancing\newline for a Microkernel}
 
 \author{Philipp Eppelt}
 
@@ -69,10 +68,30 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+  \frametitle{behaviour awareness \& load balancing}
+  \centering
+  \begin{itemize}
+  \setlength{\itemsep}{6pt}
+    \item What describes thread behaviour?
+    \begin{itemize}
+      \item isolation \& communication properties
+      \item resource usage
+    \end{itemize}
+    \item
+    \item Why do we want automatic load balancing?
+    \item How does Fiasco.OC/L4Re balance load?
+    %\item Fiasco.OC does no load balancing, but allows user-land policies
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
   \frametitle{data latency limits execution speed\\ and leaves processor
   underutilized}
   \centering
-  \includegraphics[width=\columnwidth]{../images/cpu_mem_gap}
+  \includegraphics[height=5cm,keepaspectratio]{../images/cpu_mem_gap}
+  \footnotetext[1]{Hennessy, Patterson, Asanovi\'{c}: \textit{Computer
+  Architecture: A Quatitative Approach}, Elsevier, Amsterdam, 2012. p. 73}
 \end{frame}
 
 
@@ -80,7 +99,9 @@
   \frametitle{caches reduce number of waits for memory\\ but increase cache
   miss latency}
   \centering
-  \includegraphics[width=\columnwidth]{../images/mem_access_hierarchy_latency}
+  \includegraphics[height=5cm,keepaspectratio]{../images/mem_access_hierarchy_latency}
+  \footnotetext[1]{Hennessy, Patterson, Asanovi\'{c}: \textit{Computer
+  Architecture: A Quatitative Approach}, Elsevier, Amsterdam, 2012. p. 72}
 \end{frame}
 
 
@@ -95,47 +116,45 @@
   Load Balancing Service
 \end{frame}
 
+
+\begin{frame}
+  \frametitle{load \& balance}
+  \centering
+  \begin{itemize}
+  \setlength{\itemsep}{6pt}
+    \item consumed CPU time per core or per thread
+    \item last-level cache misses per cycle
+    \item instuctions per cycle
+    %\item thread count per core
+    \item
+    \item balance levels: SMT, cores, sockets, \ldots
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}
   \frametitle{isolation-, communication-, and cache-aware placement depends on
   topology knowledge}
   \centering
-  \begin{minipage}[l]{.49\columnwidth}
-    \includestandalone[mode=tex,width=\columnwidth]{../images/inclusive_caches}
-  \end{minipage}
-  \begin{minipage}[r]{.49\columnwidth}
-    \includestandalone[mode=tex,width=\columnwidth]{../images/haswell_core_layout}
-  \end{minipage}
+%  \begin{minipage}[l]{.49\columnwidth}
+%    \includestandalone[mode=image,width=\columnwidth]{../images/inclusive_caches}
+%  \end{minipage}
+%  \begin{minipage}[r]{.49\columnwidth}
+    \includestandalone[mode=image,height=5cm,keepaspectratio]{../images/haswell_core_layout}
+%  \end{minipage}
 \end{frame}
 
-\begin{frame}
-  \frametitle{MPDE-cycle: }
-  \centering
-  \includestandalone[mode=tex,width=.6\columnwidth]{../images/statusvortrag/arch_interval_cycle}
-\end{frame}
-
-\begin{frame}
-  \frametitle{}
-  \centering
-  \includestandalone[mode=tex]{../images/threadMapper_layout}
-\end{frame}
-
-\begin{frame}
-  \frametitle{all threads of a task are identified via the task proxy, which
-  also encapsulates the configuration }
-  \centering
-  \includestandalone[mode=tex,width=.7\columnwidth]{../images/system_layout_with_loadBalancer}
-\end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{}
+  \frametitle{system architect provides static properties\\ via task configuration}
   \centering
   \begin{minipage}[c]{\columnwidth}
     \begin{minted}[]{lua}
-ld:start({  caps = { },
-    scheduler = threadMapperFactory:create(
+ld:start({
+    caps = { },
+    scheduler = loadBalancerFactory:create(
       L4.Proto.Scheduler,
-      "min_prio = 0", "max_prio = 5",
-      "distr=fract" ),
+      "min_prio = 0", "max_prio = 5", "distr = fract" ),
     log = { "client", "green" }
   },
   "rom/ex_fractal");
@@ -143,11 +162,28 @@ ld:start({  caps = { },
   \end{minipage}
 \end{frame}
 
+
 \begin{frame}
-  \frametitle{load \& balance}
+  \frametitle{task proxy is scheduler for all threads}
+  \centering
+  \includestandalone[mode=image,height=5cm,keepaspectratio]{../images/threadMapper_layout}
 \end{frame}
 
-% evaluation 
+
+\begin{frame}
+  \frametitle{incomplete system knowledge}
+  \centering
+  \includestandalone[mode=image,height=5cm,keepaspectratio]{../images/system_layout_with_loadBalancer}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{MPDE-cycle:\\ accommodate workload changes}
+  \centering
+  \includestandalone[mode=image,height=6cm,keepaspectratio]{../images/statusvortrag/arch_interval_cycle}
+\end{frame}
+
+% evaluation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \centering
@@ -156,36 +192,90 @@ ld:start({  caps = { },
 \end{frame}
 
 \begin{frame}
-  \centering
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_solo}
+  \frametitle{measurement setup}
+  \begin{itemize}
+  \setlength{\itemsep}{6pt}
+    \item time measure: task creation until task destruction
+    \item SPEC CPU2006: 403.gcc, 416.gamess, 429.mcf, 470.lbm
+    \item interval duration 100ms
+    \item solo, medium load, heavy load
+    \item at least 100 repetitions
+    \item load scenarios run-times measured during the same run
+  \end{itemize}
+\end{frame}
 
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_solo}
+
+\begin{frame}
+  \centering
+  \includegraphics[height=6cm,keepaspectratio]{../images/cache_misses_spec.png}
+  \footnotetext[1]{Zhuravlev, Blagodurov, Fedorova: \textit{Addressing Shared
+  Resource Contention in Multicore Processors via Scheduling} in: Proceedings of
+  the Fifteenth Edition of {ASPLOS} on Architectural Support for Programming
+  Languages and Operating Systems, ACM, New York, 2010.}
+\end{frame}
+
+
+\begin{frame}
+  \centering
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_solo}
+
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_solo}
 \end{frame}
 
 \begin{frame}
   \centering
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_all}
+    \includegraphics[width=\columnwidth,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_solo}
 
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_all}
+    \small
+    app running alone in the system
+\end{frame}
+
+\begin{frame}
+  \centering
+    \includegraphics[width=\columnwidth,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_solo}
+
+    \small
+    app running alone in the system
 \end{frame}
 
 
 \begin{frame}
   \centering
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_heavy}
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_all}
 
-    \includegraphics[width=\textwidth]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_heavy}
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_all}
+\end{frame}
+
+
+\begin{frame}
+  \centering
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gcc_mcf_heavy}
+
+    \includegraphics[height=4.3cm,keepaspectratio]{../images/finalPlots/boxplots/pdf/boxplot_gamess_lbm_heavy}
 \end{frame}
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{Overhead of concurrent execution\\ over solo execution time}
   \centering
-    \includegraphics[width=.49\textwidth]{../images/runtimeIncrease/barchart_load_inc.pdf}
-    \includegraphics[width=.49\textwidth]{../images/runtimeIncrease/barchart_heavy_inc.pdf}
+    \includegraphics[height=5cm,keepaspectratio]{../images/runtimeIncrease/barchart_load_inc.pdf}
+    \includegraphics[height=5cm,keepaspectratio]{../images/runtimeIncrease/barchart_heavy_inc.pdf}
     %table_load.pdf
 \end{frame}
 
-% future work 
+
+\begin{frame}
+  \frametitle{Conclusion}
+  \centering
+  \begin{itemize}
+  \setlength{\itemsep}{6pt}
+    \item dynamic load balancing on Fiasco.OC/L4Re
+    \item worth the additional cost
+    \item supports isolation and communication properties
+    \item fair resource distribution and predictable run-times
+  \end{itemize}
+\end{frame}
+
+% future work
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \centering
@@ -197,12 +287,33 @@ ld:start({  caps = { },
   \frametitle{Future Work}
   \centering
   \begin{itemize}
+  \setlength{\itemsep}{6pt}
     \item delayed measurement fix
-    \item Intel CAT and CMT
+    \item Intel Cache Allocation Technology
+    \item Intel Cache Monitoring Technology
     \item hierarchical load balancing
     \item multi-socket and distributed systems
+    \item architectures besides x86
     \item heterogeneous systems
   \end{itemize}
 \end{frame}
+
+
+\begin{frame}
+  \centering
+  \Large
+  Questions?
+\end{frame}
+
+
+% Backup Slides
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+  \centering
+  \includegraphics[width=\textwidth]{../images/runtimeIncrease/table_load.pdf}
+\end{frame}
+
 
 \end{document}

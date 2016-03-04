@@ -1,12 +1,12 @@
-\frametitle{}
+\frametitle{system architect provides static properties\\ via task configuration}
   \centering
   \begin{minipage}[c]{\columnwidth}
     \begin{minted}[]{lua}
-ld:start({  caps = { },
-    scheduler = threadMapperFactory:create(
+ld:start({
+    caps = { },
+    scheduler = loadBalancerFactory:create(
       L4.Proto.Scheduler,
-      "min_prio = 0", "max_prio = 5",
-      "distr=fract" ),
+      "min_prio = 0", "max_prio = 5", "distr = fract" ),
     log = { "client", "green" }
   },
   "rom/ex_fractal");

@@ -26,3 +26,26 @@ Future:
 * large changes: 
   * heterogeneous systems -- ARM big.LITTLE
   * server infrastrukturen
+
+
+EZAG Abstract:
+To effectively utilize a multi-core processor, the system's load in the sense
+of application threads, must be distributed across all available cores.
+A static distribution like round robin or thread count balancing ignores actual
+run-time requirements and leads to unpredictable application run-times.
+Therefore, the load balancing service must review the current thread-to-core
+assignments and adjust this assignemnt depending on CPU time consumption of
+each thread.
+However, with the help of hardware performance counters memory requirements of
+threads can be measured at run-time.
+As the processor can issue data requests faster than memory can serve it, the
+waiting time impacts application run-time.
+Hence, reducing the number cache misses and waits for memory is benefitial for
+the application's execution-time.
+
+
+In my thesis I discuss a combination of time and space as load definition.
+Furthermore, I design and implement a load balancing service for L4Re, which
+also provides an interface to state isolation and communication requirements.
+I evaluate the service by comparing four different balancing algorithms:
+Linux's CFS, space-time-balance, time-balance, and simple-load-distribution.
